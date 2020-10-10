@@ -14,5 +14,11 @@ public class TeleOpMode extends LinearOpMode {
     {
         Robot robot = new Robot(this);
         OpModeHandler.addHardware(robot, this);
+        waitForStart();
+
+        //init parts
+
+        while (opModeIsActive()) {}
+        robot.stopAllThreads();
     }
 }

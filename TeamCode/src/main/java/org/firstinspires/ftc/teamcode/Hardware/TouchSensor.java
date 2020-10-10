@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.HardwareHandlers;
+package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-public class TouchSensor extends HardwareComponent<com.qualcomm.robotcore.hardware.TouchSensor> {
+public class TouchSensor extends HardwareComponent {
 
     /**
      * @param op The op mode this servo is registered in
@@ -18,6 +18,11 @@ public class TouchSensor extends HardwareComponent<com.qualcomm.robotcore.hardwa
             op.telemetry.update();
             op.requestOpModeStop();
         }
+    }
+
+    @Override
+    public com.qualcomm.robotcore.hardware.TouchSensor get() {
+        return (com.qualcomm.robotcore.hardware.TouchSensor) component;
     }
 
 }

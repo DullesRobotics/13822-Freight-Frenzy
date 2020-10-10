@@ -1,46 +1,125 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.annotation.TargetApi;
+import android.os.Build;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.HardwareHandlers.ColorSensor;
-import org.firstinspires.ftc.teamcode.HardwareHandlers.Controller;
-import org.firstinspires.ftc.teamcode.HardwareHandlers.Servo;
-import org.firstinspires.ftc.teamcode.HardwareHandlers.TouchSensor;
-import org.firstinspires.ftc.teamcode.HardwareHandlers.motor.Motor;
+import org.firstinspires.ftc.teamcode.Hardware.ColorSensor;
+import org.firstinspires.ftc.teamcode.Hardware.Controller;
+import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
+import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.Servo;
+import org.firstinspires.ftc.teamcode.Hardware.TouchSensor;
+import org.firstinspires.ftc.teamcode.Hardware.Motor;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Hello, code begins here :D
  */
+@TargetApi(Build.VERSION_CODES.N)
 public class Robot {
 
     private volatile LinearOpMode op;
     private volatile Controller controller1, controller2;
-    private volatile ArrayList<Motor> motors = new ArrayList<>();
-    private volatile ArrayList<Servo> servos = new ArrayList<>();
-    private volatile ArrayList<TouchSensor> touchSensors = new ArrayList<>();
-    private volatile ArrayList<ColorSensor> colorSensors = new ArrayList<>();
+    private volatile ArrayList<HardwareComponent> hardwareComponents = new ArrayList<>();
+    private volatile ArrayList<Thread> runningThreads = new ArrayList<>();
 
     public Robot(LinearOpMode op){
         this.op = op;
-        this.controller1 = new Controller(op.gamepad1);
-        this.controller2 = new Controller(op.gamepad2);
+        controller1 = new Controller(op.gamepad1);
+        controller2 = new Controller(op.gamepad2);
     }
 
-    public void addMotors(Motor... motors){
-        this.motors.addAll(Arrays.asList(motors));
+    /** Add hardware to the robot array
+     * @param hardware A list of hardware to add to the array */
+    public void addHardware(HardwareComponent... hardware){ this.hardwareComponents.addAll(Arrays.asList(hardware)); }
+
+    /** @return Controller 1 */
+    public Controller ctrl1() { return controller1; }
+    /** @return Controller2 */
+    public Controller ctrl2() { return controller2; }
+
+    /**
+     * Returns the motor with the matching ID
+     * @param id id of hardware component
+     * @return the hardware component
+     */
+    @Nullable
+    public Motor getMotor(String id){
+        return (Motor) hardwareComponents.stream().filter(hdw -> hdw instanceof Motor && hdw.getId().equals(id)).findFirst().orElse(null);
     }
 
-    public void addServos(Servo... servos){
-        this.servos.addAll(Arrays.asList(servos));
+    /**
+     * Returns the motors in the specified hardware area
+     * @param area the area where the hardware components are
+     * @return the hardware components
+     */
+    public ArrayList<Motor> getMotors(HardwareComponentArea area){
+        return hardwareComponents.stream().filter(hdw -> hdw instanceof Motor && hdw.getComponentArea() == area).map(hdw -> (Motor) hdw).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public void addTouchSensors(TouchSensor... touchSensors){ this.touchSensors.addAll(Arrays.asList(touchSensors)); }
+    /**
+     * Returns the servo with the matching ID
+     * @param id id of hardware component
+     * @return the hardware component
+     */
+    @Nullable
+    public Servo getServo(String id){
+        return (Servo) hardwareComponents.stream().filter(hdw -> hdw instanceof Servo && hdw.getId().equals(id)).findFirst().orElse(null);
+    }
 
-    public void addColorSensors(ColorSensor... colorSensors){ this.colorSensors.addAll(Arrays.asList(colorSensors)); }
+    /**
+     * Returns the servos in the specified hardware area
+     * @param area the area where the hardware components are
+     * @return the hardware components
+     */
+    public ArrayList<Servo> getServos(HardwareComponentArea area){
+        return hardwareComponents.stream().filter(hdw -> hdw instanceof Servo && hdw.getComponentArea() == area).map(hdw -> (Servo) hdw).collect(Collectors.toCollection(ArrayList::new));
+    }
 
+    /**
+     * Returns the touch sensor with the matching ID
+     * @param id id of hardware component
+     * @return the hardware component
+     */
+    @Nullable
+    public TouchSensor getTouchSensor(String id){
+        return (TouchSensor) hardwareComponents.stream().filter(hdw -> hdw instanceof TouchSensor && hdw.getId().equals(id)).findFirst().orElse(null);
+    }
 
+    /**
+     * Returns the color sensor with the matching ID
+     * @param id id of hardware component
+     * @return the hardware component
+     */
+    @Nullable
+    public ColorSensor getColorSensor(String id){
+        return (ColorSensor) hardwareComponents.stream().filter(hdw -> hdw instanceof ColorSensor && hdw.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    /**
+     * Adds a running thread to remember
+     * @param t The thread to remember
+     * @param start Starts the thread passed in
+     */
+    public void addThread(Thread t, boolean start){
+        runningThreads.add(t);
+        if(start) t.start();
+    }
+
+    /**
+     * Stops all running threads
+     */
+    public void stopAllThreads() {
+        try {
+            runningThreads.forEach(Thread::interrupt);
+            runningThreads.clear();
+        } catch (Exception ignored) {}
+    }
 
 }
