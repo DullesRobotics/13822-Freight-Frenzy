@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.RobotManager;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
  * Hello, code begins here :D
  */
 @TargetApi(Build.VERSION_CODES.N)
-public class Robot {
+public class Robot extends HardwareConfigurator {
 
-    private volatile LinearOpMode op;
+    protected volatile LinearOpMode op;
     private volatile Controller controller1, controller2;
     private volatile ArrayList<HardwareComponent> hardwareComponents = new ArrayList<>();
     private volatile ArrayList<Thread> runningThreads = new ArrayList<>();
@@ -33,6 +33,7 @@ public class Robot {
         this.op = op;
         controller1 = new Controller(op.gamepad1);
         controller2 = new Controller(op.gamepad2);
+        configureHardware(this, op);
     }
 
     /** Add hardware to the robot array

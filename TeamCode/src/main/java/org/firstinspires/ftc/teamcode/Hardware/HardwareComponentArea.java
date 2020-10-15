@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Hardware;
 
 public enum HardwareComponentArea {
 
-    DRIVE,
+    DRIVE_TRAIN,
     LIFT,
     INTAKE,
     SHOOTER,

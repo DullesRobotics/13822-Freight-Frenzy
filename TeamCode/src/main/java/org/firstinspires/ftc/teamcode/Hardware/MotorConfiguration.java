@@ -33,7 +33,8 @@ public class MotorConfiguration {
     public enum MotorType {
 
         CORE_HEX_MOTOR(288),
-        HD_HEX_MOTOR(28);
+        HD_HEX_MOTOR(28),
+        NEVEREST_SERIES(28);
 
         private final double countsPerRevolution;
 

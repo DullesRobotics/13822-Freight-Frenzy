@@ -1,32 +1,39 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.RobotManager;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Hardware.MotorConfiguration;
-import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.ColorSensor;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor;
 
-public class OpModeHandler {
+public class HardwareConfigurator {
+
+    public final static String ID_frontLeft = "FL", ID_frontRight = "FR", ID_backLeft = "BL", ID_backRight = "BR";
 
     /**
      * Add the hardware to the robot class
      * @param robot The robot this is configuring for
      * @param op The current op mode
      */
-    public static void addHardware(Robot robot, LinearOpMode op){
-
+    protected static void configureHardware(Robot robot, LinearOpMode op){
         MotorConfiguration motorConfiguration = new MotorConfiguration(MotorConfiguration.MotorType.CORE_HEX_MOTOR, 3);
-        Motor parentMotor = new Motor(op, "LF", HardwareComponentArea.DRIVE, motorConfiguration, true, true);
+        Motor parentMotorLeft = new Motor(op, ID_frontLeft, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true, true);
+        Motor parentMotorRight = new Motor(op, ID_frontRight, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true, false);
+
+        /*
+           Don't change the drive train motor IDs
+         */
+        robot.addHardware(
+                parentMotorLeft, //left front motor
+                parentMotorRight, //right front motor
+                parentMotorLeft.clone(ID_backLeft), //left back motor
+                parentMotorRight.clone(ID_backRight)); //right back motor
 
         robot.addHardware(
-                parentMotor, //left front motor
-                parentMotor.clone("RF"), //right front motor
-                parentMotor.clone("LB"), //left back motor
-                parentMotor.clone("RB"), //right back motor
                 new Servo(op, "CL", HardwareComponentArea.CLAW),
                 new Servo(op, "IN", HardwareComponentArea.INTAKE),
                 new TouchSensor(op, "TC", HardwareComponentArea.CLAW),

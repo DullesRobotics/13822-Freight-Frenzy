@@ -68,7 +68,7 @@ public class Controller {
 
     public float rightX(){
         return g.right_stick_x;
-    }
+}
 
     public float leftY(){
         return  g.left_stick_y;

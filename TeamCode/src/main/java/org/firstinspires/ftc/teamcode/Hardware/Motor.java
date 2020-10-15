@@ -2,13 +2,14 @@ package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 /**
  * Acts as a shell around DCMotor, providing more information and automating more processes surrounding it.
  */
 public class Motor extends HardwareComponent {
 
-    private boolean isEncoded = false, canStrafe = false;
+    private boolean isEncoded = false, isOpposite = false;
     private MotorConfiguration motorConfiguration;
     private LinearOpMode op;
 
@@ -17,16 +18,17 @@ public class Motor extends HardwareComponent {
      * @param id The id of the motor in the hardware map
      * @param componentArea Where the motor is on the robot
      * @param motorConfiguration The motor configuration, including the counts per inch and more
-     * @param canStrafe Whether or not the motor can strafe
      * @param isEncoded Whether or not the motor is encoded
+     * @param isOpposite If the motor should be inverted
      */
-    public Motor(LinearOpMode op, String id, HardwareComponentArea componentArea, MotorConfiguration motorConfiguration, boolean isEncoded, boolean canStrafe)
+    public Motor(LinearOpMode op, String id, HardwareComponentArea componentArea, MotorConfiguration motorConfiguration, boolean isEncoded, boolean isOpposite)
     {
         super(id, componentArea);
         this.op = op;
         this.isEncoded = isEncoded;
-        this.canStrafe = canStrafe;
+        this.isOpposite = isOpposite;
         this.motorConfiguration = motorConfiguration;
+        get().setDirection(isOpposite ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
         try {
             setComponent(op.hardwareMap.dcMotor.get(id));
             op.hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -38,16 +40,18 @@ public class Motor extends HardwareComponent {
     }
 
     /**
+     * Without a provided motorConfiguration, the motor cannot be encoded
      * @param op The op mode this motor is registered in
      * @param id The id of the motor in the hardware map
      * @param componentArea Where the motor is on the robot
-     * @param canStrafe Whether or not the motor can strafe
+     * @param isOpposite If the motor should be inverted
      */
-    public Motor(LinearOpMode op, String id, HardwareComponentArea componentArea, boolean canStrafe)
+    public Motor(LinearOpMode op, String id, HardwareComponentArea componentArea, boolean isOpposite)
     {
         super(id, componentArea);
         this.op = op;
-        this.canStrafe = canStrafe;
+        this.isOpposite = isOpposite;
+        get().setDirection(isOpposite ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
         try {
             setComponent(op.hardwareMap.dcMotor.get(id));
             op.hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -72,11 +76,18 @@ public class Motor extends HardwareComponent {
     }
 
     /**
-     * if the motor can strafe
-     * @return if the motor can strafe
+     * @param isOpposite Whether or not the robot is inverted
      */
-    public boolean canStrafe(){
-        return canStrafe;
+    public void setOpposite(boolean isOpposite){
+        this.isOpposite = isOpposite;
+        get().setDirection(isOpposite ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
+    }
+
+    /**
+     * @return Whether or not the robot is inverted
+     */
+    public boolean isOpposite(){
+        return isOpposite;
     }
 
     /**
@@ -85,7 +96,7 @@ public class Motor extends HardwareComponent {
      * @return The new motor with the same traits
      */
     public Motor clone(String newID){
-        return new Motor(op, newID, getComponentArea(), motorConfiguration, isEncoded, canStrafe);
+        return new Motor(op, newID, getComponentArea(), motorConfiguration, isEncoded, isOpposite);
     }
 
 }
