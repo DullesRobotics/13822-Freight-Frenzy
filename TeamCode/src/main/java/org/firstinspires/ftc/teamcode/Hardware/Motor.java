@@ -11,7 +11,6 @@ public class Motor extends HardwareComponent {
 
     private boolean isEncoded = false, isOpposite = false;
     private MotorConfiguration motorConfiguration;
-    private LinearOpMode op;
 
     /**
      * @param op The op mode this motor is registered in
@@ -23,8 +22,7 @@ public class Motor extends HardwareComponent {
      */
     public Motor(LinearOpMode op, String id, HardwareComponentArea componentArea, MotorConfiguration motorConfiguration, boolean isEncoded, boolean isOpposite)
     {
-        super(id, componentArea);
-        this.op = op;
+        super(op, id, componentArea);
         this.isEncoded = isEncoded;
         this.isOpposite = isOpposite;
         this.motorConfiguration = motorConfiguration;
@@ -48,7 +46,7 @@ public class Motor extends HardwareComponent {
      */
     public Motor(LinearOpMode op, String id, HardwareComponentArea componentArea, boolean isOpposite)
     {
-        super(id, componentArea);
+        super(op, id, componentArea);
         this.op = op;
         this.isOpposite = isOpposite;
         get().setDirection(isOpposite ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
@@ -90,6 +88,8 @@ public class Motor extends HardwareComponent {
         return isOpposite;
     }
 
+    public MotorConfiguration getMotorConfiguration(){ return motorConfiguration; }
+
     /**
      * clones the same motor with a different ID
      * @param newID the new ID of the component
@@ -97,6 +97,15 @@ public class Motor extends HardwareComponent {
      */
     public Motor clone(String newID){
         return new Motor(op, newID, getComponentArea(), motorConfiguration, isEncoded, isOpposite);
+    }
+
+    /**
+     * stops and resets the motor encoder, and then resets to the original motor mode
+     */
+    public void stopAndResetEncoder(){
+        DcMotor.RunMode _tempM = get().getMode();
+        get().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        get().setMode(_tempM);
     }
 
 }

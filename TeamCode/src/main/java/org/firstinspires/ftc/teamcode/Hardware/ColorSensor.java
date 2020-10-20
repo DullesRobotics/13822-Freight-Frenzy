@@ -10,7 +10,7 @@ public class ColorSensor extends HardwareComponent {
      * @param componentArea Where the servo is on the robot
      */
     public ColorSensor(LinearOpMode op, String id, HardwareComponentArea componentArea) {
-        super(id, componentArea);
+        super(op, id, componentArea);
         try { setComponent(op.hardwareMap.colorSensor.get(id));
         } catch (Exception e)
         {

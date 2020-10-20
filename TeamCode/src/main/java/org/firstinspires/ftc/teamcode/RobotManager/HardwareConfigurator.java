@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor;
+import org.firstinspires.ftc.teamcode.Libraries.IMUHandler;
 
 public class HardwareConfigurator {
 
@@ -20,7 +21,7 @@ public class HardwareConfigurator {
      * @param op The current op mode
      */
     protected static void configureHardware(Robot robot, LinearOpMode op){
-        MotorConfiguration motorConfiguration = new MotorConfiguration(MotorConfiguration.MotorType.CORE_HEX_MOTOR, 3);
+        MotorConfiguration motorConfiguration = new MotorConfiguration(MotorConfiguration.MotorType.CORE_HEX_MOTOR, 3, true);
         Motor parentMotorLeft = new Motor(op, ID_frontLeft, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true, true);
         Motor parentMotorRight = new Motor(op, ID_frontRight, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true, false);
 
@@ -39,7 +40,8 @@ public class HardwareConfigurator {
                 new TouchSensor(op, "TC", HardwareComponentArea.CLAW),
                 new TouchSensor(op, "TI", HardwareComponentArea.INTAKE),
                 new ColorSensor(op, "CC", HardwareComponentArea.CLAW),
-                new ColorSensor(op, "CI", HardwareComponentArea.INTAKE));
+                new ColorSensor(op, "CI", HardwareComponentArea.INTAKE),
+                new IMUHandler(op, "IMU", robot));
     }
 
 }

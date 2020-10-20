@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -7,6 +9,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public abstract class HardwareComponent {
 
+    /** Op mode */
+    protected LinearOpMode op;
     /** The hardware this stores */
     protected Object component;
     /** The ID of the motor in the hardwareMap */
@@ -19,7 +23,8 @@ public abstract class HardwareComponent {
      * @param id The id of this component
      * @param componentArea The area of the robot this component controls
      */
-    public HardwareComponent(String id, HardwareComponentArea componentArea){
+    public HardwareComponent(LinearOpMode op, String id, HardwareComponentArea componentArea){
+        this.op = op;
         this.id = id;
         this.componentArea = componentArea;
     }
@@ -30,7 +35,8 @@ public abstract class HardwareComponent {
      * @param component The raw hardware reference
      * @param componentArea The area of the robot this component controls
      */
-    public HardwareComponent(String id, Object component, HardwareComponentArea componentArea){
+    public HardwareComponent(LinearOpMode op, String id, Object component, HardwareComponentArea componentArea){
+        this.op = op;
         this.id = id;
         this.component = component;
         this.componentArea = componentArea;

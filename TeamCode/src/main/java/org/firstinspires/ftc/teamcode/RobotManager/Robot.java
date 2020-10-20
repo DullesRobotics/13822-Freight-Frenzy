@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.os.Build;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.Hardware;
 
 import org.firstinspires.ftc.teamcode.Hardware.ColorSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
@@ -12,28 +13,31 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
  * Hello, code begins here :D
  */
 @TargetApi(Build.VERSION_CODES.N)
-public class Robot extends HardwareConfigurator {
+public class Robot {
 
     protected volatile LinearOpMode op;
     private volatile Controller controller1, controller2;
     private volatile ArrayList<HardwareComponent> hardwareComponents = new ArrayList<>();
-    private volatile ArrayList<Thread> runningThreads = new ArrayList<>();
+    private volatile HashMap<UUID, Thread> runningThreads = new HashMap<>();
 
     public Robot(LinearOpMode op){
         this.op = op;
         controller1 = new Controller(op.gamepad1);
         controller2 = new Controller(op.gamepad2);
-        configureHardware(this, op);
+        HardwareConfigurator.configureHardware(this, op);
     }
 
     /** Add hardware to the robot array
@@ -106,21 +110,33 @@ public class Robot extends HardwareConfigurator {
     /**
      * Adds a running thread to remember
      * @param t The thread to remember
-     * @param start Starts the thread passed in
+     * @param autoStart Starts the thread passed in
+     * @return The ID of the thread for reference
      */
-    public void addThread(Thread t, boolean start){
-        runningThreads.add(t);
-        if(start) t.start();
+    public UUID addThread(Thread t, boolean autoStart){
+        UUID uuid = UUID.randomUUID();
+        runningThreads.put(uuid, t);
+        if(autoStart) t.start();
+        return uuid;
+    }
+
+    /** Stops all running threads */
+    public void stopAllThreads() {
+        runningThreads.forEach((s, thread) -> {
+            try { thread.interrupt(); }
+            catch (Exception ignored) {}
+        });
+        runningThreads.clear();
     }
 
     /**
-     * Stops all running threads
+     * Returns the thread with the specified ID
+     * @param uuid The ID of the thread
+     * @return The thread with the id
      */
-    public void stopAllThreads() {
-        try {
-            runningThreads.forEach(Thread::interrupt);
-            runningThreads.clear();
-        } catch (Exception ignored) {}
+    @Nullable
+    public Thread getThread(@NotNull UUID uuid){
+        return runningThreads.get(uuid);
     }
 
 }

@@ -6,6 +6,7 @@ public enum HardwareComponentArea {
     LIFT,
     INTAKE,
     SHOOTER,
-    CLAW;
+    CLAW,
+    IMU;
 
 }

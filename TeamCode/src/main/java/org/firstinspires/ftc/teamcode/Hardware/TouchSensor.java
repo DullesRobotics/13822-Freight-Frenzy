@@ -10,7 +10,7 @@ public class TouchSensor extends HardwareComponent {
      * @param componentArea Where the servo is on the robot
      */
     public TouchSensor(LinearOpMode op, String id, HardwareComponentArea componentArea) {
-        super(id, componentArea);
+        super(op, id, componentArea);
         try { setComponent(op.hardwareMap.touchSensor.get(id));
         } catch (Exception e)
         {
