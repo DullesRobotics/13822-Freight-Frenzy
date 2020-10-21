@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Libraries;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 public class PID {
 
     private volatile double kp = 0, ki = 0, kd = 0;
@@ -22,9 +24,9 @@ public class PID {
      * @param targetAngle The target angle of the robot
      * @return The power the motors should have to move to the target angle currently
      */
-    public double update(double currentAngle, double targetAngle){
+    public double update(PIDType pidType, double currentAngle, double targetAngle){
         if(prevTime == 0) prevTime = System.currentTimeMillis();
-        double error = getError(currentAngle, targetAngle);
+        double error = getError(pidType, currentAngle, targetAngle);
         double dt = System.currentTimeMillis() - prevTime;
         errorSum += (error * dt);
 
@@ -49,9 +51,26 @@ public class PID {
      * @param targetAngle The target angle of the robot
      * @return The difference between the two angles, in a -180º to 180º form
      */
-    private static double getError(double currentAngle, double targetAngle){
+    private static double getError(PIDType pidType, double currentAngle, double targetAngle){
         double diff = currentAngle - targetAngle;
-        return diff > 180 ? diff - 360 : diff;
+        switch(pidType) {
+            case ONE_EIGHTY_ANGLE:
+                diff = AngleUnit.normalizeDegrees(diff);
+                break;
+            case THREE_SIXTY_ANGLE:
+                diff = diff < 0 ? diff + 360 : diff;
+                break;
+        }
+        return diff;
+    }
+
+    /**
+     * Supported variable types of PID
+     */
+    enum PIDType {
+        ONE_EIGHTY_ANGLE, //preferred
+        THREE_SIXTY_ANGLE,
+        NUMBER;
     }
 
 }
