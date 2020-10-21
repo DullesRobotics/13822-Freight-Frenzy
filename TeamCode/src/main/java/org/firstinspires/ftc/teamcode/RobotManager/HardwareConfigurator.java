@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.RobotManager;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Hardware.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Hardware.ColorSensor;
@@ -9,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor;
-import org.firstinspires.ftc.teamcode.Libraries.IMUHandler;
+import org.firstinspires.ftc.teamcode.Libraries.IMU;
 
 public class HardwareConfigurator {
 
@@ -25,9 +24,6 @@ public class HardwareConfigurator {
         Motor parentMotorLeft = new Motor(op, ID_frontLeft, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true, true);
         Motor parentMotorRight = new Motor(op, ID_frontRight, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true, false);
 
-        /*
-           Don't change the drive train motor IDs
-         */
         robot.addHardware(
                 parentMotorLeft, //left front motor
                 parentMotorRight, //right front motor
@@ -41,7 +37,7 @@ public class HardwareConfigurator {
                 new TouchSensor(op, "TI", HardwareComponentArea.INTAKE),
                 new ColorSensor(op, "CC", HardwareComponentArea.CLAW),
                 new ColorSensor(op, "CI", HardwareComponentArea.INTAKE),
-                new IMUHandler(op, "IMU", robot));
+                new IMU(op, "IMU", robot));
     }
 
 }

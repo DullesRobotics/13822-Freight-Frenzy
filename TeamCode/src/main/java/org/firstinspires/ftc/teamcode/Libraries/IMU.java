@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class IMUHandler extends HardwareComponent {
+public class IMU extends HardwareComponent {
 
     private final Robot r;
     private volatile Orientation orientation;
@@ -26,7 +26,7 @@ public class IMUHandler extends HardwareComponent {
     private final int updateIntervalMilliseconds = 1000;
     private UUID threadID;
 
-    public IMUHandler(LinearOpMode op, String id, Robot r) {
+    public IMU(LinearOpMode op, String id, Robot r) {
         super(op, id, HardwareComponentArea.IMU);
         this.r = r;
         try { setComponent(op.hardwareMap.get(BNO055IMU.class, id));
@@ -39,11 +39,10 @@ public class IMUHandler extends HardwareComponent {
 
         /* Initialize IMU with desired units and settings */
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         get().initialize(parameters);
 
@@ -86,12 +85,12 @@ public class IMUHandler extends HardwareComponent {
         return angleDistance > 180 ? 360 - angleDistance : angleDistance;
     }
 
-    /** Gets heading (aka 360º version of yaw) of robot in the specified angle unit */
+    /** Gets heading (aka -180º to 180º version of yaw) of robot in the specified angle unit */
     public float getHeading(@NotNull AngleUnit angleUnit){
         return angleUnit.normalize(angleUnit.fromUnit(orientation.angleUnit, orientation.firstAngle));
     }
 
-    /** The -180º to 180º heading */
+    /** The 360º heading */
     public float getYaw(@NotNull AngleUnit angleUnit){
         float h = getHeading(angleUnit);
         return h > -180 && h < 0 ? h + 360 : h;
@@ -106,5 +105,4 @@ public class IMUHandler extends HardwareComponent {
     public float getPitch(@NotNull AngleUnit angleUnit){
         return angleUnit.normalize(angleUnit.fromUnit(orientation.angleUnit, orientation.thirdAngle));
     }
-
 }
