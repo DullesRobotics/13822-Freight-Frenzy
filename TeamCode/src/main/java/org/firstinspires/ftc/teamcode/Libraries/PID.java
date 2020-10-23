@@ -5,7 +5,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class PID {
 
     private volatile double kp = 0, ki = 0, kd = 0;
-    private volatile double errorSum = 0, prevError = 0, prevTime = 0;
+    private double errorSum = 0, prevError = 0, prevTime = 0;
 
     public PID(double kp, double ki, double kd){
         updateConstants(kp, ki, kd);
@@ -64,13 +64,10 @@ public class PID {
         return diff;
     }
 
-    /**
-     * Supported variable types of PID
-     */
-    enum PIDType {
+    /** Supported variable types of PID */
+    public enum PIDType {
         ONE_EIGHTY_ANGLE, //preferred
         THREE_SIXTY_ANGLE,
         NUMBER;
     }
-
 }
