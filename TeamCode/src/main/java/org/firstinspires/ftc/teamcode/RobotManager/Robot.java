@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.os.Build;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.Hardware;
 
 import org.firstinspires.ftc.teamcode.Hardware.ColorSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
@@ -13,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor;
+import org.firstinspires.ftc.teamcode.Libraries.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,11 +32,14 @@ public class Robot {
     private volatile Controller controller1, controller2;
     private volatile ArrayList<HardwareComponent> hardwareComponents = new ArrayList<>();
     private volatile HashMap<UUID, Thread> runningThreads = new HashMap<>();
+    private volatile Logger logger;
 
     public Robot(LinearOpMode op){
         this.op = op;
         controller1 = new Controller(op.gamepad1);
         controller2 = new Controller(op.gamepad2);
+        logger = new Logger(op);
+        startLogger();
         HardwareConfigurator.configureHardware(this, op);
     }
 
@@ -137,6 +140,16 @@ public class Robot {
     @Nullable
     public Thread getThread(@NotNull UUID uuid){
         return runningThreads.get(uuid);
+    }
+
+    public Logger getLogger(){ return logger; }
+
+    /** Starts the logger thread */
+    private void startLogger(){
+        addThread(new Thread(()->{
+            while(op.opModeIsActive())
+                logger.updateConsole();
+        }), true);
     }
 
 }

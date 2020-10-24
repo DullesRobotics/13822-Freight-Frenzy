@@ -6,18 +6,20 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.RobotManager.DriveTrain;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
+import java.util.logging.Level;
+
 @TeleOp
 public class TeleOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException
     {
-        Robot robot = new DriveTrain(this);
+        DriveTrain robot = new DriveTrain(this);
         waitForStart();
 
-        //init parts
+        robot.standardDriveWithController(robot.ctrl1());
 
-        while (opModeIsActive()) {}
+        while (opModeIsActive()) { }
         robot.stopAllThreads();
     }
 }

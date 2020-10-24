@@ -31,7 +31,7 @@ public class DriveTrain extends Robot {
             while(op.opModeIsActive()){
                 /* linear equation to calculate speed based on right trigger's position */
                 currentSpeed = (speed - minimumPrecisionSpeed) * (c.rightTrigger() - 1) + speed;
-                for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)) /* uses regular for each loop because lambdas require final variables, which is just asking for a stack-overflow error */
+                for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)) /* uses regular for-each loop because lambdas require final variables, which is just asking for a heap issue */
                     motor.get().setPower(motor.isOpposite() ? currentSpeed * (-c.rightY() + c.rightX()) : currentSpeed * (-c.rightY() - c.rightX()));
             }
         }), true);

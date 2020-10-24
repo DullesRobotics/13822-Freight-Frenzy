@@ -1,12 +1,26 @@
 package org.firstinspires.ftc.teamcode.Libraries;
 
+import android.annotation.TargetApi;
+import android.os.Build;
+import android.os.Environment;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+@TargetApi(Build.VERSION_CODES.O)
 public class Logger {
+
+    private PrintWriter writer;
 
     private static final byte linesToShowAtATime = 5;
 
@@ -18,8 +32,18 @@ public class Logger {
     private volatile String dynamicDataHeader = null;
     private volatile HashMap<String, String> dynamicData = new HashMap<>();
 
+    private boolean hasChanged = true;
+
     public Logger (LinearOpMode op) {
         this.op = op;
+        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+        File logFile = new File(path, formatTextFileName("log_" + LocalDateTime.now().toString()));
+        try { writer = new PrintWriter(new FileWriter(logFile, true)); }
+        catch (Exception e) {
+            e.printStackTrace();
+            op.telemetry.addData("ERROR", e);
+            op.telemetry.update();
+        }
     }
 
     /**
@@ -34,8 +58,9 @@ public class Logger {
      * The dynamic data header to show above the dynamic data
      * @param dynamicDataHeader The data header
      */
-    public void setDynamicDataHeader(String dynamicDataHeader){
+    public void setDynamicDataHeader(String dynamicDataHeader, boolean log){
         this.dynamicDataHeader = dynamicDataHeader;
+        if(log) updateFileLog(Level.INFO,  "Dynamic Data Header Set: " + dynamicDataHeader);
     }
 
     /**
@@ -44,7 +69,11 @@ public class Logger {
      * @param data The data to put in the dynamic logger
      */
     public void putData(String dataClassification, String data){
-        dynamicData.put(dataClassification, data);
+        if(!(dynamicData.containsKey(dataClassification) && dynamicData.get(dataClassification).equals(data))) {
+            dynamicData.put(dataClassification, data);
+            hasChanged = true;
+            updateFileLog(Level.INFO, dataClassification + ": " + data);
+        }
     }
 
     /**
@@ -68,6 +97,7 @@ public class Logger {
      */
     public void log(Level logLevel, String dataClassification, String data){
         log.add(new LogEntry(logLevel, dataClassification, data));
+        hasChanged = true;
     }
 
     /**
@@ -77,6 +107,8 @@ public class Logger {
      */
     public void log(Level logLevel, String data){
         log.add(new LogEntry(logLevel, null, data));
+        hasChanged = true;
+        updateFileLog(logLevel, data);
     }
 
     /** Stores single, non-dynamic log entry */
@@ -118,18 +150,38 @@ public class Logger {
 
     }
 
-    public void updateLog() {
-        op.telemetry.clearAll();
-        for(int i = 0; i < linesToShowAtATime && i < log.size() - 1; i++){
-            LogEntry le = log.get(log.size() - i - 1);
-            op.telemetry.addData(le.logLevel.getName() + (le.getDataClassification() == null ? "" : le.getDataClassification()), le.getData());
+    /** Updates the currently displayed console */
+    public void updateConsole() {
+        if(hasChanged) {
+            hasChanged = false;
+            op.telemetry.clearAll();
+            for (int i = 0; i < linesToShowAtATime && i < log.size() - 1; i++) {
+                LogEntry le = log.get(log.size() - i - 1);
+                op.telemetry.addData("[" + le.getLogLevel().getName() + "] " + (le.getDataClassification() == null ? "" : le.getDataClassification()), le.getData());
+            }
+            if (dynamicDataEnabled) {
+                if (dynamicDataHeader != null) op.telemetry.addLine(dynamicDataHeader);
+                for (String s : dynamicData.keySet())
+                    op.telemetry.addData(s, dynamicData.get(s));
+            }
+            op.telemetry.update();
         }
-        if(dynamicDataEnabled) {
-            if (dynamicDataHeader != null) op.telemetry.addLine(dynamicDataHeader);
-            for (String s : dynamicData.keySet())
-                op.telemetry.addData(s, dynamicData.get(s));
-        }
-        op.telemetry.update();
+    }
+
+    /** Updates log file */
+    private void updateFileLog(@NotNull Level level, String s){
+        writer.println(LocalTime.now().toString() + " [" + level.getName() + "] " + s);
+    }
+
+    /** formats a file name */
+    @NotNull
+    private static String formatTextFileName(String name){
+        //TODO replace with regex
+        name = name.replaceAll("/", ""); //forward slash
+        name = name.replaceAll("\\\\", ""); // backslash
+        name = name.replaceAll("\\x00", ""); //null
+        if(!name.endsWith(".txt")) name += ".txt";
+        return name;
     }
 
 }
