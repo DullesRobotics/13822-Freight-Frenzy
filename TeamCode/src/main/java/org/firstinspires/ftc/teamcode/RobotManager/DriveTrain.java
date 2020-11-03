@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
-import org.firstinspires.ftc.teamcode.Hardware.Motor;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 
 @TargetApi(Build.VERSION_CODES.N)
 public class DriveTrain extends Robot {
@@ -16,8 +16,8 @@ public class DriveTrain extends Robot {
     private volatile double speed = 0.8f;
     private volatile double minimumPrecisionSpeed = 0.2f;
 
-    public DriveTrain(LinearOpMode op) {
-        super(op);
+    public DriveTrain(LinearOpMode op, boolean hasRecorder) {
+        super(op, hasRecorder);
     }
 
     /**
@@ -32,7 +32,7 @@ public class DriveTrain extends Robot {
                 /* linear equation to calculate speed based on right trigger's position */
                 currentSpeed = (speed - minimumPrecisionSpeed) * (c.rightTrigger() - 1) + speed;
                 for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)) /* uses regular for-each loop because lambdas require final variables, which is just asking for a heap issue */
-                    motor.get().setPower(motor.isOpposite() ? currentSpeed * (-c.rightY() + c.rightX()) : currentSpeed * (-c.rightY() - c.rightX()));
+                    motor.get().setPower(motor.isOpposite() ? currentSpeed * (-c.rightX() + c.rightX()) : currentSpeed * (-c.rightY() - c.rightX()));
             }
         }), true);
     }
@@ -98,16 +98,16 @@ public class DriveTrain extends Robot {
 
     /** Makes all motors run with encoders */
     public void setAllRunWithEncoder(){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().filter(Motor::isEncoded).forEach(motor -> motor.get().setMode(DcMotor.RunMode.RUN_USING_ENCODER));
+        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().filter(m -> m.getMotorConfiguration().isEncoded()).forEach(m -> m.get().setMode(DcMotor.RunMode.RUN_USING_ENCODER));
     }
 
     /** Makes motors run without encoders */
     public void setAllRunWithoutEncoder(){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().filter(Motor::isEncoded).forEach(motor -> motor.get().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER));
+        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().filter(m -> m.getMotorConfiguration().isEncoded()).forEach(m -> m.get().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER));
     }
 
     /** Makes all motors go into run_to_position mode */
     public void setAllRunToPosition(){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().filter(Motor::isEncoded).forEach(motor -> motor.get().setMode(DcMotor.RunMode.RUN_TO_POSITION));
+        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().filter(m -> m.getMotorConfiguration().isEncoded()).forEach(m -> m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION));
     }
 }

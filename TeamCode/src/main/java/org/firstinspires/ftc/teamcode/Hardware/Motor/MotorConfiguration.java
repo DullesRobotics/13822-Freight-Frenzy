@@ -1,10 +1,11 @@
-package org.firstinspires.ftc.teamcode.Hardware;
+package org.firstinspires.ftc.teamcode.Hardware.Motor;
 
 public class MotorConfiguration {
 
     private final MotorType mt;
     private final double wheelDiameter;
     private final boolean canStrafe;
+    private final boolean isEncoded;
     private double driveGearReduction = 1;
 
     /**
@@ -12,10 +13,11 @@ public class MotorConfiguration {
      * @param wheelDiameter The diameter of the wheel in INCHES
      * @param canStrafe If the wheel can strafe
      */
-    public MotorConfiguration(MotorType mt, double wheelDiameter, boolean canStrafe){
+    public MotorConfiguration(MotorType mt, double wheelDiameter, boolean canStrafe, boolean isEncoded){
         this.mt = mt;
         this.wheelDiameter = wheelDiameter;
         this.canStrafe = canStrafe;
+        this.isEncoded = isEncoded;
     }
 
     /**
@@ -24,32 +26,12 @@ public class MotorConfiguration {
      * @param driveGearReduction Gearbox multiplier (eg 40:1 is 40, 20:1 is 20)
      * @param canStrafe If the wheel can strafe
      */
-    public MotorConfiguration(MotorType mt,  double wheelDiameter, double driveGearReduction, boolean canStrafe){
+    public MotorConfiguration(MotorType mt,  double wheelDiameter, double driveGearReduction, boolean canStrafe, boolean isEncoded){
         this.mt = mt;
         this.wheelDiameter = wheelDiameter;
         this.driveGearReduction = driveGearReduction;
         this.canStrafe = canStrafe;
-    }
-
-    /**
-     * The type of motor used on the wheel
-     * Basically a list of motor types with pre-defined counts
-     */
-    public enum MotorType {
-
-        CORE_HEX_MOTOR(288),
-        HD_HEX_MOTOR(28),
-        NEVEREST_ORBITAL(537.6);
-
-        private final double countsPerRevolution;
-
-        MotorType(double countsPerRevolution) {
-            this.countsPerRevolution = countsPerRevolution;
-        }
-
-        public double countsPerRev() {
-            return countsPerRevolution;
-        }
+        this.isEncoded = isEncoded;
     }
 
     /**
@@ -90,5 +72,12 @@ public class MotorConfiguration {
      */
     public double getWheelDiameter() {
         return wheelDiameter;
+    }
+
+    /**
+     * @return If the wheel supports encoding
+     */
+    public boolean isEncoded() {
+        return isEncoded;
     }
 }

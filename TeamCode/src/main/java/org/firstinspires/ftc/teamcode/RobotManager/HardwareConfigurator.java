@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.RobotManager;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.teamcode.Hardware.MotorConfiguration;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Hardware.ColorSensor;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorType;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.TouchSensor;
-import org.firstinspires.ftc.teamcode.Hardware.Motor;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 
 public class HardwareConfigurator {
@@ -16,28 +15,27 @@ public class HardwareConfigurator {
 
     /**
      * Add the hardware to the robot class
-     * @param robot The robot this is configuring for
-     * @param op The current op mode
+     * @param r The robot this is configuring for
      */
-    protected static void configureHardware(Robot robot, LinearOpMode op){
-        MotorConfiguration motorConfiguration = new MotorConfiguration(MotorConfiguration.MotorType.CORE_HEX_MOTOR, 3, true);
-        Motor parentMotorLeft = new Motor(op, ID_frontLeft, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true, true);
-        Motor parentMotorRight = new Motor(op, ID_frontRight, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true, false);
+    protected static void configureHardware(Robot r){
+        MotorConfiguration motorConfiguration = new MotorConfiguration(MotorType.CORE_HEX_MOTOR, 3, true, true);
+        Motor parentMotorLeft = new Motor(r, ID_frontLeft, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true);
+        Motor parentMotorRight = new Motor(r, ID_frontRight, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true);
 
-        robot.addHardware(
+        r.addHardware(
                 parentMotorLeft, //left front motor
                 parentMotorRight, //right front motor
                 parentMotorLeft.clone(ID_backLeft), //left back motor
                 parentMotorRight.clone(ID_backRight)); //right back motor
 
-        robot.addHardware(
-                new Servo(op, "CL", HardwareComponentArea.CLAW),
-                new Servo(op, "IN", HardwareComponentArea.INTAKE),
-                new TouchSensor(op, "TC", HardwareComponentArea.CLAW),
-                new TouchSensor(op, "TI", HardwareComponentArea.INTAKE),
-                new ColorSensor(op, "CC", HardwareComponentArea.CLAW),
-                new ColorSensor(op, "CI", HardwareComponentArea.INTAKE),
-                new IMU(op, "IMU", robot));
+        r.addHardware(
+                new Servo(r, "CL", HardwareComponentArea.CLAW),
+                new Servo(r, "IN", HardwareComponentArea.INTAKE),
+                new TouchSensor(r, "TC", HardwareComponentArea.CLAW),
+                new TouchSensor(r, "TI", HardwareComponentArea.INTAKE),
+                new ColorSensor(r, "CC", HardwareComponentArea.CLAW),
+                new ColorSensor(r, "CI", HardwareComponentArea.INTAKE),
+                new IMU(r, "IMU"));
     }
 
 }

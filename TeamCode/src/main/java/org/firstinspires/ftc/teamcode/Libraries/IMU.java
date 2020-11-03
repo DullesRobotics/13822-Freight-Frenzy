@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Libraries;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -17,23 +16,25 @@ import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class IMU extends HardwareComponent {
 
-    private final Robot r;
     private volatile Orientation orientation;
     private volatile Acceleration acceleration;
-    private final int updateIntervalMilliseconds = 1000;
+    private final static int updateIntervalMilliseconds = 1000;
     private UUID threadID;
 
-    public IMU(LinearOpMode op, String id, Robot r) {
-        super(op, id, HardwareComponentArea.IMU);
-        this.r = r;
-        try { setComponent(op.hardwareMap.get(BNO055IMU.class, id));
+    /**
+     * @param r The robot this IMU is in
+     * @param id Usually "IMU"
+     */
+    public IMU(Robot r, String id) {
+        super(r, id, HardwareComponentArea.IMU);
+        try { setComponent(r.op.hardwareMap.get(BNO055IMU.class, id));
         } catch (Exception e) {
-            op.telemetry.addData("Error Adding IMU " + id + ":", e);
-            op.telemetry.update();
-            op.requestOpModeStop();
+            r.getLogger().logKeyed(Level.SEVERE, "Error Adding IMU " + id, e.toString());
+            r.op.requestOpModeStop();
             return;
         }
 
@@ -56,10 +57,17 @@ public class IMU extends HardwareComponent {
 
     /** Starts thread to automagically update variables */
     public void startIMU(){
+        r.getLogger().putData("Pitch", "NUL");
+        r.getLogger().putData("Roll", "NUL");
+        r.getLogger().putData("Yaw", "NUL");
         get().startAccelerationIntegration(new Position(), new Velocity(), updateIntervalMilliseconds);
         threadID = r.addThread(new Thread(() -> {
-            while(op.opModeIsActive())
+            while(r.op.opModeIsActive()){
                 updateIMU();
+                r.getLogger().putData("Pitch", String.valueOf(getPitch(AngleUnit.DEGREES)));
+                r.getLogger().putData("Roll", String.valueOf(getRoll(AngleUnit.DEGREES)));
+                r.getLogger().putData("Yaw", String.valueOf(getYaw(AngleUnit.DEGREES)));
+            }
         }), true );
     }
 

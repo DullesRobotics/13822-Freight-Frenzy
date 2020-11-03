@@ -1,22 +1,23 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import org.firstinspires.ftc.teamcode.RobotManager.Robot;
+
+import java.util.logging.Level;
 
 public class ColorSensor extends HardwareComponent {
 
     /**
-     * @param op The op mode this servo is registered in
+     * @param r The op mode this servo is registered in
      * @param id The id of the servo in the hardware map
      * @param componentArea Where the servo is on the robot
      */
-    public ColorSensor(LinearOpMode op, String id, HardwareComponentArea componentArea) {
-        super(op, id, componentArea);
-        try { setComponent(op.hardwareMap.colorSensor.get(id));
+    public ColorSensor(Robot r, String id, HardwareComponentArea componentArea) {
+        super(r, id, componentArea);
+        try { setComponent(r.op.hardwareMap.colorSensor.get(id));
         } catch (Exception e)
         {
-            op.telemetry.addData("Error Adding Servo " + id + ":", e);
-            op.telemetry.update();
-            op.requestOpModeStop();
+            r.getLogger().logKeyed(Level.SEVERE, "Error Adding Color Sensor " + id, e.toString());
+            r.op.requestOpModeStop();
         }
     }
 

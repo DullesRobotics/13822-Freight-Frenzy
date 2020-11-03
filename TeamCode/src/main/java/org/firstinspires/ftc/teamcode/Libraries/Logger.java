@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Libraries;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Environment;
+import android.text.format.DateFormat;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -11,13 +12,12 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-@TargetApi(Build.VERSION_CODES.O)
+@TargetApi(Build.VERSION_CODES.N)
 public class Logger {
 
     private PrintWriter writer;
@@ -37,7 +37,8 @@ public class Logger {
     public Logger (LinearOpMode op) {
         this.op = op;
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        File logFile = new File(path, formatTextFileName("log_" + LocalDateTime.now().toString()));
+        String date = DateFormat.format("MM/dd:HH:mm:SS", Calendar.getInstance().getTime()).toString();
+        File logFile = new File(path, formatTextFileName("ftclog_" + date));
         try { writer = new PrintWriter(new FileWriter(logFile, true)); }
         catch (Exception e) {
             e.printStackTrace();
@@ -111,6 +112,18 @@ public class Logger {
         updateFileLog(logLevel, data);
     }
 
+      /**
+     * Stores single, non-dynamic log entry
+     * @param logLevel Level of importance
+     * @param key The data descriptor
+     * @param data The data itself
+     */
+    public void logKeyed(Level logLevel, String key, String data){
+        log.add(new LogEntry(logLevel, null, key + ": " + data));
+        hasChanged = true;
+        updateFileLog(logLevel, key + ": " + data);
+    }
+
     /** Stores single, non-dynamic log entry */
     private static class LogEntry {
 
@@ -166,17 +179,18 @@ public class Logger {
             }
             op.telemetry.update();
         }
-    }
+}
 
     /** Updates log file */
     private void updateFileLog(@NotNull Level level, String s){
-        writer.println(LocalTime.now().toString() + " [" + level.getName() + "] " + s);
+        String date = DateFormat.format("HH:mm:SS", Calendar.getInstance().getTime()).toString();
+        writer.println(date + " [" + level.getName() + "] " + s);
     }
 
     /** formats a file name */
     @NotNull
     private static String formatTextFileName(String name){
-        //TODO replace with regex
+        //TODO replace with single regex
         name = name.replaceAll("/", ""); //forward slash
         name = name.replaceAll("\\\\", ""); // backslash
         name = name.replaceAll("\\x00", ""); //null

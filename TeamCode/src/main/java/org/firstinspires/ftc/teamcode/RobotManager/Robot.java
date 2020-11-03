@@ -11,8 +11,9 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.TouchSensor;
-import org.firstinspires.ftc.teamcode.Hardware.Motor;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Libraries.Logger;
+import org.firstinspires.ftc.teamcode.Libraries.RobotRecorder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,19 +29,21 @@ import java.util.stream.Collectors;
 @TargetApi(Build.VERSION_CODES.N)
 public class Robot {
 
-    protected volatile LinearOpMode op;
+    public volatile LinearOpMode op;
     private volatile Controller controller1, controller2;
     private volatile ArrayList<HardwareComponent> hardwareComponents = new ArrayList<>();
     private volatile HashMap<UUID, Thread> runningThreads = new HashMap<>();
     private volatile Logger logger;
+    private volatile RobotRecorder recorder;
 
-    public Robot(LinearOpMode op){
+    public Robot(LinearOpMode op, boolean hasRecorder){
         this.op = op;
         controller1 = new Controller(op.gamepad1);
         controller2 = new Controller(op.gamepad2);
         logger = new Logger(op);
+        if(hasRecorder) recorder = new RobotRecorder(op);
         startLogger();
-        HardwareConfigurator.configureHardware(this, op);
+        HardwareConfigurator.configureHardware(this);
     }
 
     /** Add hardware to the robot array
