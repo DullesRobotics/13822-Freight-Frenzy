@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.RobotManager;
+package org.firstinspires.ftc.teamcode.OpModes;
 
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Hardware.ColorSensor;
@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
+import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
 public class HardwareConfigurator {
 
@@ -17,7 +18,7 @@ public class HardwareConfigurator {
      * Add the hardware to the robot class
      * @param r The robot this is configuring for
      */
-    protected static void configureHardware(Robot r){
+    public static void configureHardware(Robot r){
         MotorConfiguration motorConfiguration = new MotorConfiguration(MotorType.CORE_HEX_MOTOR, 3, true, true);
         Motor parentMotorLeft = new Motor(r, ID_frontLeft, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true);
         Motor parentMotorRight = new Motor(r, ID_frontRight, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true);

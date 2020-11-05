@@ -74,6 +74,7 @@ public class Motor extends HardwareComponent {
     }
 
     /**
+     * Usually a right wheel
      * @return Whether or not the robot is inverted
      */
     public boolean isOpposite(){

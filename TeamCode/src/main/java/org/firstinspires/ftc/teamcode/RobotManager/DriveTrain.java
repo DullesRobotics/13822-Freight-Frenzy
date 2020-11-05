@@ -9,14 +9,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
+import org.firstinspires.ftc.teamcode.Libraries.IMU;
+import org.firstinspires.ftc.teamcode.Libraries.PID;
+
+import java.util.logging.Level;
 
 @TargetApi(Build.VERSION_CODES.N)
 public class DriveTrain extends Robot {
 
-    private volatile double speed = 0.8f;
-    private volatile double minimumPrecisionSpeed = 0.2f;
+    protected volatile double speed = 0.8f;
+    protected volatile double minimumPrecisionSpeed = 0.2f;
 
-    public DriveTrain(LinearOpMode op, boolean hasRecorder) {
+    protected DriveTrain(LinearOpMode op, boolean hasRecorder) {
         super(op, hasRecorder);
     }
 
@@ -25,7 +29,7 @@ public class DriveTrain extends Robot {
      * By pressing the right trigger, you can brake the robot linearly to the minimumSpeed
      * @param c The controller to move the robot with
      */
-    public void standardDriveWithController(Controller c){
+    public void driveWithController(Controller c){
         addThread(new Thread(() -> {
             double currentSpeed;
             while(op.opModeIsActive()){
@@ -42,7 +46,7 @@ public class DriveTrain extends Robot {
      * @param inches The number of inches to move
      * @param turn Whether or not to turn
      */
-    public void encodedAutoStandardDrive(double inches, boolean turn, boolean turnRight){
+    public void encodedAutoDrive(double inches, boolean turn, boolean turnRight){
         setAllRunToPosition();
 
         getMotors(HardwareComponentArea.DRIVE_TRAIN).forEach(motor ->
@@ -53,9 +57,156 @@ public class DriveTrain extends Robot {
         double power = inches < 0 ? -speed : speed;
         setUniformDrivePower(power);
 
-        while(getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().anyMatch(motor -> motor.get().isBusy()))
+        while(op.opModeIsActive() && isAnyMotorBusy())
             setUniformDrivePower(power);
 
+        setUniformDrivePower(0);
+    }
+
+    /**
+     * Moves the robot for a certain amount of time
+     * @param millis The amount of milliseconds to move the robot
+     * @param turn If the robot should turn
+     * @param turnRight If the robot should turn right
+     */
+    public void simpleTimedAutoDrive(long millis, boolean turn, boolean turnRight){
+        getLogger().log(Level.INFO, "Moving ( turning = " + turn + ", isRight = " + turnRight + ") for " + millis + " milliseconds.");
+        long time = System.currentTimeMillis() + millis;
+        while(op.opModeIsActive() && time >= System.currentTimeMillis()) {
+            getLogger().putData("Time Left", time - System.currentTimeMillis());
+            setIndependentDrivePower(turn && !turnRight ? -speed : speed, turn && turnRight ? -speed : speed);
+        }
+        setUniformDrivePower(0);
+        getLogger().clearData();
+        getLogger().log(Level.INFO, "Done moving.");
+    }
+
+    /**
+     * Moves robot forward using a set time and a PID
+     * @param millis The amount of milliseconds to move the robot
+     * @param pid the PID this motion will use
+     * @param tolerance what angle the robot can have moved to be okay
+     */
+    public void timedAutoDriveForwardPID(long millis, PID pid, double tolerance, boolean forward){
+        getLogger().log(Level.INFO, "Driving Forward with PID and Timed");
+        long time = System.currentTimeMillis() + millis;
+        IMU imu = getIMU();
+        if(!imu.isRunning()) imu.startIMU();
+        resetAllEncoders();
+
+        double steer, leftSpeed, rightSpeed, target = imu.getYaw();
+        while(op.opModeIsActive() && time >= System.currentTimeMillis()){
+            steer = (forward ? 1 : -1) * pid.update(PID.PIDType.THREE_SIXTY_ANGLE, imu.getYaw(), target);
+            leftSpeed = speed - steer;
+            rightSpeed = speed + steer;
+            setIndependentDrivePower(leftSpeed, rightSpeed);
+            getLogger().putData("Steer", steer);
+            getLogger().putData("Time Left", time - System.currentTimeMillis());
+            getLogger().putData("Speed (L, R)", "(" + leftSpeed + ", " + rightSpeed + ")");
+        }
+        getLogger().log(Level.INFO, "Angle to turn: ", target - imu.getYaw());
+        op.sleep(400L);
+        getLogger().clearData();
+        setUniformDrivePower(0);
+        getLogger().log(Level.INFO, "Finished Driving Forward");
+
+        /* Correcting angle to make sure it stays in the same line */
+        double angleDiff = IMU.distanceBetweenAngles(imu.getYaw(), target);
+        if(op.opModeIsActive() && Math.abs(angleDiff) > 1)
+            encodedAutoTurnPID(angleDiff, tolerance, true);
+    }
+
+    /**
+     * Moves robot forward using encoders and a PID
+     * @param inches the distance to move forward in inches
+     * @param pid the PID this motion will use
+     * @param tolerance what angle the robot can have moved to be okay
+     */
+    public void encodedAutoStraightPID(double inches, PID pid, double tolerance){
+        getLogger().log(Level.INFO, "Driving Forward with PID and Encoded");
+        IMU imu = getIMU();
+        if(!imu.isRunning()) imu.startIMU();
+        resetAllEncoders();
+        setAllRunToPosition();
+
+        getMotors(HardwareComponentArea.DRIVE_TRAIN).forEach(motor ->
+                motor.get().setTargetPosition(motor.get().getCurrentPosition() +
+                        motor.getMotorConfiguration().inchesToCounts(inches)));
+
+        double steer, leftSpeed, rightSpeed, target = imu.getYaw();
+        while(op.opModeIsActive() && isAnyMotorBusy()){
+            steer = (inches < 0 ? -1 : 1) * pid.update(PID.PIDType.THREE_SIXTY_ANGLE, imu.getYaw(), target);
+            leftSpeed = speed - steer;
+            rightSpeed = speed + steer;
+            setIndependentDrivePower(leftSpeed, rightSpeed);
+
+            getLogger().putData("Steer", steer);
+            if(getMotors(HardwareComponentArea.DRIVE_TRAIN).size() > 0) {
+                getLogger().putData("Target Ticks", getMotors(HardwareComponentArea.DRIVE_TRAIN).get(0).get().getTargetPosition());
+                getLogger().putData("Current Ticks", steer);
+            }
+            getLogger().putData("Speed (L, R)", "(" + leftSpeed + ", " + rightSpeed + ")");
+        }
+        getLogger().log(Level.INFO, "Angle to turn: ", target - imu.getYaw());
+        op.sleep(400L);
+        setUniformDrivePower(0);
+        setAllRunWithEncoder();
+        getLogger().clearData();
+        getLogger().log(Level.INFO, "Finished Driving Forward");
+
+        /* Correcting angle to make sure it stays in the same line */
+        double angleDiff = IMU.distanceBetweenAngles(imu.getYaw(), target);
+        if(op.opModeIsActive() && Math.abs(angleDiff) > 1)
+            encodedAutoTurnPID(angleDiff, tolerance, true);
+    }
+
+
+    /**
+     * Turns robot a certain angle with the PID
+     * @param angle The angle to move the robot
+     * @param tolerance Where the robot doesn't have to correct further
+     * @param correction If this is a small correction, uses a smaller speed
+     */
+    public void encodedAutoTurnPID(double angle, double tolerance, boolean correction) {
+        getLogger().log(Level.INFO, "Turning with PID, Correction:" + correction);
+        double tempSpeed = correction ? 0.2 : speed;
+        IMU imu = getIMU();
+        if(!imu.isRunning()) imu.startIMU();
+        double startYaw = imu.getYaw(), targetYaw = imu.getYaw() + angle;
+
+        /* Correcting the angle just in case */
+        targetYaw = targetYaw > 360 ? targetYaw % 360 : targetYaw;
+        targetYaw = targetYaw < 0 ? targetYaw + 360 : targetYaw;
+
+        double distanceToTarget = IMU.distanceBetweenAngles(startYaw, targetYaw);
+
+        for (int i = 1; i <= 8; i++) {
+            while (op.opModeIsActive() && (distanceToTarget < tolerance) ^ (distanceToTarget > -tolerance)) {
+                distanceToTarget = IMU.distanceBetweenAngles(startYaw, targetYaw);
+                if (distanceToTarget < 0 + tolerance)
+                    if (angle > 0)
+                        setTurningDrivePower(tempSpeed / i);
+                    else
+                        setTurningDrivePower(tempSpeed / i);
+                else if (distanceToTarget > 0 - tolerance)
+                    if (angle > 0)
+                        setTurningDrivePower(tempSpeed / i);
+                    else
+                        setTurningDrivePower(-tempSpeed / i);
+                else {
+                    setUniformDrivePower(0);
+                    break;
+                }
+                getLogger().putData("Distance to target", distanceToTarget);
+                getLogger().putData("Target Yaw", targetYaw);
+                getLogger().putData("Start Yaw", startYaw);
+                getLogger().putData("Angle", angle);
+                getLogger().putData("Iteration", i);
+            }
+            op.sleep(200);
+        }
+        getLogger().clearData();
+        getLogger().log(Level.INFO, "PID Done Turning");
         setUniformDrivePower(0);
     }
 
@@ -75,11 +226,15 @@ public class DriveTrain extends Robot {
         getMotors(HardwareComponentArea.DRIVE_TRAIN).forEach(motor -> motor.get().setPower( motor.isOpposite() ? power : -power ));
     }
 
+    public void setIndependentDrivePower(double leftPower, double rightPower){
+        getMotors(HardwareComponentArea.DRIVE_TRAIN).forEach(motor -> motor.get().setPower( motor.isOpposite() ? rightPower : leftPower ));
+    }
+
     /**
      * Set the normal speed of the robot in manual control
      * @param speed The speed of the robot in manual control
      */
-    public void setSpeed(double speed) {
+    public void setRobotBaseSpeed(double speed) {
         this.speed = speed;
     }
 
@@ -109,5 +264,10 @@ public class DriveTrain extends Robot {
     /** Makes all motors go into run_to_position mode */
     public void setAllRunToPosition(){
         getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().filter(m -> m.getMotorConfiguration().isEncoded()).forEach(m -> m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION));
+    }
+
+    /** @return If any drive train motor is moving */
+    public boolean isAnyMotorBusy(){
+        return getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().allMatch(motor -> motor.get().isBusy());
     }
 }

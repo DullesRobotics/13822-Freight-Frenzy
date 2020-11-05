@@ -12,8 +12,10 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
+import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.Libraries.Logger;
 import org.firstinspires.ftc.teamcode.Libraries.RobotRecorder;
+import org.firstinspires.ftc.teamcode.OpModes.HardwareConfigurator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -111,6 +113,25 @@ public class Robot {
     @Nullable
     public ColorSensor getColorSensor(String id){
         return (ColorSensor) hardwareComponents.stream().filter(hdw -> hdw instanceof ColorSensor && hdw.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    /**
+     * Gets an IMU with the matching ID
+     * @param id id of the IMU
+     * @return the hardware component
+     */
+    @Nullable
+    public IMU getIMU(String id){
+        return (IMU) hardwareComponents.stream().filter(hdw -> hdw instanceof IMU && hdw.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    /**
+     * Gets an IMU with the default ID "IMU"
+     * @return the hardware component
+     */
+    @Nullable
+    public IMU getIMU(){
+        return (IMU) hardwareComponents.stream().filter(hdw -> hdw instanceof IMU && hdw.getId().equals("IMU")).findFirst().orElse(null);
     }
 
     /**

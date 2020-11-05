@@ -24,6 +24,7 @@ public class IMU extends HardwareComponent {
     private volatile Acceleration acceleration;
     private final static int updateIntervalMilliseconds = 1000;
     private UUID threadID;
+    private AngleUnit angleUnit;
 
     /**
      * @param r The robot this IMU is in
@@ -31,6 +32,7 @@ public class IMU extends HardwareComponent {
      */
     public IMU(Robot r, String id) {
         super(r, id, HardwareComponentArea.IMU);
+        this.angleUnit = AngleUnit.DEGREES;
         try { setComponent(r.op.hardwareMap.get(BNO055IMU.class, id));
         } catch (Exception e) {
             r.getLogger().logKeyed(Level.SEVERE, "Error Adding IMU " + id, e.toString());
@@ -57,6 +59,7 @@ public class IMU extends HardwareComponent {
 
     /** Starts thread to automagically update variables */
     public void startIMU(){
+        if(isRunning()) return;
         r.getLogger().putData("Pitch", "NUL");
         r.getLogger().putData("Roll", "NUL");
         r.getLogger().putData("Yaw", "NUL");
@@ -64,9 +67,9 @@ public class IMU extends HardwareComponent {
         threadID = r.addThread(new Thread(() -> {
             while(r.op.opModeIsActive()){
                 updateIMU();
-                r.getLogger().putData("Pitch", String.valueOf(getPitch(AngleUnit.DEGREES)));
-                r.getLogger().putData("Roll", String.valueOf(getRoll(AngleUnit.DEGREES)));
-                r.getLogger().putData("Yaw", String.valueOf(getYaw(AngleUnit.DEGREES)));
+                r.getLogger().putData("Pitch", String.valueOf(getPitch()));
+                r.getLogger().putData("Roll", String.valueOf(getRoll()));
+                r.getLogger().putData("Yaw", String.valueOf(getYaw()));
             }
         }), true );
     }
@@ -94,23 +97,36 @@ public class IMU extends HardwareComponent {
     }
 
     /** Gets heading (aka -180º to 180º version of yaw) of robot in the specified angle unit */
-    public float getHeading(@NotNull AngleUnit angleUnit){
+    public float getHeading(){
         return angleUnit.normalize(angleUnit.fromUnit(orientation.angleUnit, orientation.firstAngle));
     }
 
     /** The 360º heading */
-    public float getYaw(@NotNull AngleUnit angleUnit){
-        float h = getHeading(angleUnit);
+    public float getYaw(){
+        float h = getHeading();
         return h > -180 && h < 0 ? h + 360 : h;
     }
 
     /** Gets roll of robot in the specified angle unit */
-    public float getRoll(@NotNull AngleUnit angleUnit){
+    public float getRoll(){
         return angleUnit.normalize(angleUnit.fromUnit(orientation.angleUnit, orientation.secondAngle));
     }
 
     /** Gets pitch of robot in the specified angle unit */
-    public float getPitch(@NotNull AngleUnit angleUnit){
+    public float getPitch(){
         return angleUnit.normalize(angleUnit.fromUnit(orientation.angleUnit, orientation.thirdAngle));
+    }
+
+    /**
+     * Sets the angle unit that this imu will return
+     * @param angleUnit An angle unit
+     */
+    public void setAngleUnit(@NotNull AngleUnit angleUnit){
+        this.angleUnit = angleUnit;
+    }
+
+    /** @return The angle unit of this IMU */
+    public AngleUnit getAngleUnit(){
+        return angleUnit;
     }
 }

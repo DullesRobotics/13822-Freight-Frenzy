@@ -69,9 +69,9 @@ public class Logger {
      * @param dataClassification The key to put in the dynamic logger
      * @param data The data to put in the dynamic logger
      */
-    public void putData(String dataClassification, String data){
-        if(!(dynamicData.containsKey(dataClassification) && dynamicData.get(dataClassification).equals(data))) {
-            dynamicData.put(dataClassification, data);
+    public void putData(String dataClassification, Object data){
+        if(!(dynamicData.containsKey(dataClassification) && dynamicData.get(dataClassification).equals(String.valueOf(data)))) {
+            dynamicData.put(dataClassification, String.valueOf(data));
             hasChanged = true;
             updateFileLog(Level.INFO, dataClassification + ": " + data);
         }
@@ -96,8 +96,8 @@ public class Logger {
      * @param dataClassification The data key
      * @param data The data itself
      */
-    public void log(Level logLevel, String dataClassification, String data){
-        log.add(new LogEntry(logLevel, dataClassification, data));
+    public void log(Level logLevel, String dataClassification, Object data){
+        log.add(new LogEntry(logLevel, dataClassification, String.valueOf(data)));
         hasChanged = true;
     }
 
