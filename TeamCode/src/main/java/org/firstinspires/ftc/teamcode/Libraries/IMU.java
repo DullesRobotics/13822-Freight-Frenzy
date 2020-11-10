@@ -24,7 +24,7 @@ public class IMU extends HardwareComponent {
     private volatile Acceleration acceleration;
     private final static int updateIntervalMilliseconds = 1000;
     private UUID threadID;
-    private AngleUnit angleUnit;
+    private AngleUnit angleUnit = AngleUnit.DEGREES;
 
     /**
      * @param r The robot this IMU is in
@@ -32,7 +32,6 @@ public class IMU extends HardwareComponent {
      */
     public IMU(Robot r, String id) {
         super(r, id, HardwareComponentArea.IMU);
-        this.angleUnit = AngleUnit.DEGREES;
         try { setComponent(r.op.hardwareMap.get(BNO055IMU.class, id));
         } catch (Exception e) {
             r.getLogger().logKeyed(Level.SEVERE, "Error Adding IMU " + id, e.toString());

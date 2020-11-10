@@ -72,4 +72,9 @@ public abstract class HardwareComponent {
         this.component = component;
     }
 
+    /** @return The textual representation of this hardware component */
+    public String toString(){
+        return "ID: " + getId() +  ", Component Area: " +  getComponentArea();
+    }
+
 }

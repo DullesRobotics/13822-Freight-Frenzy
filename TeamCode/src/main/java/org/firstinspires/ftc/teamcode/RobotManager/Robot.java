@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 /**
@@ -34,11 +35,14 @@ public class Robot {
     public volatile LinearOpMode op;
     private volatile Controller controller1, controller2;
     private volatile ArrayList<HardwareComponent> hardwareComponents = new ArrayList<>();
+
     private volatile HashMap<UUID, Thread> runningThreads = new HashMap<>();
+    private volatile HashMap<UUID, Runnable> endingRunnables = new HashMap<>();
+
     private volatile Logger logger;
     private volatile RobotRecorder recorder;
 
-    public Robot(LinearOpMode op, boolean hasRecorder){
+    protected Robot(LinearOpMode op, boolean hasRecorder){
         this.op = op;
         controller1 = new Controller(op.gamepad1);
         controller2 = new Controller(op.gamepad2);
@@ -50,7 +54,10 @@ public class Robot {
 
     /** Add hardware to the robot array
      * @param hardware A list of hardware to add to the array */
-    public void addHardware(HardwareComponent... hardware){ this.hardwareComponents.addAll(Arrays.asList(hardware)); }
+    public void addHardware(HardwareComponent... hardware){
+        this.hardwareComponents.addAll(Arrays.asList(hardware));
+        Arrays.stream(hardware).forEach(hardwareComponent -> getLogger().log(Level.INFO, "Added Hardware Component", hardwareComponent.toString()));
+    }
 
     /** @return Controller 1 */
     public Controller ctrl1() { return controller1; }
@@ -147,6 +154,21 @@ public class Robot {
         return uuid;
     }
 
+    /**
+     * Adds a running thread to remember
+     * @param t The thread to remember
+     * @param autoStart Starts the thread passed in
+     * @param endRunnable A runnable to run when the thread is stopped. The ending runnable should not add threads with ending runnables.
+     * @return The ID of the thread for reference
+     */
+    public UUID addThread(Thread t, boolean autoStart, Runnable endRunnable){
+        UUID uuid = UUID.randomUUID();
+        runningThreads.put(uuid, t);
+        endingRunnables.put(uuid, endRunnable);
+        if(autoStart) t.start();
+        return uuid;
+    }
+
     /** Stops all running threads */
     public void stopAllThreads() {
         runningThreads.forEach((s, thread) -> {
@@ -154,6 +176,9 @@ public class Robot {
             catch (Exception ignored) {}
         });
         runningThreads.clear();
+        if(op.opModeIsActive())
+            endingRunnables.forEach((uuid, runnable) -> runnable.run());
+        endingRunnables.clear();
     }
 
     /**
