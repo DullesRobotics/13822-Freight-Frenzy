@@ -134,11 +134,15 @@ public class Robot {
 
     /**
      * Gets an IMU with the default ID "IMU"
+     * If there is no IMU with the default ID, it gets the first IMU in the ArrayList
      * @return the hardware component
      */
     @Nullable
     public IMU getIMU(){
-        return (IMU) hardwareComponents.stream().filter(hdw -> hdw instanceof IMU && hdw.getId().equals("IMU")).findFirst().orElse(null);
+        IMU imu = getIMU("IMU");
+        if(imu == null)
+            imu = (IMU) hardwareComponents.stream().filter(hdw -> hdw instanceof IMU).findFirst().orElse(null);
+        return imu;
     }
 
     /**

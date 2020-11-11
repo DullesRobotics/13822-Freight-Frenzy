@@ -109,7 +109,7 @@ public class StandardDriveTrain extends DriveTrain {
                         motor.getMotorConfiguration().inchesToCounts(inches)));
 
         double steer, leftSpeed, rightSpeed, target = imu.getYaw();
-        while(op.opModeIsActive() && isAnyMotorBusy()){
+        while(op.opModeIsActive() && isAnyDriveTrainMotorBusy()){
             steer = (inches < 0 ? -1 : 1) * pid.update(PID.PIDType.THREE_SIXTY_ANGLE, imu.getYaw(), target);
             leftSpeed = speed - steer;
             rightSpeed = speed + steer;
@@ -131,7 +131,7 @@ public class StandardDriveTrain extends DriveTrain {
 
         /* Correcting angle to make sure it stays in the same line */
         double angleDiff = IMU.distanceBetweenAngles(imu.getYaw(), target);
-        if(op.opModeIsActive() && Math.abs(angleDiff) > 1)
+        if(op.opModeIsActive() && Math.abs(angleDiff) > tolerance)
             autoTurnPID(angleDiff, tolerance, true);
     }
 
@@ -201,7 +201,7 @@ public class StandardDriveTrain extends DriveTrain {
         double power = inches < 0 ? -speed : speed;
         setUniformDrivePower(power);
 
-        while(op.opModeIsActive() && isAnyMotorBusy())
+        while(op.opModeIsActive() && isAnyDriveTrainMotorBusy())
             setUniformDrivePower(power);
 
         setUniformDrivePower(0);

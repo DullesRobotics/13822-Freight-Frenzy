@@ -83,7 +83,7 @@ public abstract class DriveTrain extends Robot {
     }
 
     /** @return If any drive train motor is moving */
-    public boolean isAnyMotorBusy(){
+    public boolean isAnyDriveTrainMotorBusy(){
         return getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().allMatch(motor -> motor.get().isBusy());
     }
 }

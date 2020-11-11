@@ -20,16 +20,20 @@ public class HardwareConfigurator {
      */
     public static void configureHardware(Robot r){
         MotorConfiguration motorConfiguration = new MotorConfiguration(MotorType.CORE_HEX_MOTOR, 3, true, true);
-        Motor parentMotorLeft = new Motor(r, ID_frontLeft, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true);
-        Motor parentMotorRight = new Motor(r, ID_frontRight, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true);
+        Motor motorFrontLeft = new Motor(r, ID_frontLeft, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, false),
+        motorFrontRight = new Motor(r, ID_frontRight, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true),
+        motorBackLeft = motorFrontLeft.clone(ID_backLeft),
+        motorBackRight = motorFrontRight.clone(ID_backRight);
+
+        //front left & back right are strafe opposite
+        motorFrontLeft.setStrafeOpposite(true);
+        motorBackRight.setStrafeOpposite(true);
 
         r.addHardware(
-                parentMotorLeft, //left front motor
-                parentMotorRight, //right front motor
-                parentMotorLeft.clone(ID_backLeft), //left back motor
-                parentMotorRight.clone(ID_backRight)); //right back motor
-
-        r.addHardware(
+                motorFrontLeft, //left front motor
+                motorFrontRight, //right front motor
+                motorBackLeft, //left back motor
+                motorBackRight, //right back motor
                 new Servo(r, "CL", HardwareComponentArea.CLAW),
                 new Servo(r, "IN", HardwareComponentArea.INTAKE),
                 new TouchSensor(r, "TC", HardwareComponentArea.CLAW),

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
+import org.firstinspires.ftc.teamcode.OpModes.HardwareConfigurator;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
 import java.util.logging.Level;
@@ -16,6 +17,7 @@ public class Motor extends HardwareComponent {
 
     private boolean isOpposite;
     private MotorConfiguration motorConfiguration;
+    private boolean isStrafeOpposite = false;
 
     /**
      * @param r The op mode this motor is registered in
@@ -89,7 +91,9 @@ public class Motor extends HardwareComponent {
      * @return The new motor with the same traits
      */
     public Motor clone(String newID){
-        return new Motor(r, newID, getComponentArea(), motorConfiguration, isOpposite);
+        Motor newM = new Motor(r, newID, getComponentArea(), motorConfiguration, isOpposite);
+        newM.setStrafeOpposite(isStrafeOpposite);
+        return newM;
     }
 
     /**
@@ -99,6 +103,30 @@ public class Motor extends HardwareComponent {
         DcMotor.RunMode _tempM = get().getMode();
         get().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         get().setMode(_tempM);
+    }
+
+    /**
+     * Initiates this motor as a mechanum motor
+     * @param isOpposite If this motor is a Mechanum opposite
+     */
+    public void setStrafeOpposite(boolean isOpposite){
+        this.isStrafeOpposite = isOpposite;
+    }
+
+    /**
+     * Returns if this motor is mechanum, if it is or is not opposite. <br/>
+     * <strong>Opposite if front right or back left.</strong><br/>
+     * @return If this motor is or is not opposite regarding mechanum movement.
+     */
+    public boolean isStrafeOpposite(){
+        return motorConfiguration.canStrafe() && isStrafeOpposite;
+    }
+
+    /** @return The textual representation of this motor */
+    @Override
+    public String toString(){
+        return "ID: " + getId() +  ", Component Area: " +  getComponentArea() +
+                ", isOpposite: " + isOpposite() + ", isStrafeOpposite(FR,BL): " + isStrafeOpposite() + ", ";
     }
 
 }
