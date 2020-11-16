@@ -106,7 +106,7 @@ public class StandardDriveTrain extends DriveTrain {
 
         getMotors(HardwareComponentArea.DRIVE_TRAIN).forEach(motor ->
                 motor.get().setTargetPosition(motor.get().getCurrentPosition() +
-                        motor.getMotorConfiguration().inchesToCounts(inches)));
+                        motor.getConfiguration().inchesToCounts(inches)));
 
         double steer, leftSpeed, rightSpeed, target = imu.getYaw();
         while(op.opModeIsActive() && isAnyDriveTrainMotorBusy()){
@@ -196,7 +196,7 @@ public class StandardDriveTrain extends DriveTrain {
         getMotors(HardwareComponentArea.DRIVE_TRAIN).forEach(motor ->
                 motor.get().setTargetPosition(motor.get().getCurrentPosition() +
                         ((motor.isOpposite() && turnRight) || (!motor.isOpposite() && !turnRight) || !turn ? 1 : -1 ) *
-                                (motor.getMotorConfiguration().inchesToCounts(inches))));
+                                (motor.getConfiguration().inchesToCounts(inches))));
 
         double power = inches < 0 ? -speed : speed;
         setUniformDrivePower(power);

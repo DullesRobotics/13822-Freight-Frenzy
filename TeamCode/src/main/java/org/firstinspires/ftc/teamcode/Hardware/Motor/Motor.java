@@ -83,7 +83,7 @@ public class Motor extends HardwareComponent {
         return isOpposite;
     }
 
-    public MotorConfiguration getMotorConfiguration(){ return motorConfiguration; }
+    public MotorConfiguration getConfiguration(){ return motorConfiguration; }
 
     /**
      * clones the same motor with a different ID

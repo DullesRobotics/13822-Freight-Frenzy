@@ -69,17 +69,17 @@ public abstract class DriveTrain extends Robot {
 
     /** Makes all motors run with encoders */
     public void setAllRunWithEncoder(){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().filter(m -> m.getMotorConfiguration().isEncoded()).forEach(m -> m.get().setMode(DcMotor.RunMode.RUN_USING_ENCODER));
+        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().filter(m -> m.getConfiguration().isEncoded()).forEach(m -> m.get().setMode(DcMotor.RunMode.RUN_USING_ENCODER));
     }
 
     /** Makes motors run without encoders */
     public void setAllRunWithoutEncoder(){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().filter(m -> m.getMotorConfiguration().isEncoded()).forEach(m -> m.get().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER));
+        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().filter(m -> m.getConfiguration().isEncoded()).forEach(m -> m.get().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER));
     }
 
     /** Makes all motors go into run_to_position mode */
     public void setAllRunToPosition(){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().filter(m -> m.getMotorConfiguration().isEncoded()).forEach(m -> m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION));
+        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().filter(m -> m.getConfiguration().isEncoded()).forEach(m -> m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION));
     }
 
     /** @return If any drive train motor is moving */

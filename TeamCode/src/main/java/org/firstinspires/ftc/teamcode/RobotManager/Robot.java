@@ -47,7 +47,7 @@ public class Robot {
         controller1 = new Controller(op.gamepad1);
         controller2 = new Controller(op.gamepad2);
         logger = new Logger(op);
-        if(hasRecorder) recorder = new RobotRecorder(op);
+        if(hasRecorder) recorder = new RobotRecorder(this, controller1, true);
         startLogger();
         HardwareConfigurator.configureHardware(this);
     }

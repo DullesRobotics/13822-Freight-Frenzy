@@ -57,14 +57,14 @@ public class MecanumDriveTrain extends StandardDriveTrain {
 
     /**
      * Has the robot strafe a distance w/o a PID
-     * @param distance How far to go in inches. Positive is left, Negative is right
+     * @param inches How far to go in inches. Positive is left, Negative is right
      */
-    public void autoStrafeEncoded(double distance){
+    public void autoStrafeEncoded(double inches){
         getLogger().log(Level.INFO, "Strafing with Encoders");
         resetAllEncoders();
         setAllRunToPosition();
 
-        double power = distance < 0 ? -speed : speed;
+        double power = inches < 0 ? -speed : speed;
 
         /*
          *       FRONT            BACK
@@ -76,7 +76,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
         getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().forEach(motor -> {
             /* if is front motor */
             boolean isFront = (motor.isOpposite() && motor.isStrafeOpposite()) || (!motor.isOpposite() && !motor.isStrafeOpposite());
-            motor.get().setTargetPosition(motor.get().getCurrentPosition() + (isFront ? -1 : 1) * motor.getMotorConfiguration().inchesToCounts(distance));
+            motor.get().setTargetPosition(motor.get().getCurrentPosition() + (isFront ? -1 : 1) * motor.getConfiguration().inchesToCounts(inches));
         });
 
         setUniformDrivePower(power);
@@ -95,7 +95,17 @@ public class MecanumDriveTrain extends StandardDriveTrain {
      * @param goLeft If the robot should go left or right
      */
     public void autoStrafeTimed(long millis, boolean goLeft){
-
+        getLogger().log(Level.INFO, "Strafing, Timed");
+        long time = System.currentTimeMillis() + millis;
+        double tempSpeed = speed;
+        while(op.opModeIsActive() && time > System.currentTimeMillis()){
+            if(goLeft) tempSpeed *= -1;
+            setMechanumPower4D(speed, -speed, speed, -speed);
+            getLogger().putData("Speed (FL, BL, FR, BR)", "(" + speed + ", " + -speed + ", " + -speed + ", " + speed + ")");
+        }
+        setUniformDrivePower(0);
+        getLogger().clearData();
+        getLogger().log(Level.INFO, "Finished Strafing, Timed");
     }
 
     /**
@@ -106,16 +116,42 @@ public class MecanumDriveTrain extends StandardDriveTrain {
      * @param tolerance How far apart (angle in degrees) it's okay to be off from straight
      */
     public void autoStrafeTimedPID(long millis, boolean goLeft, PID pid, double tolerance){
+        getLogger().log(Level.INFO, "Strafing with a PID, Timed");
+        IMU imu = getIMU();
+        if(!imu.isRunning()) imu.startIMU();
 
+        long time = System.currentTimeMillis() + millis;
+        double steer, leftSpeed, rightSpeed, target = imu.getYaw();
+
+        while(op.opModeIsActive() && time > System.currentTimeMillis()){
+            steer = (goLeft ? 1 : -1) * pid.update(PID.PIDType.THREE_SIXTY_ANGLE, imu.getYaw(), target);
+            leftSpeed = speed - steer;
+            rightSpeed = speed + steer;
+
+            setMechanumPower4D(leftSpeed, -leftSpeed, rightSpeed, -rightSpeed);
+
+            getLogger().putData("Steer", steer);
+            getLogger().putData("Speed (FL, BL, FR, BR)", "(" + leftSpeed + ", " + -leftSpeed + ", " + -rightSpeed + ", " + rightSpeed + ")");
+        }
+        getLogger().log(Level.INFO, "Angle to turn", target - imu.getYaw());
+        setUniformDrivePower(0);
+        setAllRunWithEncoder();
+        getLogger().clearData();
+        getLogger().log(Level.INFO, "Finished Strafing w/ PID, Timed");
+
+        /* Correcting angle to make sure it stays in the same line */
+        double angleDiff = IMU.distanceBetweenAngles(imu.getYaw(), target);
+        if(op.opModeIsActive() && Math.abs(angleDiff) > tolerance)
+            autoTurnPID(angleDiff, tolerance, true);
     }
 
     /**
      * Has the robot strafe a set distance using a PID
-     * @param distance How far to go in inches. Positive is left, Negative is right
+     * @param inches How far to go in inches. Positive is left, Negative is right
      * @param pid The PID to use
      * @param tolerance How far apart (angle in degrees) it's okay to be off from straight
      */
-    public void autoStrafeEncodedPID(double distance, PID pid, double tolerance){
+    public void autoStrafeEncodedPID(double inches, PID pid, double tolerance){
         getLogger().log(Level.INFO, "Strafing with a PID and Encoders");
         IMU imu = getIMU();
         if(!imu.isRunning()) imu.startIMU();
@@ -124,12 +160,12 @@ public class MecanumDriveTrain extends StandardDriveTrain {
 
         /* Loops through every motor and sets the position for it to go to. If it's strafe opposite (front right, back left), it subtracts the ticks. Otherwise it adds them. */
         getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().forEach(motor ->
-                motor.get().setTargetPosition(motor.get().getCurrentPosition() + (motor.isStrafeOpposite() ? -1 : 1) * motor.getMotorConfiguration().inchesToCounts(distance)));
+                motor.get().setTargetPosition(motor.get().getCurrentPosition() + (motor.isStrafeOpposite() ? -1 : 1) * motor.getConfiguration().inchesToCounts(inches)));
 
         double steer, leftSpeed, rightSpeed, target = imu.getYaw();
 
         while(op.opModeIsActive() && isAnyDriveTrainMotorBusy()){
-            steer = (distance < 0 ? -1 : 1) * pid.update(PID.PIDType.THREE_SIXTY_ANGLE, imu.getYaw(), target);
+            steer = (inches < 0 ? -1 : 1) * pid.update(PID.PIDType.THREE_SIXTY_ANGLE, imu.getYaw(), target);
             leftSpeed = speed - steer;
             rightSpeed = speed + steer;
 
@@ -144,11 +180,10 @@ public class MecanumDriveTrain extends StandardDriveTrain {
             getLogger().putData("Speed (FL, BL, FR, BR)", "(" + leftSpeed + ", " + -leftSpeed + ", " + -rightSpeed + ", " + rightSpeed + ")");
         }
         getLogger().log(Level.INFO, "Angle to turn", target - imu.getYaw());
-        op.sleep(400L);
         setUniformDrivePower(0);
         setAllRunWithEncoder();
         getLogger().clearData();
-        getLogger().log(Level.INFO, "Finished Driving Forward");
+        getLogger().log(Level.INFO, "Finished Strafing, w/ PID, Encoded");
 
         /* Correcting angle to make sure it stays in the same line */
         double angleDiff = IMU.distanceBetweenAngles(imu.getYaw(), target);
@@ -179,15 +214,14 @@ public class MecanumDriveTrain extends StandardDriveTrain {
     }
 
     /**
-     * Sets power for the front and right motor
-     * @param frontPower The front motors
-     * @param backPower The back motors
+     * Sets power for the front and back motors
+     * @param frontPower The front motor power
+     * @param backPower The back motor power
      */
     private void setMechanumPowerFB(double frontPower, double backPower){
         getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().forEach(motor -> {
             boolean isFront = (motor.isOpposite() && motor.isStrafeOpposite()) || (!motor.isOpposite() && !motor.isStrafeOpposite());
-            if(isFront) motor.get().setPower(frontPower);
-            else motor.get().setPower(backPower);
+            motor.get().setPower(isFront ? frontPower : backPower);
         });
     }
 

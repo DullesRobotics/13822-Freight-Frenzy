@@ -18,10 +18,10 @@ public class TeleOpMode extends LinearOpMode {
         waitForStart();
 
         robot.getLogger().usesDynamicData(true);
-        robot.getLogger().setDynamicDataHeader("Robot Variables", false);
+        robot.getLogger().setDynamicDataHeader("Robot Variables");
 
         robot.driveWithController(robot.ctrl1());
-        robot.autoStrafeEncodedPID(5, new PID(0,0,0));
+        robot.autoStrafeEncodedPID(5, new PID(0,0,0), 1);
 
         while (opModeIsActive())
         robot.stopAllThreads();

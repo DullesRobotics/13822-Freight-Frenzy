@@ -58,10 +58,19 @@ public class Logger {
     /**
      * The dynamic data header to show above the dynamic data
      * @param dynamicDataHeader The data header
+     * @param log Whether or not to log in the Log File that this has updated
      */
     public void setDynamicDataHeader(String dynamicDataHeader, boolean log){
         this.dynamicDataHeader = dynamicDataHeader;
         if(log) updateFileLog(Level.INFO,  "Dynamic Data Header Set: " + dynamicDataHeader);
+    }
+
+    /**
+     * The dynamic data header to show above the dynamic data
+     * @param dynamicDataHeader The data header
+     */
+    public void setDynamicDataHeader(String dynamicDataHeader){
+        this.dynamicDataHeader = dynamicDataHeader;
     }
 
     /**
