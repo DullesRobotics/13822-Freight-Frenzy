@@ -47,7 +47,7 @@ public class Robot {
         controller1 = new Controller(op.gamepad1);
         controller2 = new Controller(op.gamepad2);
         logger = new Logger(op);
-        if(hasRecorder) recorder = new RobotRecorder(this, controller1, true);
+        if(hasRecorder) recorder = new RobotRecorder(this, ctrl1(), ctrl2(), true);
         startLogger();
         HardwareConfigurator.configureHardware(this);
     }
@@ -60,9 +60,13 @@ public class Robot {
     }
 
     /** @return Controller 1 */
-    public Controller ctrl1() { return controller1; }
+    public Controller ctrl1() {
+        return controller1;
+    }
     /** @return Controller2 */
-    public Controller ctrl2() { return controller2; }
+    public Controller ctrl2() {
+        return controller2;
+    }
 
     /**
      * Returns the motor with the matching ID
@@ -205,4 +209,12 @@ public class Robot {
         }), true);
     }
 
+    /**
+     * Set if the controller should be locked
+     * @param autoMode What the controller lock state should be
+     */
+    public void setAutoMode(boolean autoMode) {
+        controller1.setAutoMode(autoMode);
+        controller2.setAutoMode(autoMode);
+    }
 }
