@@ -21,10 +21,9 @@ public class MecanumDriveTrain extends StandardDriveTrain {
     /**
      * Takes in super initiators
      * @param op The op mode this is used for
-     * @param hasRecorder If the recorder should be enabled
      */
-    public MecanumDriveTrain(LinearOpMode op, boolean hasRecorder) {
-        super(op, hasRecorder);
+    public MecanumDriveTrain(LinearOpMode op) {
+        super(op);
     }
 
     /**

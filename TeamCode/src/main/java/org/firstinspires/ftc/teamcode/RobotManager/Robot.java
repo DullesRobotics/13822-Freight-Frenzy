@@ -12,9 +12,12 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
+import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOn;
+import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOnHandler;
+import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOns;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.Libraries.Logger;
-import org.firstinspires.ftc.teamcode.Libraries.RobotRecorder;
+import org.firstinspires.ftc.teamcode.Libraries.AddOns.RobotRecorder;
 import org.firstinspires.ftc.teamcode.OpModes.HardwareConfigurator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,15 +42,15 @@ public class Robot {
     private volatile HashMap<UUID, Thread> runningThreads = new HashMap<>();
     private volatile HashMap<UUID, Runnable> endingRunnables = new HashMap<>();
 
+    private volatile AddOnHandler addOnHandler;
     private volatile Logger logger;
-    private volatile RobotRecorder recorder;
 
-    protected Robot(LinearOpMode op, boolean hasRecorder){
+    protected Robot(LinearOpMode op){
         this.op = op;
         controller1 = new Controller(op.gamepad1);
         controller2 = new Controller(op.gamepad2);
         logger = new Logger(op);
-        if(hasRecorder) recorder = new RobotRecorder(this, ctrl1(), ctrl2(), true);
+        addOnHandler = new AddOnHandler(this);
         startLogger();
         HardwareConfigurator.configureHardware(this);
     }
@@ -216,5 +219,13 @@ public class Robot {
     public void setAutoMode(boolean autoMode) {
         controller1.setAutoMode(autoMode);
         controller2.setAutoMode(autoMode);
+    }
+
+    /**
+     * Gets the central add-on handler.
+     * @return The Add-On Handler for this robot.
+     */
+    public AddOnHandler addOnManager(){
+        return addOnHandler;
     }
 }

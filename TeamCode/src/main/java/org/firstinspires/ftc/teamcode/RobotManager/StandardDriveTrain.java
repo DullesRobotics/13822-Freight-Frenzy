@@ -16,8 +16,8 @@ import java.util.logging.Level;
 @TargetApi(Build.VERSION_CODES.N)
 public class StandardDriveTrain extends DriveTrain {
 
-    public StandardDriveTrain(LinearOpMode op, boolean hasRecorder) {
-        super(op, hasRecorder);
+    public StandardDriveTrain(LinearOpMode op) {
+        super(op);
     }
 
     /**

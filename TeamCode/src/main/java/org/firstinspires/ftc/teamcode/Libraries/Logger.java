@@ -28,7 +28,7 @@ public class Logger {
 
     private volatile ArrayList<LogEntry> log = new ArrayList<>();
 
-    private volatile boolean dynamicDataEnabled = false;
+    private volatile boolean dynamicDataEnabled = true;
     private volatile String dynamicDataHeader = null;
     private volatile HashMap<String, String> dynamicData = new HashMap<>();
 
@@ -182,7 +182,7 @@ public class Logger {
                 op.telemetry.addData("[" + le.getLogLevel().getName() + "] " + (le.getDataClassification() == null ? "" : le.getDataClassification()), le.getData());
             }
             if (dynamicDataEnabled) {
-                if (dynamicDataHeader != null) op.telemetry.addLine(dynamicDataHeader);
+                if (dynamicDataHeader != null && dynamicData.size() > 0) op.telemetry.addLine(dynamicDataHeader);
                 for (String s : dynamicData.keySet())
                     op.telemetry.addData(s, dynamicData.get(s));
             }

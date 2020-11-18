@@ -16,8 +16,8 @@ public abstract class DriveTrain extends Robot {
     protected volatile double speed = 0.8f;
     protected volatile double minimumPrecisionSpeed = 0.2f;
 
-    protected DriveTrain(LinearOpMode op, boolean hasRecorder) {
-        super(op, hasRecorder);
+    protected DriveTrain(LinearOpMode op) {
+        super(op);
     }
 
     /**

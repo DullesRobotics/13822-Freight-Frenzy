@@ -12,7 +12,7 @@ public class AutonMode extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new MecanumDriveTrain(this, true);
+        robot = new MecanumDriveTrain(this);
         waitForStart();
 
         robot.getLogger().usesDynamicData(true);

@@ -1,14 +1,12 @@
-package org.firstinspires.ftc.teamcode.Libraries;
+package org.firstinspires.ftc.teamcode.Libraries.AddOns;
 
 import android.os.SystemClock;
-import android.view.KeyEvent;
 
 import com.qualcomm.robotcore.exception.RobotCoreException;
 
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -17,39 +15,39 @@ import java.util.logging.Level;
 /**
  * Records controller inputs and plays them back
  */
-public class RobotRecorder {
+public class RobotRecorder implements AddOn {
 
-    private volatile RecordingState state = RecordingState.NOTHING;
     private Robot r;
-    private Controller masterController;
-    private Controller secondaryController;
+    private volatile RecordingState state = RecordingState.NOTHING;
+    private volatile Controller masterController;
+    private volatile Controller secondaryController;
     private long timeSinceLastResetPress = 0;
 
-    private UUID playBackThreadUUID;
-    private UUID recordingThreadUUID;
+    private volatile UUID playBackThreadUUID;
+    private volatile UUID recordingThreadUUID;
 
+    /*TODO should I use volatile for these tree maps? I probably should have it cached, though
+     * I'm sacrificing it being more thread-safe */
     private TreeMap<Long, byte[]> actions1 = new TreeMap<>();
     private TreeMap<Long, byte[]> actions2 = new TreeMap<>();
-    private long lastUpdated1 = 0, lastUpdated2 = 0;
+    private volatile long lastUpdated1 = 0, lastUpdated2 = 0;
 
     /**
      * Initializes and possibly starts this robot recorder.
      * @param r The robot to record
-     * @param masterController The controller to listen to for control inputs
-     * @param start If the robot recorder should start on initialization
      */
-    public RobotRecorder (Robot r, Controller masterController, Controller secondaryController, boolean start) {
+    RobotRecorder (Robot r) {
         this.r = r;
-        this.masterController = masterController;
-        this.secondaryController = secondaryController;
-        if(start) collectStates();
+        this.masterController = r.ctrl1();
+        this.secondaryController = r.ctrl2();
     }
 
     /**
      * Collects button presses to alter the robot recorder state. </br>
      * Does NOT record button presses
      */
-    public void collectStates(){
+    @Override
+    public void start(){
         r.addThread(new Thread(() -> {
             while(r.op.opModeIsActive()) {
                 if (masterController.asStandard().buttonUp()) startRecording();
@@ -73,7 +71,7 @@ public class RobotRecorder {
      * A controller state is stored in a byte map that can be later decoded in a specially
      * made method in the {@link org.firstinspires.ftc.teamcode.Hardware.Controller} class.
      */
-    public void startRecording(){
+    private void startRecording(){
         if(changeState(RecordingState.RECORDING)) {
             recordingThreadUUID = r.addThread(new Thread(() -> {
                 long startTime = SystemClock.uptimeMillis();
@@ -98,7 +96,7 @@ public class RobotRecorder {
     }
 
     /** Resets the stored recording data. */
-    public void resetRecording(){
+    private void resetRecording(){
         stop();
         actions1.clear();
         actions2.clear();
@@ -110,7 +108,7 @@ public class RobotRecorder {
      * Controller object accordingly. It does this at the right time as well.
      */
     @SuppressWarnings("uncheckedcast")
-    public void beginPlayback(){
+    private void beginPlayback(){
         if(actions1.isEmpty() && actions2.isEmpty()) return;
         r.setAutoMode(true);
         if(changeState(RecordingState.PLAYBACK)) {
@@ -142,6 +140,7 @@ public class RobotRecorder {
     }
 
     /** Stops both the recorder and playback. */
+    @Override
     public void stop(){
         changeState(RecordingState.NOTHING);
     }
@@ -164,7 +163,7 @@ public class RobotRecorder {
         return true;
     }
 
-    enum RecordingState {
+    private enum RecordingState {
         RECORDING,
         PLAYBACK,
         NOTHING
