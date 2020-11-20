@@ -6,7 +6,7 @@ public class OpenCV implements AddOn {
 
     private Robot r;
 
-    OpenCV(Robot r) {
+    OpenCV(Robot r, Object... parameters) {
         this.r = r;
     }
 

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOns;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
@@ -16,10 +17,13 @@ public class TeleOpMode extends LinearOpMode {
     public void runOpMode() throws InterruptedException
     {
         robot = new MecanumDriveTrain(this);
+        robot.addOnManager().initAddOn(AddOns.VUFORIA, false, VuforiaLocalizer.CameraDirection.BACK, false);
+        robot.getLogger().setDynamicDataHeader("Robot Variables");
+
         waitForStart();
 
-        robot.getLogger().setDynamicDataHeader("Robot Variables");
         robot.addOnManager().initAddOn(AddOns.ROBOT_RECORDER, true);
+        robot.addOnManager().getAddOn(AddOns.VUFORIA).start();
 
         robot.driveWithController(robot.ctrl1());
         robot.autoStrafeEncodedPID(5, new PID(0,0,0), 1);

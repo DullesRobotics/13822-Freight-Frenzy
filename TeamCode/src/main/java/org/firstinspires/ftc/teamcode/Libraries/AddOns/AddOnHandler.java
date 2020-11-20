@@ -18,12 +18,12 @@ public class AddOnHandler {
      * @param addon The add-on type to enable
      * @param start If the add-on should be started immediately
      */
-    public void initAddOn(@NotNull AddOns addon, boolean start){
+    public void initAddOn(@NotNull AddOns addon, boolean start, Object... parameters){
         AddOn ao;
         switch(addon){
             case ROBOT_RECORDER: ao = new RobotRecorder(r); break;
-            case VUFORIA: ao = new Vuforia(r); break;
-            case OPEN_CV: ao = new OpenCV(r);
+            case VUFORIA: ao = new Vuforia(r, parameters); break;
+            case OPEN_CV: ao = new OpenCV(r, parameters);
             default: return;
         }
         if(start) ao.start();
