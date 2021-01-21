@@ -51,6 +51,7 @@ public class Vuforia implements AddOn {
         int cameraMonitorViewId = r.op.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", r.op.hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters Vparameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         Vparameters.cameraDirection = cameraDirection;
+        Vparameters.vuforiaLicenseKey = licenseKey;
         this.vuforia = ClassFactory.getInstance().createVuforia(Vparameters);
 
         /**
