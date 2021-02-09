@@ -11,5 +11,5 @@ public enum AddOns {
      */
     VUFORIA,
 
-    OPEN_CV
+    TENSORFLOW_LITE
 }

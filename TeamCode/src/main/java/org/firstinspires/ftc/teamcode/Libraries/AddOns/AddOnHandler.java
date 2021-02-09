@@ -23,7 +23,7 @@ public class AddOnHandler {
         switch(addon){
             case ROBOT_RECORDER: ao = new RobotRecorder(r); break;
             case VUFORIA: ao = new Vuforia(r, parameters); break;
-            case OPEN_CV: ao = new OpenCV(r, parameters);
+            case TENSORFLOW_LITE: ao = new TensorFlowLite(r); break;
             default: return;
         }
         if(start) ao.start();

@@ -44,7 +44,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
                 currentJoystickSpeed = c.rightBumper() ? staticPrecisionSpeed : speed;
 
                 double originalPower = (-c.rightY() + c.leftTrigger() - c.rightTrigger()) * currentJoystickSpeed,
-                oppositePower = (-c.leftY() - c.leftTrigger() + c.rightTrigger()) * currentJoystickSpeed;
+                        oppositePower = (-c.leftY() - c.leftTrigger() + c.rightTrigger()) * currentJoystickSpeed;
 
                 getLogger().putData("Front Power (FLM, FRM)", originalPower + " " + oppositePower);
                 getLogger().putData("Back Power (BLM, BRM)", oppositePower + " " + originalPower);
