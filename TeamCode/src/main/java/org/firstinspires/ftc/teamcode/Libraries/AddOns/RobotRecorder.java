@@ -15,13 +15,13 @@ import java.util.logging.Level;
 /**
  * Records controller inputs and plays them back
  */
-public class RobotRecorder implements AddOn {
+public class RobotRecorder extends AddOn {
 
     private Robot r;
     private volatile RecordingState state = RecordingState.NOTHING;
     private volatile Controller masterController;
     private volatile Controller secondaryController;
-    private long timeSinceLastResetPress = 0;
+    private volatile long timeSinceLastResetPress = 0;
 
     private volatile UUID playBackThreadUUID;
     private volatile UUID recordingThreadUUID;
@@ -34,12 +34,16 @@ public class RobotRecorder implements AddOn {
 
     /**
      * Initializes and possibly starts this robot recorder.
-     * @param r The robot to record
      */
-    RobotRecorder (Robot r) {
-        this.r = r;
+    public RobotRecorder () {
+        super(AddOnType.ROBOT_RECORDER);
         this.masterController = r.ctrl1();
         this.secondaryController = r.ctrl2();
+    }
+
+    @Override
+    protected void initAO(Robot r) {
+        this.r = r;
     }
 
     /**
@@ -47,7 +51,7 @@ public class RobotRecorder implements AddOn {
      * Does NOT record button presses
      */
     @Override
-    public void start(){
+    protected void startAO(){
         r.addThread(new Thread(() -> {
             while(r.op.opModeIsActive()) {
                 if (masterController.asStandard().buttonUp()) startRecording();
@@ -141,7 +145,7 @@ public class RobotRecorder implements AddOn {
 
     /** Stops both the recorder and playback. */
     @Override
-    public void stop(){
+    protected void stopAO(){
         changeState(RecordingState.NOTHING);
     }
 

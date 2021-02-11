@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
 import java.util.UUID;
 
-public class Vuforia implements AddOn {
+public class Vuforia extends AddOn {
 
     private Robot r;
     private VuforiaLocalizer vuforia;
@@ -25,8 +25,8 @@ public class Vuforia implements AddOn {
     private VuforiaTrackable relicTemplate;
     private UUID vuforiaThreadID;
 
-    private VuforiaLocalizer.CameraDirection cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-    private boolean phoneIsPortrait = false;
+    private VuforiaLocalizer.CameraDirection cameraDirection;
+    private volatile boolean phoneIsPortrait;
     private final static String licenseKey = "AdtCIzH/////AAAAGVkbDFcppkWGkqpLjdBEavWJ2uW/CgCrc" +
             "Md74zFJYJgq1RfL+bjzIAzhefr6rvFBhvoSqYKp8FeNeJgnwNsnJ7qj/XTve5QijLoCzjf/qjXJ0N5wfzLY" +
             "45ycBm0X7awOau1NcBOrU2/XvQWmawD79QDnHWRlBivh84Qx72CdTHWRA/BoJhXMugJIMolVxQ7kcfJwL6S" +
@@ -34,19 +34,18 @@ public class Vuforia implements AddOn {
             "ikSnhQRRyEK6vd93Npntt6p5+XoQ9P7kMx2ERvWVZJIljE6+OsrQgT7S7twchFljtlP4Ou5lRFKbb8gLZO";
 
     /**
-     * Optional Parameters:<br>
-     * 0 - {@link org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection CameraDirection} - FRONT or BACK <br>
-     * 1 - Phone Orientation - True for Horizontal, False for Vertical.
+     * @param cameraDirection The direction of the camera (front or back
+     * @param phoneIsPortrait If the phone is portrait
      */
-    Vuforia (Robot r, Object... parameters) {
-        this.r = r;
+    public Vuforia (VuforiaLocalizer.CameraDirection cameraDirection, boolean phoneIsPortrait) {
+        super(AddOnType.VUFORIA);
+        this.cameraDirection = cameraDirection;
+        this.phoneIsPortrait = phoneIsPortrait;
+    }
 
-        /* Paramater Init */
-        for(int i = 0; i < parameters.length; i++)
-            switch(i){
-                case 0: cameraDirection = (VuforiaLocalizer.CameraDirection) parameters[i];
-                case 1: phoneIsPortrait = (boolean) parameters[i];
-            }
+    @Override
+    protected void initAO(Robot r) {
+        this.r = r;
 
         int cameraMonitorViewId = r.op.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", r.op.hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters Vparameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -66,7 +65,7 @@ public class Vuforia implements AddOn {
     }
 
     @Override
-    public void start() {
+    protected void startAO() {
         relicTrackables.activate();
         vuforiaThreadID = r.addThread(new Thread(() -> {
             /**
@@ -110,7 +109,7 @@ public class Vuforia implements AddOn {
     }
 
     @Override
-    public void stop() {
+    protected void stopAO() {
         if(vuforiaThreadID != null && r.getThread(vuforiaThreadID) != null)
             r.getThread(vuforiaThreadID);
         relicTrackables.deactivate();

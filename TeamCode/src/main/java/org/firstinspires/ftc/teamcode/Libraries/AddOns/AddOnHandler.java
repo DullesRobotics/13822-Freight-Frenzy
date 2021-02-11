@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.Libraries.AddOns;
 
+import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOn;
+import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOnType;
+import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
+import org.firstinspires.ftc.teamcode.Libraries.AddOns.RobotRecorder;
+import org.firstinspires.ftc.teamcode.Libraries.AddOns.Vuforia;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -8,26 +13,39 @@ import java.util.HashMap;
 
 public class AddOnHandler {
 
-    private HashMap<AddOns, AddOn> addOns = new HashMap<>();
+    private HashMap<AddOnType, AddOn> addOns = new HashMap<>();
     private Robot r;
 
     public AddOnHandler (Robot r){ this.r = r; }
 
     /**
-     * Initializes and starts an add-on for this robot.
-     * @param addon The add-on type to enable
-     * @param start If the add-on should be started immediately
+     * Initializes the add-on
+     * @param ao
      */
-    public void initAddOn(@NotNull AddOns addon, boolean start, Object... parameters){
-        AddOn ao;
-        switch(addon){
-            case ROBOT_RECORDER: ao = new RobotRecorder(r); break;
-            case VUFORIA: ao = new Vuforia(r, parameters); break;
-            case TENSORFLOW_LITE: ao = new TensorFlowLite(r); break;
-            default: return;
-        }
-        if(start) ao.start();
-        addOns.put(addon, ao);
+    public void initAddOn(@NotNull AddOn ao){
+        if(addOns.containsKey(ao.getType()))
+            addOns.get(ao.getType()).stop();
+        addOns.put(ao.getType(), ao);
+    }
+
+    /**
+     * Starts the add-on with that type
+     * @param addonType The type of add-on to start
+     * @return If successful
+     */
+    public boolean startAddOn(@NotNull AddOnType addonType){
+        if(addOns.containsKey(addonType))
+            addOns.get(addonType).start();
+        return addOns.containsKey(addonType);
+    }
+
+    /**
+     * Stops the add-on with that type
+     * @param addonType The type of add-on to stop
+     */
+    public void stopAddOn(@NotNull AddOnType addonType){
+        if(addOns.containsKey(addonType))
+            addOns.get(addonType).stop();
     }
 
     /**
@@ -36,7 +54,7 @@ public class AddOnHandler {
      * @return The add-on if it exists, otherwise null
      */
     @Nullable
-    public AddOn getAddOn(@NotNull AddOns addon){
+    public AddOn getAddOn(@NotNull AddOnType addon){
         return addOns.containsKey(addon) ? addOns.get(addon) : null;
     }
 
@@ -44,7 +62,7 @@ public class AddOnHandler {
      * Deletes an add-on from this robot.
      * @param addon The add-on type to delete
      */
-    public void deleteAddOn(@NotNull AddOns addon){
+    public void deleteAddOn(@NotNull AddOnType addon){
         if(addOns.containsKey(addon))
             addOns.get(addon).stop();
         addOns.remove(addon);
