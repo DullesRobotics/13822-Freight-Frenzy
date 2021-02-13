@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.TestRobot.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOnType;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines.UltimateGoalPipeline;
@@ -19,7 +20,7 @@ public class TeleOpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException
     {
-        robot = new MecanumDriveTrain(this, HardwareConfigurator.getHardware(robot));
+        robot = new MecanumDriveTrain(this, /*HardwareConfigurator.getHardware(robot)*/ new HardwareComponent[]{});
 
         UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
 
@@ -32,7 +33,7 @@ public class TeleOpMode extends LinearOpMode {
         robot.addOnManager().startAddOn(AddOnType.EASY_OPEN_CV);
         //robot.addOnManager().startAddOn(AddOnType.ROBOT_RECORDER);
 
-        pipeline.getAmount(); //amount of rings
+        // pipeline.getAmount(); //amount of rings
 
         //robot.driveWithController(robot.ctrl1());
 
