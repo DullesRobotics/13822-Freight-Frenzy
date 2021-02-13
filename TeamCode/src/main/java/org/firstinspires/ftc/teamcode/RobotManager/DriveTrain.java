@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
+import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 
@@ -16,8 +17,8 @@ public abstract class DriveTrain extends Robot {
     protected volatile double speed = 0.8f;
     protected volatile double minimumPrecisionSpeed = 0.2f;
 
-    protected DriveTrain(LinearOpMode op) {
-        super(op);
+    protected DriveTrain(LinearOpMode op, HardwareComponent[] hardwareComponents) {
+        super(op, hardwareComponents);
     }
 
     /**

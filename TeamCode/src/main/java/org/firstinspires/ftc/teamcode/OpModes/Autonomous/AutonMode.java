@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
         import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
         import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+        import org.firstinspires.ftc.teamcode.OpModes.HardwareConfigurator;
         import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 
 @Autonomous
@@ -12,7 +13,7 @@ public class AutonMode extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new MecanumDriveTrain(this);
+        robot = new MecanumDriveTrain(this, HardwareConfigurator.getHardware(robot));
         waitForStart();
 
         robot.getLogger().usesDynamicData(true);

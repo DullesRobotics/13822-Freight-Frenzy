@@ -6,6 +6,7 @@ import android.os.Build;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
+import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
@@ -16,8 +17,8 @@ import java.util.logging.Level;
 @TargetApi(Build.VERSION_CODES.N)
 public class StandardDriveTrain extends DriveTrain {
 
-    public StandardDriveTrain(LinearOpMode op) {
-        super(op);
+    public StandardDriveTrain(LinearOpMode op, HardwareComponent[] hardwareComponents) {
+        super(op, hardwareComponents);
     }
 
     /**

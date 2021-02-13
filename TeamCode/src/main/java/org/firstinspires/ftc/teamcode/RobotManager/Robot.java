@@ -15,7 +15,6 @@ import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOnHandler;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.Libraries.Logger;
-import org.firstinspires.ftc.teamcode.OpModes.HardwareConfigurator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,14 +41,14 @@ public class Robot {
     private volatile AddOnHandler addOnHandler;
     private volatile Logger logger;
 
-    protected Robot(LinearOpMode op){
+    protected Robot(LinearOpMode op, HardwareComponent[] hardwareComponents){
         this.op = op;
         controller1 = new Controller(op.gamepad1);
         controller2 = new Controller(op.gamepad2);
         logger = new Logger(op);
         addOnHandler = new AddOnHandler(this);
         startLogger();
-        HardwareConfigurator.configureHardware(this);
+        addHardware(hardwareComponents);
     }
 
     /** Add hardware to the robot array

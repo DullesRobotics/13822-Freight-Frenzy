@@ -6,6 +6,7 @@ import android.os.Build;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
+import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
@@ -22,8 +23,8 @@ public class MecanumDriveTrain extends StandardDriveTrain {
      * Takes in super initiators
      * @param op The op mode this is used for
      */
-    public MecanumDriveTrain(LinearOpMode op) {
-        super(op);
+    public MecanumDriveTrain(LinearOpMode op, HardwareComponent[] hardwareComponents) {
+        super(op, hardwareComponents);
     }
 
     /**

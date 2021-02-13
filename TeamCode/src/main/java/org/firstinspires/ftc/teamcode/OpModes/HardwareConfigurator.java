@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Hardware.ColorSensor;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
@@ -12,13 +13,12 @@ import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
 public class HardwareConfigurator {
 
-    public final static String ID_frontLeft = "FL", ID_frontRight = "FR", ID_backLeft = "BL", ID_backRight = "BR";
+    private final static String ID_frontLeft = "FL", ID_frontRight = "FR", ID_backLeft = "BL", ID_backRight = "BR";
 
     /**
-     * Add the hardware to the robot class
-     * @param r The robot this is configuring for
+     * @return The main hardware list for the robot
      */
-    public static void configureHardware(Robot r){
+    public static HardwareComponent[] getHardware(Robot r){
         MotorConfiguration motorConfiguration = new MotorConfiguration(MotorType.CORE_HEX_MOTOR, 3, true, true);
         Motor motorFrontLeft = new Motor(r, ID_frontLeft, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, false),
         motorFrontRight = new Motor(r, ID_frontRight, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true),
@@ -29,7 +29,7 @@ public class HardwareConfigurator {
         motorFrontLeft.setStrafeOpposite(true);
         motorBackRight.setStrafeOpposite(true);
 
-        r.addHardware(
+        return(new HardwareComponent[]{
                 motorFrontLeft, //left front motor
                 motorFrontRight, //right front motor
                 motorBackLeft, //left back motor
@@ -40,7 +40,7 @@ public class HardwareConfigurator {
                 new TouchSensor(r, "TI", HardwareComponentArea.INTAKE),
                 new ColorSensor(r, "CC", HardwareComponentArea.CLAW),
                 new ColorSensor(r, "CI", HardwareComponentArea.INTAKE),
-                new IMU(r, "IMU"));
+                new IMU(r, "IMU")});
     }
 
 }
