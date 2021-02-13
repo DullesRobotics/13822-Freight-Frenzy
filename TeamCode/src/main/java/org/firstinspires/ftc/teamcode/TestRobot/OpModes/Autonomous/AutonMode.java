@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
+package org.firstinspires.ftc.teamcode.TestRobot.OpModes.Autonomous;
 
         import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
         import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-        import org.firstinspires.ftc.teamcode.OpModes.HardwareConfigurator;
+        import org.firstinspires.ftc.teamcode.TestRobot.HardwareConfigurator;
         import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 
 @Autonomous

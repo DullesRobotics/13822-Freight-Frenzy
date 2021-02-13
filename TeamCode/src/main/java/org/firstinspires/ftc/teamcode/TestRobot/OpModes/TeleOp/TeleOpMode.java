@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
+package org.firstinspires.ftc.teamcode.TestRobot.OpModes.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOnType;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
-import org.firstinspires.ftc.teamcode.Libraries.AddOns.OpenCVPipelines.UltimateGoalPipeline;
-import org.firstinspires.ftc.teamcode.OpModes.HardwareConfigurator;
+import org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines.UltimateGoalPipeline;
+import org.firstinspires.ftc.teamcode.TestRobot.HardwareConfigurator;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
