@@ -30,7 +30,7 @@ public class StandardDriveTrain extends DriveTrain {
         getLogger().log(Level.INFO, "Beginning drive with controller, standard");
         addThread(new Thread(() -> {
             double currentSpeed;
-            while(op.opModeIsActive()){
+            while(op().opModeIsActive()){
                 /* linear equation to calculate speed based on right trigger's position */
                 currentSpeed = (speed - minimumPrecisionSpeed) * (c.rightTrigger() - 1) + speed;
                 for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)) /* uses regular for-each loop because lambdas require final variables, which is just asking for a heap issue */
@@ -48,7 +48,7 @@ public class StandardDriveTrain extends DriveTrain {
     public void autoDriveTimed(long millis, boolean turn, boolean turnRight){
         getLogger().log(Level.INFO, "Moving ( turning = " + turn + ", isRight = " + turnRight + ") for " + millis + " milliseconds.");
         long time = System.currentTimeMillis() + millis;
-        while(op.opModeIsActive() && time >= System.currentTimeMillis()) {
+        while(op().opModeIsActive() && time >= System.currentTimeMillis()) {
             getLogger().putData("Time Left", time - System.currentTimeMillis());
             setIndependentDrivePower(turn && !turnRight ? -speed : speed, turn && turnRight ? -speed : speed);
         }
@@ -71,7 +71,7 @@ public class StandardDriveTrain extends DriveTrain {
         resetAllEncoders();
 
         double steer, leftSpeed, rightSpeed, target = imu.getYaw();
-        while(op.opModeIsActive() && time >= System.currentTimeMillis()){
+        while(op().opModeIsActive() && time >= System.currentTimeMillis()){
             steer = (forward ? 1 : -1) * pid.update(PID.PIDType.THREE_SIXTY_ANGLE, imu.getYaw(), target);
             leftSpeed = speed - steer;
             rightSpeed = speed + steer;
@@ -81,14 +81,14 @@ public class StandardDriveTrain extends DriveTrain {
             getLogger().putData("Speed (L, R)", "(" + leftSpeed + ", " + rightSpeed + ")");
         }
         getLogger().log(Level.INFO, "Angle to turn: ", target - imu.getYaw());
-        op.sleep(400L);
+        op().sleep(400L);
         getLogger().clearData();
         setUniformDrivePower(0);
         getLogger().log(Level.INFO, "Finished Driving Forward");
 
         /* Correcting angle to make sure it stays in the same line */
         double angleDiff = IMU.distanceBetweenAngles(imu.getYaw(), target);
-        if(op.opModeIsActive() && Math.abs(angleDiff) > 1)
+        if(op().opModeIsActive() && Math.abs(angleDiff) > 1)
             autoTurnPID(angleDiff, tolerance, true);
     }
 
@@ -110,7 +110,7 @@ public class StandardDriveTrain extends DriveTrain {
                         motor.getConfiguration().inchesToCounts(inches)));
 
         double steer, leftSpeed, rightSpeed, target = imu.getYaw();
-        while(op.opModeIsActive() && isAnyDriveTrainMotorBusy()){
+        while(op().opModeIsActive() && isAnyDriveTrainMotorBusy()){
             steer = (inches < 0 ? -1 : 1) * pid.update(PID.PIDType.THREE_SIXTY_ANGLE, imu.getYaw(), target);
             leftSpeed = speed - steer;
             rightSpeed = speed + steer;
@@ -124,7 +124,7 @@ public class StandardDriveTrain extends DriveTrain {
             getLogger().putData("Speed (L, R)", "(" + leftSpeed + ", " + rightSpeed + ")");
         }
         getLogger().log(Level.INFO, "Angle to turn", target - imu.getYaw());
-        op.sleep(400L);
+        op().sleep(400L);
         setUniformDrivePower(0);
         setAllRunWithEncoder();
         getLogger().clearData();
@@ -132,7 +132,7 @@ public class StandardDriveTrain extends DriveTrain {
 
         /* Correcting angle to make sure it stays in the same line */
         double angleDiff = IMU.distanceBetweenAngles(imu.getYaw(), target);
-        if(op.opModeIsActive() && Math.abs(angleDiff) > tolerance)
+        if(op().opModeIsActive() && Math.abs(angleDiff) > tolerance)
             autoTurnPID(angleDiff, tolerance, true);
     }
 
@@ -140,7 +140,7 @@ public class StandardDriveTrain extends DriveTrain {
     /**
      * Turns robot a certain angle with the PID
      * @param angle The angle to move the robot
-     * @param tolerance Where the robot doesn't have to correct further
+     * @param tolerance The angle where the robot doesn't have to correct further
      * @param correction If this is a small correction, uses a smaller speed
      */
     public void autoTurnPID(double angle, double tolerance, boolean correction) {
@@ -157,7 +157,7 @@ public class StandardDriveTrain extends DriveTrain {
         double distanceToTarget = IMU.distanceBetweenAngles(startYaw, targetYaw);
 
         for (int i = 1; i <= 8; i++) {
-            while (op.opModeIsActive() && (distanceToTarget < tolerance) ^ (distanceToTarget > -tolerance)) {
+            while (op().opModeIsActive() && (distanceToTarget < tolerance) ^ (distanceToTarget > -tolerance)) {
                 distanceToTarget = IMU.distanceBetweenAngles(startYaw, targetYaw);
                 if (distanceToTarget < 0 + tolerance)
                     if (angle > 0)
@@ -179,7 +179,7 @@ public class StandardDriveTrain extends DriveTrain {
                 getLogger().putData("Angle", angle);
                 getLogger().putData("Iteration", i);
             }
-            op.sleep(200);
+            op().sleep(200);
         }
         getLogger().clearData();
         getLogger().log(Level.INFO, "PID Done Turning");
@@ -202,7 +202,7 @@ public class StandardDriveTrain extends DriveTrain {
         double power = inches < 0 ? -speed : speed;
         setUniformDrivePower(power);
 
-        while(op.opModeIsActive() && isAnyDriveTrainMotorBusy())
+        while(op().opModeIsActive() && isAnyDriveTrainMotorBusy())
             setUniformDrivePower(power);
 
         setUniformDrivePower(0);

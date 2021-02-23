@@ -13,11 +13,11 @@ public class ColorSensor extends HardwareComponent {
      */
     public ColorSensor(Robot r, String id, HardwareComponentArea componentArea) {
         super(r, id, componentArea);
-        try { setComponent(r.op.hardwareMap.colorSensor.get(id));
+        try { setComponent(r.op().hardwareMap.colorSensor.get(id));
         } catch (Exception e)
         {
             r.getLogger().logKeyed(Level.SEVERE, "Error Adding Color Sensor " + id, e.toString());
-            r.op.requestOpModeStop();
+            r.op().requestOpModeStop();
         }
     }
 

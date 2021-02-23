@@ -29,6 +29,17 @@ public class AddOnHandler {
     }
 
     /**
+     * Initializes and starts the add-on
+     * @param ao
+     */
+    public void initAndStartAddOn(@NotNull AddOn ao){
+        if(addOns.containsKey(ao.getType()))
+            addOns.get(ao.getType()).stop();
+        addOns.put(ao.getType(), ao);
+        addOns.get(ao.getType()).start();
+    }
+
+    /**
      * Starts the add-on with that type
      * @param addonType The type of add-on to start
      * @return If successful

@@ -7,6 +7,7 @@ public enum HardwareComponentArea {
     INTAKE,
     SHOOTER,
     CLAW,
-    IMU
+    IMU,
+    MISCELLANEOUS
 
 }

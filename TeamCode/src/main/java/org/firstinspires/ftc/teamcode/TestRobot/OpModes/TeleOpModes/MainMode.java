@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TestRobot.OpModes.TeleOp;
+package org.firstinspires.ftc.teamcode.TestRobot.OpModes.TeleOpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -6,14 +6,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOnType;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
+import org.firstinspires.ftc.teamcode.Libraries.AddOns.RobotRecorder;
+import org.firstinspires.ftc.teamcode.TestRobot.OpModes.Functions;
 import org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines.UltimateGoalPipeline;
-import org.firstinspires.ftc.teamcode.TestRobot.HardwareConfigurator;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
 @TeleOp
-public class TeleOpMode extends LinearOpMode {
+public class MainMode extends LinearOpMode {
 
     private MecanumDriveTrain robot;
 
@@ -22,20 +23,22 @@ public class TeleOpMode extends LinearOpMode {
     {
         robot = new MecanumDriveTrain(this, /*HardwareConfigurator.getHardware(robot)*/ new HardwareComponent[]{});
 
-        UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
-
-        robot.addOnManager().initAddOn(new EasyOpenCV(pipeline, OpenCvInternalCamera.CameraDirection.BACK, OpenCvCameraRotation.UPRIGHT));
-        //robot.addOnManager().initAddOn(new RobotRecorder());
         robot.getLogger().setDynamicDataHeader("Robot Variables");
+
+        /* Add-on initializing */
+        //UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
+        //robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, OpenCvInternalCamera.CameraDirection.BACK, OpenCvCameraRotation.UPRIGHT));
+        robot.addOnManager().initAddOn(new RobotRecorder());
 
         waitForStart();
 
-        robot.addOnManager().startAddOn(AddOnType.EASY_OPEN_CV);
-        //robot.addOnManager().startAddOn(AddOnType.ROBOT_RECORDER);
+        /* Add-on starting */
+        robot.addOnManager().startAddOn(AddOnType.ROBOT_RECORDER);
 
-        // pipeline.getAmount(); //amount of rings
-
-        //robot.driveWithController(robot.ctrl1());
+        /* Robot functions */
+        robot.driveWithController(robot.ctrl1());
+        Functions.startIntake(robot);
+        Functions.startShooter(robot);
 
         while (opModeIsActive())
         robot.stopAllThreads();

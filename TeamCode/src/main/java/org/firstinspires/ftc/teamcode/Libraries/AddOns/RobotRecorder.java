@@ -53,10 +53,10 @@ public class RobotRecorder extends AddOn {
     @Override
     protected void startAO(){
         r.addThread(new Thread(() -> {
-            while(r.op.opModeIsActive()) {
+            while(r.op().opModeIsActive()) {
                 if (masterController.asStandard().buttonUp()) startRecording();
                 if (masterController.asStandard().buttonLeft()) beginPlayback();
-                if (masterController.asStandard().buttonDown()) stop();
+                if (masterController.asStandard().buttonDown()) stopAO();
                 /*you must double press to reset*/
                 if (masterController.asStandard().buttonRight())
                     if (System.currentTimeMillis() - timeSinceLastResetPress > 800)
@@ -80,14 +80,14 @@ public class RobotRecorder extends AddOn {
             recordingThreadUUID = r.addThread(new Thread(() -> {
                 long startTime = SystemClock.uptimeMillis();
                 try {
-                    while(r.op.opModeIsActive()) {
-                        if (r.op.gamepad1.timestamp > lastUpdated1) {
-                            lastUpdated1 = r.op.gamepad1.timestamp - startTime;
-                            actions1.put(lastUpdated1, r.op.gamepad1.toByteArray());
+                    while(r.op().opModeIsActive()) {
+                        if (r.op().gamepad1.timestamp > lastUpdated1) {
+                            lastUpdated1 = r.op().gamepad1.timestamp - startTime;
+                            actions1.put(lastUpdated1, r.op().gamepad1.toByteArray());
                         }
-                        if (r.op.gamepad2.timestamp > lastUpdated2) {
-                            lastUpdated2 = r.op.gamepad2.timestamp - startTime;
-                            actions2.put(lastUpdated2, r.op.gamepad2.toByteArray());
+                        if (r.op().gamepad2.timestamp > lastUpdated2) {
+                            lastUpdated2 = r.op().gamepad2.timestamp - startTime;
+                            actions2.put(lastUpdated2, r.op().gamepad2.toByteArray());
                         }
                     }
                 } catch (RobotCoreException e) {
@@ -101,7 +101,7 @@ public class RobotRecorder extends AddOn {
 
     /** Resets the stored recording data. */
     private void resetRecording(){
-        stop();
+        stopAO();
         actions1.clear();
         actions2.clear();
     }
@@ -122,7 +122,7 @@ public class RobotRecorder extends AddOn {
                     Iterator<Long> timeStampIterator1 = actions1.keySet().iterator();
                     Iterator<Long> timeStampIterator2 = actions1.keySet().iterator();
                     long nextTimeStamp1 = timeStampIterator1.next(),  nextTimeStamp2 = timeStampIterator2.next();
-                    while(r.op.opModeIsActive()){
+                    while(r.op().opModeIsActive()){
                         if(nextTimeStamp1 != -999 && SystemClock.uptimeMillis() - startTime > nextTimeStamp1){
                             byte[] controllerMap = actions1.get(nextTimeStamp1);
                             nextTimeStamp1 = timeStampIterator1.hasNext() ? timeStampIterator1.next() : -999;
@@ -137,7 +137,7 @@ public class RobotRecorder extends AddOn {
                 } catch (RobotCoreException e) {
                     r.getLogger().log(Level.SEVERE, "There was an error playing back " +
                             "controller data. Playback has stopped.");
-                    stop();
+                    stopAO();
                 }
             }), true, () -> r.setAutoMode(false));
         }

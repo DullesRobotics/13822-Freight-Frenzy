@@ -32,10 +32,10 @@ public class IMU extends HardwareComponent {
      */
     public IMU(Robot r, String id) {
         super(r, id, HardwareComponentArea.IMU);
-        try { setComponent(r.op.hardwareMap.get(BNO055IMU.class, id));
+        try { setComponent(r.op().hardwareMap.get(BNO055IMU.class, id));
         } catch (Exception e) {
             r.getLogger().logKeyed(Level.SEVERE, "Error Adding IMU " + id, e.toString());
-            r.op.requestOpModeStop();
+            r.op().requestOpModeStop();
             return;
         }
 
@@ -64,7 +64,7 @@ public class IMU extends HardwareComponent {
         r.getLogger().putData("Yaw", "NUL");
         get().startAccelerationIntegration(new Position(), new Velocity(), updateIntervalMilliseconds);
         threadID = r.addThread(new Thread(() -> {
-            while(r.op.opModeIsActive()){
+            while(r.op().opModeIsActive()){
                 updateIMU();
                 r.getLogger().putData("Pitch", String.valueOf(getPitch()));
                 r.getLogger().putData("Roll", String.valueOf(getRoll()));

@@ -13,11 +13,11 @@ public class TouchSensor extends HardwareComponent {
      */
     public TouchSensor(Robot r, String id, HardwareComponentArea componentArea) {
         super(r, id, componentArea);
-        try { setComponent(r.op.hardwareMap.touchSensor.get(id));
+        try { setComponent(r.op().hardwareMap.touchSensor.get(id));
         } catch (Exception e)
         {
             r.getLogger().logKeyed(Level.SEVERE, "Error Adding Touch Sensor " + id, e.toString());
-            r.op.requestOpModeStop();
+            r.op().requestOpModeStop();
         }
     }
 

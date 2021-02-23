@@ -30,6 +30,7 @@ public abstract class AddOn {
      */
     protected void start(){
         if(isRunning || !isInitialized) return;
+        isRunning = true;
         startAO();
     }
 
@@ -38,6 +39,7 @@ public abstract class AddOn {
      */
     protected void stop(){
         if(!isRunning) return;
+        isRunning = false;
         stopAO();
     }
 

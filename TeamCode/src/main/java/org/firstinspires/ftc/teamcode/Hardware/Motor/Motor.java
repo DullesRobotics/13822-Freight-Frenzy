@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Hardware.Motor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
@@ -32,11 +33,12 @@ public class Motor extends HardwareComponent {
         this.motorConfiguration = motorConfiguration;
         get().setDirection(isOpposite ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
         try {
-            setComponent(r.op.hardwareMap.dcMotor.get(id));
-            r.op.hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            setComponent(r.op().hardwareMap.dcMotor.get(id));
+            r.op().hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            r.op().hardwareMap.get(WebcamName.class, "Webcam");
         } catch (Exception e) {
             r.getLogger().logKeyed(Level.SEVERE, "Error Adding Motor (encoded = " + motorConfiguration.isEncoded() + ") " + id, e.toString());
-            r.op.requestOpModeStop();
+            r.op().requestOpModeStop();
         }
     }
 
@@ -53,11 +55,11 @@ public class Motor extends HardwareComponent {
         this.isOpposite = isOpposite;
         get().setDirection(isOpposite ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
         try {
-            setComponent(r.op.hardwareMap.dcMotor.get(id));
-            r.op.hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            setComponent(r.op().hardwareMap.dcMotor.get(id));
+            r.op().hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } catch (Exception e) {
             r.getLogger().logKeyed(Level.SEVERE, "Error Adding Motor " + id, e.toString());
-            r.op.requestOpModeStop();
+            r.op().requestOpModeStop();
         }
     }
 

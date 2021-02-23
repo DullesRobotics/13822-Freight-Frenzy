@@ -41,7 +41,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
         addThread(new Thread(() -> {
             double currentJoystickSpeed = -1;
             getLogger().putData("Joystick Speed", currentJoystickSpeed);
-            while(op.opModeIsActive()){
+            while(op().opModeIsActive()){
                 currentJoystickSpeed = c.rightBumper() ? staticPrecisionSpeed : speed;
 
                 double originalPower = (-c.rightY() + c.leftTrigger() - c.rightTrigger()) * currentJoystickSpeed,
@@ -80,7 +80,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
         });
 
         setUniformDrivePower(power);
-        while(op.opModeIsActive() && isAnyDriveTrainMotorBusy()) {
+        while(op().opModeIsActive() && isAnyDriveTrainMotorBusy()) {
             getLogger().putData("Power", power);
             setUniformDrivePower(power);
         }
@@ -98,7 +98,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
         getLogger().log(Level.INFO, "Strafing, Timed");
         long time = System.currentTimeMillis() + millis;
         double tempSpeed = speed;
-        while(op.opModeIsActive() && time > System.currentTimeMillis()){
+        while(op().opModeIsActive() && time > System.currentTimeMillis()){
             if(goLeft) tempSpeed *= -1;
             setMechanumPower4D(speed, -speed, speed, -speed);
             getLogger().putData("Speed (FL, BL, FR, BR)", "(" + speed + ", " + -speed + ", " + -speed + ", " + speed + ")");
@@ -123,7 +123,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
         long time = System.currentTimeMillis() + millis;
         double steer, leftSpeed, rightSpeed, target = imu.getYaw();
 
-        while(op.opModeIsActive() && time > System.currentTimeMillis()){
+        while(op().opModeIsActive() && time > System.currentTimeMillis()){
             steer = (goLeft ? 1 : -1) * pid.update(PID.PIDType.THREE_SIXTY_ANGLE, imu.getYaw(), target);
             leftSpeed = speed - steer;
             rightSpeed = speed + steer;
@@ -141,7 +141,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
 
         /* Correcting angle to make sure it stays in the same line */
         double angleDiff = IMU.distanceBetweenAngles(imu.getYaw(), target);
-        if(op.opModeIsActive() && Math.abs(angleDiff) > tolerance)
+        if(op().opModeIsActive() && Math.abs(angleDiff) > tolerance)
             autoTurnPID(angleDiff, tolerance, true);
     }
 
@@ -164,7 +164,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
 
         double steer, leftSpeed, rightSpeed, target = imu.getYaw();
 
-        while(op.opModeIsActive() && isAnyDriveTrainMotorBusy()){
+        while(op().opModeIsActive() && isAnyDriveTrainMotorBusy()){
             steer = (inches < 0 ? -1 : 1) * pid.update(PID.PIDType.THREE_SIXTY_ANGLE, imu.getYaw(), target);
             leftSpeed = speed - steer;
             rightSpeed = speed + steer;
@@ -187,7 +187,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
 
         /* Correcting angle to make sure it stays in the same line */
         double angleDiff = IMU.distanceBetweenAngles(imu.getYaw(), target);
-        if(op.opModeIsActive() && Math.abs(angleDiff) > tolerance)
+        if(op().opModeIsActive() && Math.abs(angleDiff) > tolerance)
             autoTurnPID(angleDiff, tolerance, true);
     }
 

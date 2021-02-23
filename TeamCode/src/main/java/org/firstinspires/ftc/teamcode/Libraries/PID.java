@@ -7,6 +7,12 @@ public class PID {
     private volatile double kp = 0, ki = 0, kd = 0;
     private double errorSum = 0, prevError = 0, prevTime = 0;
 
+    /**
+     * tinker with these values, keep them small
+     * @param kp How much we should adjust movement to ensure a smooth slowdown
+     * @param ki Keeps track of how close we are, keeps getting bigger to counteract kp slowing down quickly
+     * @param kd Keeps rest of calculations in check to ensure it doesn't overshoot
+     */
     public PID(double kp, double ki, double kd){
         updateConstants(kp, ki, kd);
     }

@@ -47,7 +47,7 @@ public class Vuforia extends AddOn {
     protected void initAO(Robot r) {
         this.r = r;
 
-        int cameraMonitorViewId = r.op.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", r.op.hardwareMap.appContext.getPackageName());
+        int cameraMonitorViewId = r.op().hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", r.op().hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters Vparameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         Vparameters.cameraDirection = cameraDirection;
         Vparameters.vuforiaLicenseKey = licenseKey;

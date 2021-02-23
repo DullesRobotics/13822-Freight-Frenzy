@@ -15,11 +15,11 @@ public class Servo extends HardwareComponent {
      */
     public Servo(Robot r, String id, HardwareComponentArea componentArea) {
         super(r, id, componentArea);
-        try { setComponent(r.op.hardwareMap.servo.get(id));
+        try { setComponent(r.op().hardwareMap.servo.get(id));
         } catch (Exception e)
         {
             r.getLogger().logKeyed(Level.SEVERE, "Error Adding Servo " + id, e.toString());
-            r.op.requestOpModeStop();
+            r.op().requestOpModeStop();
         }
     }
 

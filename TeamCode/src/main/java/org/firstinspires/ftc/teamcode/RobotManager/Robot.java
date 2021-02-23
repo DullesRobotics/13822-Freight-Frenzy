@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.os.Build;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.ColorSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
+import org.firstinspires.ftc.teamcode.Hardware.USBWebcam;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOnHandler;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.Libraries.Logger;
@@ -31,7 +33,7 @@ import java.util.stream.Collectors;
 @TargetApi(Build.VERSION_CODES.N)
 public class Robot {
 
-    public volatile LinearOpMode op;
+    private volatile LinearOpMode op;
     private volatile Controller controller1, controller2;
     private volatile ArrayList<HardwareComponent> hardwareComponents = new ArrayList<>();
 
@@ -40,6 +42,7 @@ public class Robot {
 
     private volatile AddOnHandler addOnHandler;
     private volatile Logger logger;
+    private volatile HashMap<String, Object> state = new HashMap<>();
 
     protected Robot(LinearOpMode op, HardwareComponent[] hardwareComponents){
         this.op = op;
@@ -149,6 +152,29 @@ public class Robot {
     }
 
     /**
+     * Gets a USB Webcam with the matching ID
+     * @param id id of the USB Webcam
+     * @return the hardware component
+     */
+    @Nullable
+    public USBWebcam getUSBWebcam(String id){
+        return (USBWebcam) hardwareComponents.stream().filter(hdw -> hdw instanceof USBWebcam && hdw.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    /**
+     * Gets an IMU with the default ID "IMU"
+     * If there is no IMU with the default ID, it gets the first IMU in the ArrayList
+     * @return the hardware component
+     */
+    @Nullable
+    public USBWebcam getUSBWebcam(){
+        USBWebcam webcam = getUSBWebcam("Webcam");
+        if(webcam == null)
+            webcam = (USBWebcam) hardwareComponents.stream().filter(hdw -> hdw instanceof USBWebcam).findFirst().orElse(null);
+        return webcam;
+    }
+
+    /**
      * Adds a running thread to remember
      * @param t The thread to remember
      * @param autoStart Starts the thread passed in
@@ -224,4 +250,21 @@ public class Robot {
     public AddOnHandler addOnManager(){
         return addOnHandler;
     }
+
+    /** @return The op mode for this robot */
+    public LinearOpMode op(){
+        return op;
+    }
+
+    /**
+     * Gets this robot's data in storage. <br>
+     * Data only exists for the duration of the op mode's use,
+     * so it's only stored in memory.
+     * @return The state HashMap of the robot
+     */
+    public HashMap<String, Object> getState() {
+        return state;
+    }
+
+
 }

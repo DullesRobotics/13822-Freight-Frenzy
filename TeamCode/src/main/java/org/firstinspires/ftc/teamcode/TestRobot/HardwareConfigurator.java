@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorType;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
+import org.firstinspires.ftc.teamcode.Hardware.USBWebcam;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
@@ -40,7 +41,8 @@ public class HardwareConfigurator {
                 new TouchSensor(r, "TI", HardwareComponentArea.INTAKE),
                 new ColorSensor(r, "CC", HardwareComponentArea.CLAW),
                 new ColorSensor(r, "CI", HardwareComponentArea.INTAKE),
-                new IMU(r, "IMU")});
+                new IMU(r, "IMU"),
+                new USBWebcam(r, "Webcam")});
     }
 
 }
