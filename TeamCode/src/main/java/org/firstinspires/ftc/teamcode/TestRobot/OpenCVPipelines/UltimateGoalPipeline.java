@@ -10,6 +10,9 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+/**
+ * This class is courtesy of Wizards.exe
+ */
 public class UltimateGoalPipeline extends OpenCvPipeline implements Pipeline {
 
     public enum RingAmount {

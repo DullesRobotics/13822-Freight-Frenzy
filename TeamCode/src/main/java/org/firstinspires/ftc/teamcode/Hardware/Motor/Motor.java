@@ -107,7 +107,8 @@ public class Motor extends HardwareComponent {
     }
 
     /**
-     * Initiates this motor as a mechanum motor
+     * Initiates this motor as a mechanum motor. <br/>
+     * <strong>Only true if front right or back left.</strong><br/>
      * @param isOpposite If this motor is a Mechanum opposite
      */
     public void setStrafeOpposite(boolean isOpposite){
@@ -115,7 +116,7 @@ public class Motor extends HardwareComponent {
     }
 
     /**
-     * Returns if this motor is mechanum, if it is or is not opposite. <br/>
+     * Returns if this motor is mechanum and if it is or is not opposite. <br/>
      * <strong>Opposite if front right or back left.</strong><br/>
      * @return If this motor is or is not opposite regarding mechanum movement.
      */

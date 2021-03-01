@@ -3,14 +3,11 @@ package org.firstinspires.ftc.teamcode.TestRobot.OpModes.AutonomousOpModes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
-import org.firstinspires.ftc.teamcode.TestRobot.HardwareConfigurator;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.TestRobot.HardwareConfigurator;
 import org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines.UltimateGoalPipeline;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
 
 @Autonomous
 public class AutonLeftStart extends LinearOpMode {
@@ -25,6 +22,8 @@ public class AutonLeftStart extends LinearOpMode {
 
         UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
         robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam()));
+
+        PID pid = new PID(1,1,1);
 
         waitForStart();
 
@@ -44,23 +43,23 @@ public class AutonLeftStart extends LinearOpMode {
          */
 
         if(pipeline.getAmount() == UltimateGoalPipeline.RingAmount.NONE){
-            robot.autoStraightEncodedPID(72, new PID(1,1,1), 3);
-            robot.autoStrafeEncodedPID(12, new PID(1,1,1), 3);
-            robot.autoStraightEncodedPID(6, new PID(1,1,1), 3);
+            robot.autoStraightEncodedPID(72, pid, 3);
+            robot.autoStrafeEncodedPID(12, pid, 3);
+            robot.autoStraightEncodedPID(6, pid, 3);
             /* Subtracts 8 to correct for it moving 12 left earlier. */
-            robot.autoStrafeEncodedPID(-36 - 8, new PID(1,1,1), 3);
+            robot.autoStrafeEncodedPID(-36 - 8, pid, 3);
         } else if (pipeline.getAmount() == UltimateGoalPipeline.RingAmount.ONE){
-            robot.autoStraightEncodedPID(96, new PID(1,1,1), 3);
-            robot.autoStrafeEncodedPID(12, new PID(1,1,1), 3);
-            robot.autoStraightEncodedPID(6, new PID(1,1,1), 3);
+            robot.autoStraightEncodedPID(96, pid, 3);
+            robot.autoStrafeEncodedPID(12, pid, 3);
+            robot.autoStraightEncodedPID(6, pid, 3);
             /* Subtracts 8 to correct for it moving 12 left earlier. */
-            robot.autoStrafeEncodedPID(-12 - 8, new PID(1,1,1), 3);
+            robot.autoStrafeEncodedPID(-12 - 8, pid, 3);
         } else {
-            robot.autoStraightEncodedPID(120, new PID(1,1,1), 3);
-            robot.autoStrafeEncodedPID(12, new PID(1,1,1), 3);
-            robot.autoStraightEncodedPID(6, new PID(1,1,1), 3);
+            robot.autoStraightEncodedPID(120, pid, 3);
+            robot.autoStrafeEncodedPID(12, pid, 3);
+            robot.autoStraightEncodedPID(6, pid, 3);
             /* Subtracts 8 to correct for it moving 12 left earlier. */
-            robot.autoStrafeEncodedPID(-36 - 8, new PID(1,1,1), 3);
+            robot.autoStrafeEncodedPID(-36 - 8, pid, 3);
         }
 
         robot.autonWait(1000);

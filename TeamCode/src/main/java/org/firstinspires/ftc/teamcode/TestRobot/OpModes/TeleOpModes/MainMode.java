@@ -5,13 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOnType;
-import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.RobotRecorder;
-import org.firstinspires.ftc.teamcode.TestRobot.OpModes.Functions;
-import org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines.UltimateGoalPipeline;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.firstinspires.ftc.teamcode.TestRobot.OpModes.Functions;
 
 @TeleOp
 public class MainMode extends LinearOpMode {
@@ -19,8 +15,7 @@ public class MainMode extends LinearOpMode {
     private MecanumDriveTrain robot;
 
     @Override
-    public void runOpMode() throws InterruptedException
-    {
+    public void runOpMode() throws InterruptedException {
         robot = new MecanumDriveTrain(this, /*HardwareConfigurator.getHardware(robot)*/ new HardwareComponent[]{});
 
         robot.getLogger().setDynamicDataHeader("Robot Variables");
@@ -41,6 +36,6 @@ public class MainMode extends LinearOpMode {
         Functions.startShooter(robot);
 
         while (opModeIsActive())
-        robot.stopAllThreads();
+            robot.stopAllThreads();
     }
 }
