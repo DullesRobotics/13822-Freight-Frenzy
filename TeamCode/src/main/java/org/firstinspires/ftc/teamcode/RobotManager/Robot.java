@@ -229,8 +229,8 @@ public class Robot {
     /** Starts the logger thread */
     private void startLogger(){
         addThread(new Thread(()->{
-            while(op.opModeIsActive())
-                logger.updateConsole();
+            //while(op.opModeIsActive())
+                //logger.updateConsole();
         }), true);
     }
 

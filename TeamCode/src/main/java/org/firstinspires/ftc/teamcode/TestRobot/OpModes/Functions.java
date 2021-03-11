@@ -51,7 +51,7 @@ public class Functions {
     public static void startShooter(Robot r){
         r.getLogger().log(Level.INFO, "Starting shooter function");
         r.addThread(new Thread(() -> {
-            boolean on = false, init = false, firstShot = false;
+            boolean on = false, init = false, firstShot = false, state = false;
             long initTime = -1, endTime = 0, cooldownTime = 0;
             boolean alreadyPressed = false;
             while(r.op().opModeIsActive()){
@@ -87,13 +87,8 @@ public class Functions {
                                 cooldownTime = System.currentTimeMillis() + SHOOTER_COOLDOWN;
                                 for(Servo s : r.getServos(HardwareComponentArea.SHOOTER)){
                                     s.get().scaleRange(0,1);
-
-                                    /* must keep the position within 0 & 1 */
-                                    double newPosition = s.get().getPosition() + 0.5;
-                                    if(newPosition >= 1)
-                                        newPosition -= 1;
-
-                                    s.get().setPosition(newPosition);
+                                    state = !state;
+                                    s.get().setPosition(state ? 0.5 : 0);
                                 }
                             }
                     }

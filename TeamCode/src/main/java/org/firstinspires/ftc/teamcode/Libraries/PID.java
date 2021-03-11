@@ -76,4 +76,28 @@ public class PID {
         THREE_SIXTY_ANGLE,
         NUMBER;
     }
+
+    /**
+     * How much we should adjust movement to ensure a smooth slowdown
+     * @return the P variable in PID
+     */
+    public double getKp() {
+        return kp;
+    }
+
+    /**
+     * Keeps track of how close we are, keeps getting bigger to counteract kp slowing down quickly
+     * @return The I variable in PID
+     */
+    public double getKi() {
+        return ki;
+    }
+
+    /**
+     * Keeps rest of calculations in check to ensure it doesn't overshoot
+     * @return The D variable in PID
+     */
+    public double getKd() {
+        return kd;
+    }
 }

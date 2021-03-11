@@ -5,9 +5,11 @@ import android.os.Build;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Axis;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
 
@@ -22,9 +24,10 @@ public class MecanumDriveTrain extends StandardDriveTrain {
     /**
      * Takes in super initiators
      * @param op The op mode this is used for
+     * @param hardwareComponents The list of hardware used by the robot
      */
-    public MecanumDriveTrain(LinearOpMode op, HardwareComponent[] hardwareComponents) {
-        super(op, hardwareComponents);
+    public MecanumDriveTrain(LinearOpMode op, HardwareComponent[] hardwareComponents, PID pid) {
+        super(op, hardwareComponents, pid);
     }
 
     /**
@@ -112,10 +115,9 @@ public class MecanumDriveTrain extends StandardDriveTrain {
      * Strafes the robot for a certain amount of time
      * @param millis The time in milliseconds to strafe
      * @param goLeft If the robot should go left or right
-     * @param pid The PID to use
      * @param tolerance How far apart (angle in degrees) it's okay to be off from straight
      */
-    public void autoStrafeTimedPID(long millis, boolean goLeft, PID pid, double tolerance){
+    public void autoStrafeTimedPID(long millis, boolean goLeft, double tolerance){
         getLogger().log(Level.INFO, "Strafing with a PID, Timed");
         IMU imu = getIMU();
         if(!imu.isRunning()) imu.startIMU();
@@ -151,7 +153,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
      * @param pid The PID to use
      * @param tolerance How far apart (angle in degrees) it's okay to be off from straight
      */
-    public void autoStrafeEncodedPID(double inches, PID pid, double tolerance){
+    public void autoStrafeEncodedPID(double inches, double tolerance){
         getLogger().log(Level.INFO, "Strafing with a PID and Encoders");
         IMU imu = getIMU();
         if(!imu.isRunning()) imu.startIMU();

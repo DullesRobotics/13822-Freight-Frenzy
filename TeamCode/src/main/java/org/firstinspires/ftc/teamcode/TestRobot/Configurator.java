@@ -12,17 +12,40 @@ import org.firstinspires.ftc.teamcode.Hardware.USBWebcam;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
-public class HardwareConfigurator {
+import java.util.HashMap;
+
+public class Configurator {
 
     private final static String ID_frontLeft = "FL", ID_frontRight = "FR", ID_backLeft = "BL", ID_backRight = "BR";
+    private final static double KP = 1, KI = 1, KD = 1;
+
+    public static HashMap<String, Object> getDefaultState(){
+        HashMap<String, Object> defaultState = new HashMap<String, Object>();
+
+        defaultState.put("kp", KP);
+        defaultState.put("ki", KI);
+        defaultState.put("kd", KD);
+
+        return defaultState;
+    }
 
     /**
+     * It's HIGHLY recommended every motor has the same motor configuration for autonomous driving
+     * If not, individual motors might move incorrectly. If you have a mix-match of motors, don't use road runner.
      * @return The main hardware list for the robot
      */
     public static HardwareComponent[] getHardware(Robot r){
-        MotorConfiguration motorConfiguration = new MotorConfiguration(MotorType.CORE_HEX_MOTOR, 3, true, true);
-        Motor motorFrontLeft = new Motor(r, ID_frontLeft, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, false),
-        motorFrontRight = new Motor(r, ID_frontRight, HardwareComponentArea.DRIVE_TRAIN, motorConfiguration, true),
+        MotorConfiguration mC = new MotorConfiguration(
+                MotorType.CORE_HEX_MOTOR,
+                true,
+                true,
+                2,
+                1,
+                100,
+                1);
+
+        Motor motorFrontLeft = new Motor(r, ID_frontLeft, HardwareComponentArea.DRIVE_TRAIN, mC, false),
+        motorFrontRight = new Motor(r, ID_frontRight, HardwareComponentArea.DRIVE_TRAIN, mC, true),
         motorBackLeft = motorFrontLeft.clone(ID_backLeft),
         motorBackRight = motorFrontRight.clone(ID_backRight);
 

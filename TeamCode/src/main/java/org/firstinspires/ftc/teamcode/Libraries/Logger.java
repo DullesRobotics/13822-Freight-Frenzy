@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 
 @TargetApi(Build.VERSION_CODES.N)
+@Deprecated
 public class Logger {
 
     private PrintWriter writer;
@@ -28,11 +29,7 @@ public class Logger {
 
     private volatile ArrayList<LogEntry> log = new ArrayList<>();
 
-    private volatile boolean dynamicDataEnabled = true;
-    private volatile String dynamicDataHeader = null;
     private volatile HashMap<String, String> dynamicData = new HashMap<>();
-
-    private boolean hasChanged = true;
 
     public Logger (LinearOpMode op) {
         this.op = op;
@@ -48,32 +45,6 @@ public class Logger {
     }
 
     /**
-     * Whether or not to have dynamic data displayed
-     * @param b True to display it, false otherwise
-     */
-    public void usesDynamicData(boolean b){
-        dynamicDataEnabled = b;
-    }
-
-    /**
-     * The dynamic data header to show above the dynamic data
-     * @param dynamicDataHeader The data header
-     * @param log Whether or not to log in the Log File that this has updated
-     */
-    public void setDynamicDataHeader(String dynamicDataHeader, boolean log){
-        this.dynamicDataHeader = dynamicDataHeader;
-        if(log) updateFileLog(Level.INFO,  "Dynamic Data Header Set: " + dynamicDataHeader);
-    }
-
-    /**
-     * The dynamic data header to show above the dynamic data
-     * @param dynamicDataHeader The data header
-     */
-    public void setDynamicDataHeader(String dynamicDataHeader){
-        this.dynamicDataHeader = dynamicDataHeader;
-    }
-
-    /**
      * Puts a dynamically logged and updated entry into the log
      * @param dataClassification The key to put in the dynamic logger
      * @param data The data to put in the dynamic logger
@@ -81,7 +52,6 @@ public class Logger {
     public void putData(String dataClassification, Object data){
         if(!(dynamicData.containsKey(dataClassification) && dynamicData.get(dataClassification).equals(String.valueOf(data)))) {
             dynamicData.put(dataClassification, String.valueOf(data));
-            hasChanged = true;
             updateFileLog(Level.INFO, dataClassification + ": " + data);
         }
     }
@@ -107,7 +77,6 @@ public class Logger {
      */
     public void log(Level logLevel, String dataClassification, Object data){
         log.add(new LogEntry(logLevel, dataClassification, String.valueOf(data)));
-        hasChanged = true;
     }
 
     /**
@@ -117,7 +86,6 @@ public class Logger {
      */
     public void log(Level logLevel, String data){
         log.add(new LogEntry(logLevel, null, data));
-        hasChanged = true;
         updateFileLog(logLevel, data);
     }
 
@@ -129,7 +97,6 @@ public class Logger {
      */
     public void logKeyed(Level logLevel, String key, String data){
         log.add(new LogEntry(logLevel, null, key + ": " + data));
-        hasChanged = true;
         updateFileLog(logLevel, key + ": " + data);
     }
 
@@ -174,20 +141,17 @@ public class Logger {
 
     /** Updates the currently displayed console */
     public void updateConsole() {
-        if(hasChanged) {
-            hasChanged = false;
-            op.telemetry.clearAll();
-            for (int i = 0; i < linesToShowAtATime && i < log.size() - 1; i++) {
-                LogEntry le = log.get(log.size() - i - 1);
-                op.telemetry.addData("[" + le.getLogLevel().getName() + "] " + (le.getDataClassification() == null ? "" : le.getDataClassification()), le.getData());
-            }
-            if (dynamicDataEnabled) {
-                if (dynamicDataHeader != null && dynamicData.size() > 0) op.telemetry.addLine(dynamicDataHeader);
-                for (String s : dynamicData.keySet())
-                    op.telemetry.addData(s, dynamicData.get(s));
-            }
-            op.telemetry.update();
-        }
+//        if(hasChanged) {
+//            hasChanged = false;
+//            op.telemetry.clearAll();
+//            for (int i = 0; i < linesToShowAtATime && i < log.size() - 1; i++) {
+//                LogEntry le = log.get(log.size() - i - 1);
+//                op.telemetry.addData("[" + le.getLogLevel().getName() + "] " + (le.getDataClassification() == null ? "" : le.getDataClassification()), le.getData());
+//            }
+//                for (String s : dynamicData.keySet())
+//                    op.telemetry.addData(s, dynamicData.get(s));
+//            op.telemetry.update();
+//        }
 }
 
     /** Updates log file */

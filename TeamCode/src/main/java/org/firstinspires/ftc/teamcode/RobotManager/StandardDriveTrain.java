@@ -5,10 +5,12 @@ import android.os.Build;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Axis;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
 
@@ -17,8 +19,13 @@ import java.util.logging.Level;
 @TargetApi(Build.VERSION_CODES.N)
 public class StandardDriveTrain extends DriveTrain {
 
-    public StandardDriveTrain(LinearOpMode op, HardwareComponent[] hardwareComponents) {
-        super(op, hardwareComponents);
+    /**
+     * Takes in super initiators
+     * @param op The op mode this is used for
+     * @param hardwareComponents The list of hardware used by the robot
+     */
+    public StandardDriveTrain(LinearOpMode op, HardwareComponent[] hardwareComponents, PID pid) {
+        super(op, hardwareComponents, pid);
     }
 
     /**
@@ -63,7 +70,7 @@ public class StandardDriveTrain extends DriveTrain {
      * @param pid the PID this motion will use
      * @param tolerance what angle the robot can have moved to be okay
      */
-    public void autoDriveForwardTimedPID(long millis, PID pid, double tolerance, boolean forward){
+    public void autoDriveForwardTimedPID(long millis, double tolerance, boolean forward){
         getLogger().log(Level.INFO, "Driving Forward with PID and Timed");
         long time = System.currentTimeMillis() + millis;
         IMU imu = getIMU();
@@ -98,7 +105,7 @@ public class StandardDriveTrain extends DriveTrain {
      * @param pid the PID this motion will use
      * @param tolerance what angle the robot can have moved to be okay
      */
-    public void autoStraightEncodedPID(double inches, PID pid, double tolerance){
+    public void autoStraightEncodedPID(double inches, double tolerance){
         getLogger().log(Level.INFO, "Driving Forward with PID and Encoded");
         IMU imu = getIMU();
         if(!imu.isRunning()) imu.startIMU();

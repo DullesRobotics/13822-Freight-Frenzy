@@ -3,29 +3,47 @@ package org.firstinspires.ftc.teamcode.TestRobot.OpModes.AutonomousOpModes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Axis;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorType;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
+import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.TestRobot.HardwareConfigurator;
+import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
 import org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines.UltimateGoalPipeline;
 
 @Autonomous
 public class AutonLeftStart extends LinearOpMode {
 
     MecanumDriveTrain robot;
+    SampleMecanumDrive drive;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new MecanumDriveTrain(this, HardwareConfigurator.getHardware(robot));
 
-        robot.getLogger().setDynamicDataHeader("Robot Variables");
+        //sets default drivetrain motor configuration for each motor
+        MotorConfiguration mC = new MotorConfiguration(MotorType.CORE_HEX_MOTOR,true, true, 2, 1, 100, 1);
+        //creates central drivetrain object
+        robot = new MecanumDriveTrain(this, Configurator.getHardware(robot), new PID(1,1,1));
+        //sets motor configuration
+        robot.setAutonMotorConfiguration(mC);
+        //sets max speeds/accelerations in inches/sec
+        robot.setVelocityConstants(30, 30, 60, 60);
+        //sets axis that the control hub is facing
+        robot.setIMUAxis(Axis.Z);
+        //sets how far apart parallel motors are
+        robot.setTrackWidth(10);
+        //creates road runner with the information above
+        drive = new SampleMecanumDrive(hardwareMap);
 
         UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
         robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam()));
 
-        PID pid = new PID(1,1,1);
-
         waitForStart();
+
+        if (isStopRequested()) return;
 
         /* Give time for robot to calculate just in case */
         robot.autonWait(1000);
@@ -43,28 +61,29 @@ public class AutonLeftStart extends LinearOpMode {
          */
 
         if(pipeline.getAmount() == UltimateGoalPipeline.RingAmount.NONE){
-            robot.autoStraightEncodedPID(72, pid, 3);
-            robot.autoStrafeEncodedPID(12, pid, 3);
-            robot.autoStraightEncodedPID(6, pid, 3);
+            robot.autoStraightEncodedPID(72, 3);
+            robot.autoStrafeEncodedPID(12, 3);
+            robot.autoStraightEncodedPID(6, 3);
             /* Subtracts 8 to correct for it moving 12 left earlier. */
-            robot.autoStrafeEncodedPID(-36 - 8, pid, 3);
+            robot.autoStrafeEncodedPID(-36 - 8, 3);
         } else if (pipeline.getAmount() == UltimateGoalPipeline.RingAmount.ONE){
-            robot.autoStraightEncodedPID(96, pid, 3);
-            robot.autoStrafeEncodedPID(12, pid, 3);
-            robot.autoStraightEncodedPID(6, pid, 3);
+            robot.autoStraightEncodedPID(96, 3);
+            robot.autoStrafeEncodedPID(12, 3);
+            robot.autoStraightEncodedPID(6, 3);
             /* Subtracts 8 to correct for it moving 12 left earlier. */
-            robot.autoStrafeEncodedPID(-12 - 8, pid, 3);
+            robot.autoStrafeEncodedPID(-12 - 8, 3);
         } else {
-            robot.autoStraightEncodedPID(120, pid, 3);
-            robot.autoStrafeEncodedPID(12, pid, 3);
-            robot.autoStraightEncodedPID(6, pid, 3);
+            robot.autoStraightEncodedPID(120, 3);
+            robot.autoStrafeEncodedPID(12, 3);
+            robot.autoStraightEncodedPID(6, 3);
             /* Subtracts 8 to correct for it moving 12 left earlier. */
-            robot.autoStrafeEncodedPID(-36 - 8, pid, 3);
+            robot.autoStrafeEncodedPID(-36 - 8, 3);
         }
 
         robot.autonWait(1000);
 
+        while (!isStopRequested() && opModeIsActive()) ;
+
         robot.stopAllThreads();
-        robot.op().requestOpModeStop();
     }
 }

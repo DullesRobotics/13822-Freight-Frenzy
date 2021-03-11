@@ -29,9 +29,8 @@ public class Motor extends HardwareComponent {
     public Motor(Robot r, String id, HardwareComponentArea componentArea, MotorConfiguration motorConfiguration, boolean isOpposite)
     {
         super(r, id, componentArea);
-        this.isOpposite = isOpposite;
         this.motorConfiguration = motorConfiguration;
-        get().setDirection(isOpposite ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
+        setOpposite(isOpposite);
         try {
             setComponent(r.op().hardwareMap.dcMotor.get(id));
             r.op().hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

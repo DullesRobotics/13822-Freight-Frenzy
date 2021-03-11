@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOnType;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.RobotRecorder;
+import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.TestRobot.OpModes.Functions;
 
@@ -16,9 +17,7 @@ public class MainMode extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new MecanumDriveTrain(this, /*HardwareConfigurator.getHardware(robot)*/ new HardwareComponent[]{});
-
-        robot.getLogger().setDynamicDataHeader("Robot Variables");
+        robot = new MecanumDriveTrain(this, /*HardwareConfigurator.getHardware(robot)*/ new HardwareComponent[]{}, new PID(1, 1, 1));
 
         /* Add-on initializing */
         //UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
