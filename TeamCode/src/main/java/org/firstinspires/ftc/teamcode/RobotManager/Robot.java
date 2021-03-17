@@ -5,6 +5,7 @@ import android.os.Build;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.Hardware;
 
 import org.firstinspires.ftc.teamcode.Hardware.ColorSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 /**
  * Hello, code begins here :D
  */
-@TargetApi(Build.VERSION_CODES.N)
+//@TargetApi(Build.VERSION_CODES.N)
 public class Robot {
 
     private volatile LinearOpMode op;
@@ -58,7 +59,8 @@ public class Robot {
      * @param hardware A list of hardware to add to the array */
     public void addHardware(HardwareComponent... hardware){
         this.hardwareComponents.addAll(Arrays.asList(hardware));
-        Arrays.stream(hardware).forEach(hardwareComponent -> getLogger().log(Level.INFO, "Added Hardware Component", hardwareComponent.toString()));
+        for(HardwareComponent hardwareComponent : hardware)
+            getLogger().log(Level.INFO, "Added Hardware Component", hardwareComponent.toString());
     }
 
     /** @return Controller 1 */
@@ -77,7 +79,10 @@ public class Robot {
      */
     @Nullable
     public Motor getMotor(String id){
-        return (Motor) hardwareComponents.stream().filter(hdw -> hdw instanceof Motor && hdw.getId().equals(id)).findFirst().orElse(null);
+        for(HardwareComponent hdw : hardwareComponents)
+            if(hdw instanceof Motor && hdw.getId().equals(id))
+                return (Motor) hdw;
+        return null;
     }
 
     /**
@@ -86,7 +91,11 @@ public class Robot {
      * @return the hardware components
      */
     public ArrayList<Motor> getMotors(HardwareComponentArea area){
-        return hardwareComponents.stream().filter(hdw -> hdw instanceof Motor && hdw.getComponentArea() == area).map(hdw -> (Motor) hdw).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Motor> ar = new ArrayList<>();
+        for(HardwareComponent hdw : hardwareComponents)
+            if(hdw instanceof Motor && hdw.getComponentArea() == area)
+                ar.add((Motor) hdw);
+        return ar;
     }
 
     /**
@@ -96,7 +105,10 @@ public class Robot {
      */
     @Nullable
     public Servo getServo(String id){
-        return (Servo) hardwareComponents.stream().filter(hdw -> hdw instanceof Servo && hdw.getId().equals(id)).findFirst().orElse(null);
+        for(HardwareComponent hdw : hardwareComponents)
+            if(hdw instanceof Servo && hdw.getId().equals(id))
+                return (Servo) hdw;
+        return null;
     }
 
     /**
@@ -105,7 +117,11 @@ public class Robot {
      * @return the hardware components
      */
     public ArrayList<Servo> getServos(HardwareComponentArea area){
-        return hardwareComponents.stream().filter(hdw -> hdw instanceof Servo && hdw.getComponentArea() == area).map(hdw -> (Servo) hdw).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Servo> ar = new ArrayList<>();
+        for(HardwareComponent hdw : hardwareComponents)
+            if(hdw instanceof Servo && hdw.getComponentArea() == area)
+                ar.add((Servo) hdw);
+        return ar;
     }
 
     /**
@@ -115,7 +131,10 @@ public class Robot {
      */
     @Nullable
     public TouchSensor getTouchSensor(String id){
-        return (TouchSensor) hardwareComponents.stream().filter(hdw -> hdw instanceof TouchSensor && hdw.getId().equals(id)).findFirst().orElse(null);
+        for(HardwareComponent hdw : hardwareComponents)
+            if(hdw instanceof TouchSensor && hdw.getId().equals(id))
+                return (TouchSensor) hdw;
+        return null;
     }
 
     /**
@@ -125,7 +144,10 @@ public class Robot {
      */
     @Nullable
     public ColorSensor getColorSensor(String id){
-        return (ColorSensor) hardwareComponents.stream().filter(hdw -> hdw instanceof ColorSensor && hdw.getId().equals(id)).findFirst().orElse(null);
+        for(HardwareComponent hdw : hardwareComponents)
+            if(hdw instanceof ColorSensor && hdw.getId().equals(id))
+                return (ColorSensor) hdw;
+        return null;
     }
 
     /**
@@ -135,7 +157,10 @@ public class Robot {
      */
     @Nullable
     public IMU getIMU(String id){
-        return (IMU) hardwareComponents.stream().filter(hdw -> hdw instanceof IMU && hdw.getId().equals(id)).findFirst().orElse(null);
+        for(HardwareComponent hdw : hardwareComponents)
+            if(hdw instanceof IMU && hdw.getId().equals(id))
+                return (IMU) hdw;
+        return null;
     }
 
     /**
@@ -147,7 +172,11 @@ public class Robot {
     public IMU getIMU(){
         IMU imu = getIMU("IMU");
         if(imu == null)
-            imu = (IMU) hardwareComponents.stream().filter(hdw -> hdw instanceof IMU).findFirst().orElse(null);
+            for(HardwareComponent hdw : hardwareComponents) {
+                imu = hdw instanceof IMU ? (IMU) hdw : null;
+                break;
+            }
+
         return imu;
     }
 
@@ -158,7 +187,10 @@ public class Robot {
      */
     @Nullable
     public USBWebcam getUSBWebcam(String id){
-        return (USBWebcam) hardwareComponents.stream().filter(hdw -> hdw instanceof USBWebcam && hdw.getId().equals(id)).findFirst().orElse(null);
+        for(HardwareComponent hdw : hardwareComponents)
+            if(hdw instanceof USBWebcam && hdw.getId().equals(id))
+                return (USBWebcam) hdw;
+        return null;
     }
 
     /**
@@ -170,7 +202,10 @@ public class Robot {
     public USBWebcam getUSBWebcam(){
         USBWebcam webcam = getUSBWebcam("Webcam");
         if(webcam == null)
-            webcam = (USBWebcam) hardwareComponents.stream().filter(hdw -> hdw instanceof USBWebcam).findFirst().orElse(null);
+            for(HardwareComponent hdw : hardwareComponents) {
+                webcam = hdw instanceof USBWebcam ? (USBWebcam) hdw : null;
+                break;
+            }
         return webcam;
     }
 
@@ -204,13 +239,13 @@ public class Robot {
 
     /** Stops all running threads */
     public void stopAllThreads() {
-        runningThreads.forEach((s, thread) -> {
-            try { thread.interrupt(); }
+        for(Thread t : runningThreads.values())
+            try { t.interrupt(); }
             catch (Exception ignored) {}
-        });
         runningThreads.clear();
         if(op.opModeIsActive())
-            endingRunnables.forEach((uuid, runnable) -> runnable.run());
+            for(Runnable r : endingRunnables.values())
+                r.run();
         endingRunnables.clear();
     }
 

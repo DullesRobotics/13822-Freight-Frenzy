@@ -16,7 +16,7 @@ public class ColorSensor extends HardwareComponent {
         try { setComponent(r.op().hardwareMap.colorSensor.get(id));
         } catch (Exception e)
         {
-            r.getLogger().logKeyed(Level.SEVERE, "Error Adding Color Sensor " + id, e.toString());
+            r.getLogger().log(Level.SEVERE, "Error Adding Color Sensor " + id, e.toString());
             r.op().requestOpModeStop();
         }
     }

@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Libraries.PID;
 
 import java.util.logging.Level;
 
-@TargetApi(Build.VERSION_CODES.N)
+//@TargetApi(Build.VERSION_CODES.N)
 public class StandardDriveTrain extends DriveTrain {
 
     /**
@@ -67,7 +67,6 @@ public class StandardDriveTrain extends DriveTrain {
     /**
      * Moves robot forward using a set time and a PID
      * @param millis The amount of milliseconds to move the robot
-     * @param pid the PID this motion will use
      * @param tolerance what angle the robot can have moved to be okay
      */
     public void autoDriveForwardTimedPID(long millis, double tolerance, boolean forward){
@@ -102,7 +101,7 @@ public class StandardDriveTrain extends DriveTrain {
     /**
      * Moves robot forward using encoders and a PID
      * @param inches the distance to move forward in inches
-     * @param pid the PID this motion will use
+     * @param tolerance how far in degress the pid can be off
      * @param tolerance what angle the robot can have moved to be okay
      */
     public void autoStraightEncodedPID(double inches, double tolerance){
@@ -112,9 +111,8 @@ public class StandardDriveTrain extends DriveTrain {
         resetAllEncoders();
         setAllRunToPosition();
 
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).forEach(motor ->
-                motor.get().setTargetPosition(motor.get().getCurrentPosition() +
-                        motor.getConfiguration().inchesToCounts(inches)));
+        for(Motor m : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+            m.get().setTargetPosition(m.get().getCurrentPosition() + m.getConfiguration().inchesToCounts(inches));
 
         double steer, leftSpeed, rightSpeed, target = imu.getYaw();
         while(op().opModeIsActive() && isAnyDriveTrainMotorBusy()){
@@ -201,10 +199,10 @@ public class StandardDriveTrain extends DriveTrain {
     public void autoDriveEncoded(double inches, boolean turn, boolean turnRight){
         setAllRunToPosition();
 
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).forEach(motor ->
-                motor.get().setTargetPosition(motor.get().getCurrentPosition() +
-                        ((motor.isOpposite() && turnRight) || (!motor.isOpposite() && !turnRight) || !turn ? 1 : -1 ) *
-                                (motor.getConfiguration().inchesToCounts(inches))));
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+            motor.get().setTargetPosition(motor.get().getCurrentPosition() +
+                    ((motor.isOpposite() && turnRight) || (!motor.isOpposite() && !turnRight) || !turn ? 1 : -1 ) *
+                            (motor.getConfiguration().inchesToCounts(inches)));
 
         double power = inches < 0 ? -speed : speed;
         setUniformDrivePower(power);

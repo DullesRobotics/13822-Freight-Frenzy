@@ -36,7 +36,7 @@ public class Motor extends HardwareComponent {
             r.op().hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             r.op().hardwareMap.get(WebcamName.class, "Webcam");
         } catch (Exception e) {
-            r.getLogger().logKeyed(Level.SEVERE, "Error Adding Motor (encoded = " + motorConfiguration.isEncoded() + ") " + id, e.toString());
+            r.getLogger().log(Level.SEVERE, "Error Adding Motor (encoded = " + motorConfiguration.isEncoded() + ") " + id, e.toString());
             r.op().requestOpModeStop();
         }
     }
@@ -57,7 +57,7 @@ public class Motor extends HardwareComponent {
             setComponent(r.op().hardwareMap.dcMotor.get(id));
             r.op().hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } catch (Exception e) {
-            r.getLogger().logKeyed(Level.SEVERE, "Error Adding Motor " + id, e.toString());
+            r.getLogger().log(Level.SEVERE, "Error Adding Motor " + id, e.toString());
             r.op().requestOpModeStop();
         }
     }

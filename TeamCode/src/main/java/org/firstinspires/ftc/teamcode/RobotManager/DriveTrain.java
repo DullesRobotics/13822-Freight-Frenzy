@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.DriveConstants;
 
-@TargetApi(Build.VERSION_CODES.N)
+//@TargetApi(Build.VERSION_CODES.N)
 public abstract class DriveTrain extends Robot {
 
     protected volatile double speed = 0.8f, minimumPrecisionSpeed = 0.2f;
@@ -50,8 +50,8 @@ public abstract class DriveTrain extends Robot {
      * @param power The speed to move the motor
      */
     public void setUniformDrivePower(double power){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN)
-                .forEach(motor -> motor.get().setPower(power));
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+            motor.get().setPower(power);
     }
 
     /**
@@ -59,13 +59,13 @@ public abstract class DriveTrain extends Robot {
      * @param power The speed to move the motor
      */
     public void setTurningDrivePower(double power){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN)
-                .forEach(motor -> motor.get().setPower( motor.isOpposite() ? power : -power ));
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+            motor.get().setPower( motor.isOpposite() ? power : -power );
     }
 
     public void setIndependentDrivePower(double leftPower, double rightPower){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN)
-                .forEach(motor -> motor.get().setPower( motor.isOpposite() ? rightPower : leftPower ));
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+            motor.get().setPower( motor.isOpposite() ? rightPower : leftPower );
     }
 
     /**
@@ -86,35 +86,37 @@ public abstract class DriveTrain extends Robot {
 
     /** Stops and resets the motor, and then reverts state */
     public void resetAllEncoders(){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN)
-                .forEach(Motor::stopAndResetEncoder);
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+            motor.stopAndResetEncoder();
     }
 
     /** Makes all motors run with encoders */
     public void setAllRunWithEncoder(){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream()
-                .filter(m -> m.getConfiguration().isEncoded())
-                .forEach(m -> m.get().setMode(DcMotor.RunMode.RUN_USING_ENCODER));
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+            if(motor.getConfiguration().isEncoded())
+                motor.get().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     /** Makes motors run without encoders */
     public void setAllRunWithoutEncoder(){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream()
-                .filter(m -> m.getConfiguration().isEncoded())
-                .forEach(m -> m.get().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER));
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+            if(motor.getConfiguration().isEncoded())
+                motor.get().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     /** Makes all motors go into run_to_position mode */
     public void setAllRunToPosition(){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream()
-                .filter(m -> m.getConfiguration().isEncoded())
-                .forEach(m -> m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION));
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+            if(motor.getConfiguration().isEncoded())
+                motor.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     /** @return If any drive train motor is moving */
     public boolean isAnyDriveTrainMotorBusy(){
-        return getMotors(HardwareComponentArea.DRIVE_TRAIN).stream()
-                .allMatch(motor -> motor.get().isBusy());
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+            if(motor.get().isBusy())
+                return true;
+        return false;
     }
 
     /**

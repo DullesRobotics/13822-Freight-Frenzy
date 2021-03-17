@@ -16,7 +16,7 @@ public class TouchSensor extends HardwareComponent {
         try { setComponent(r.op().hardwareMap.touchSensor.get(id));
         } catch (Exception e)
         {
-            r.getLogger().logKeyed(Level.SEVERE, "Error Adding Touch Sensor " + id, e.toString());
+            r.getLogger().log(Level.SEVERE, "Error Adding Touch Sensor " + id, e.toString());
             r.op().requestOpModeStop();
         }
     }

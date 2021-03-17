@@ -7,6 +7,7 @@ import android.text.format.DateFormat;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -17,19 +18,15 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-@TargetApi(Build.VERSION_CODES.N)
+//@TargetApi(Build.VERSION_CODES.N)
 @Deprecated
 public class Logger {
 
     private PrintWriter writer;
 
-    private static final byte linesToShowAtATime = 5;
-
     private LinearOpMode op;
 
-    private volatile ArrayList<LogEntry> log = new ArrayList<>();
-
-    private volatile HashMap<String, String> dynamicData = new HashMap<>();
+    private volatile HashMap<String, Telemetry.Item> items = new HashMap<>();
 
     public Logger (LinearOpMode op) {
         this.op = op;
@@ -50,10 +47,8 @@ public class Logger {
      * @param data The data to put in the dynamic logger
      */
     public void putData(String dataClassification, Object data){
-        if(!(dynamicData.containsKey(dataClassification) && dynamicData.get(dataClassification).equals(String.valueOf(data)))) {
-            dynamicData.put(dataClassification, String.valueOf(data));
+            items.put(dataClassification, op.telemetry.addData(dataClassification, data));
             updateFileLog(Level.INFO, dataClassification + ": " + data);
-        }
     }
 
     /**
@@ -61,12 +56,14 @@ public class Logger {
      * @param dataClassification The key of the data to be removed
      */
     public void removeData(String dataClassification){
-        dynamicData.remove(dataClassification);
+        if(dataClassification != null && items.containsKey(dataClassification))
+            op.telemetry.removeItem(items.get(dataClassification));
     }
 
     /** Clears the dynamically logged entries */
     public void clearData(){
-        dynamicData.clear();
+        for(String key : items.keySet())
+            op.telemetry.removeItem(items.remove(key));
     }
 
     /**
@@ -76,7 +73,9 @@ public class Logger {
      * @param data The data itself
      */
     public void log(Level logLevel, String dataClassification, Object data){
-        log.add(new LogEntry(logLevel, dataClassification, String.valueOf(data)));
+        String date = DateFormat.format("HH:mm:SS", Calendar.getInstance().getTime()).toString();
+        items.put(dataClassification, op.telemetry.addData(date + " [" + logLevel.getName() + "] " + (dataClassification == null ? "" : dataClassification), data.toString()));
+        updateFileLog(logLevel, (dataClassification == null ? "" : dataClassification) + ": " + data.toString());
     }
 
     /**
@@ -85,74 +84,10 @@ public class Logger {
      * @param data The data itself
      */
     public void log(Level logLevel, String data){
-        log.add(new LogEntry(logLevel, null, data));
+        String date = DateFormat.format("HH:mm:SS", Calendar.getInstance().getTime()).toString();
+        op.telemetry.log().add(date + " [" + logLevel.getName() + "] " + data);
         updateFileLog(logLevel, data);
     }
-
-      /**
-     * Stores single, non-dynamic log entry
-     * @param logLevel Level of importance
-     * @param key The data descriptor
-     * @param data The data itself
-     */
-    public void logKeyed(Level logLevel, String key, String data){
-        log.add(new LogEntry(logLevel, null, key + ": " + data));
-        updateFileLog(logLevel, key + ": " + data);
-    }
-
-    /** Stores single, non-dynamic log entry */
-    private static class LogEntry {
-
-        private Level logLevel;
-        private String dataClassification;
-        private String data;
-        private long date;
-
-        /**
-         * @param logLevel Level of importance
-         * @param dataClassification The data key
-         * @param data The data itself
-         */
-        public LogEntry (Level logLevel, String dataClassification, String data) {
-            this.logLevel = logLevel;
-            this.dataClassification = dataClassification;
-            this.data = data;
-            this.date = System.currentTimeMillis();
-        }
-
-        public Level getLogLevel() {
-            return logLevel;
-        }
-
-        public String getData() {
-            return data;
-        }
-
-        public String getDataClassification() {
-            return dataClassification;
-        }
-
-        /** The time this was logged */
-        public long getDate() {
-            return date;
-        }
-
-    }
-
-    /** Updates the currently displayed console */
-    public void updateConsole() {
-//        if(hasChanged) {
-//            hasChanged = false;
-//            op.telemetry.clearAll();
-//            for (int i = 0; i < linesToShowAtATime && i < log.size() - 1; i++) {
-//                LogEntry le = log.get(log.size() - i - 1);
-//                op.telemetry.addData("[" + le.getLogLevel().getName() + "] " + (le.getDataClassification() == null ? "" : le.getDataClassification()), le.getData());
-//            }
-//                for (String s : dynamicData.keySet())
-//                    op.telemetry.addData(s, dynamicData.get(s));
-//            op.telemetry.update();
-//        }
-}
 
     /** Updates log file */
     private void updateFileLog(@NotNull Level level, String s){

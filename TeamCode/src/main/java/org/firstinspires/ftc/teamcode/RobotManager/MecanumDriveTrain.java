@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Axis;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
@@ -18,7 +19,7 @@ import java.util.logging.Level;
 /**
  * A drive-train for robots that can strafe
  */
-@TargetApi(Build.VERSION_CODES.N)
+//@TargetApi(Build.VERSION_CODES.N)
 public class MecanumDriveTrain extends StandardDriveTrain {
 
     /**
@@ -76,11 +77,11 @@ public class MecanumDriveTrain extends StandardDriveTrain {
          *
          * Loops through every motor and sets the position for it to go to. If it's a front motor is subtracts the ticks, otherwise it adds
          */
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().forEach(motor -> {
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)){
             /* if is front motor */
             boolean isFront = (motor.isOpposite() && motor.isStrafeOpposite()) || (!motor.isOpposite() && !motor.isStrafeOpposite());
             motor.get().setTargetPosition(motor.get().getCurrentPosition() + (isFront ? -1 : 1) * motor.getConfiguration().inchesToCounts(inches));
-        });
+        }
 
         setUniformDrivePower(power);
         while(op().opModeIsActive() && isAnyDriveTrainMotorBusy()) {
@@ -150,7 +151,6 @@ public class MecanumDriveTrain extends StandardDriveTrain {
     /**
      * Has the robot strafe a set distance using a PID
      * @param inches How far to go in inches. Positive is left, Negative is right
-     * @param pid The PID to use
      * @param tolerance How far apart (angle in degrees) it's okay to be off from straight
      */
     public void autoStrafeEncodedPID(double inches, double tolerance){
@@ -161,8 +161,8 @@ public class MecanumDriveTrain extends StandardDriveTrain {
         setAllRunToPosition();
 
         /* Loops through every motor and sets the position for it to go to. If it's strafe opposite (front right, back left), it subtracts the ticks. Otherwise it adds them. */
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().forEach(motor ->
-                motor.get().setTargetPosition(motor.get().getCurrentPosition() + (motor.isStrafeOpposite() ? -1 : 1) * motor.getConfiguration().inchesToCounts(inches)));
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+            motor.get().setTargetPosition(motor.get().getCurrentPosition() + (motor.isStrafeOpposite() ? -1 : 1) * motor.getConfiguration().inchesToCounts(inches));
 
         double steer, leftSpeed, rightSpeed, target = imu.getYaw();
 
@@ -199,8 +199,8 @@ public class MecanumDriveTrain extends StandardDriveTrain {
      * @param opposite The opposite power
      */
     private void setMechanumPower2D(double original, double opposite){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().forEach(motor ->
-            motor.get().setPower(motor.isStrafeOpposite() ? opposite : original));
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+            motor.get().setPower(motor.isStrafeOpposite() ? opposite : original);
     }
 
     /**
@@ -211,8 +211,8 @@ public class MecanumDriveTrain extends StandardDriveTrain {
      * @param oppositeRight The power for the "opposite" right motor (usually front right)
      */
     private void setMechanumPower4D(double originalLeft, double oppositeLeft, double originalRight, double oppositeRight){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().forEach(motor ->
-            motor.get().setPower(!motor.isOpposite() ? !motor.isStrafeOpposite() ? originalLeft : oppositeLeft : !motor.isStrafeOpposite() ? originalRight : oppositeRight));
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+            motor.get().setPower(!motor.isOpposite() ? !motor.isStrafeOpposite() ? originalLeft : oppositeLeft : !motor.isStrafeOpposite() ? originalRight : oppositeRight);
     }
 
     /**
@@ -221,10 +221,10 @@ public class MecanumDriveTrain extends StandardDriveTrain {
      * @param backPower The back motor power
      */
     private void setMechanumPowerFB(double frontPower, double backPower){
-        getMotors(HardwareComponentArea.DRIVE_TRAIN).stream().forEach(motor -> {
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)){
             boolean isFront = (motor.isOpposite() && motor.isStrafeOpposite()) || (!motor.isOpposite() && !motor.isStrafeOpposite());
             motor.get().setPower(isFront ? frontPower : backPower);
-        });
+        }
     }
 
 }

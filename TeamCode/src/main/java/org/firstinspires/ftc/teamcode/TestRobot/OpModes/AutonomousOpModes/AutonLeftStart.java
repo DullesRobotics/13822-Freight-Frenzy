@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.TestRobot.OpModes.AutonomousOpModes;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -41,12 +43,24 @@ public class AutonLeftStart extends LinearOpMode {
         UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
         robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam()));
 
+        Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
+                .forward(60)
+                .build();
+
         waitForStart();
 
         if (isStopRequested()) return;
 
         /* Give time for robot to calculate just in case */
         robot.autonWait(1000);
+
+        drive.followTrajectory(trajectory);
+
+        Pose2d poseEstimate = drive.getPoseEstimate();
+        telemetry.addData("finalX", poseEstimate.getX());
+        telemetry.addData("finalY", poseEstimate.getY());
+        telemetry.addData("finalHeading", poseEstimate.getHeading());
+        telemetry.update();
 
         /*
             Each tile is 2 feet by 2 feet, so it must drive up 3-5 tiles.

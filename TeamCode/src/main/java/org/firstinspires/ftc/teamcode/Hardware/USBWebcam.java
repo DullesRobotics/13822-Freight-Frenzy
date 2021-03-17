@@ -16,7 +16,7 @@ public class USBWebcam extends HardwareComponent {
         try { setComponent(r.op().hardwareMap.get(WebcamName.class, id));
         } catch (Exception e)
         {
-            r.getLogger().logKeyed(Level.SEVERE, "Error Adding USB Webcam " + id, e.toString());
+            r.getLogger().log(Level.SEVERE, "Error Adding USB Webcam " + id, e.toString());
             r.op().requestOpModeStop();
         }
     }

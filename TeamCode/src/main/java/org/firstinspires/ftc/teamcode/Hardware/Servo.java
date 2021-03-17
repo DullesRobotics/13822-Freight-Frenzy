@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
 import java.util.logging.Level;
@@ -18,7 +16,7 @@ public class Servo extends HardwareComponent {
         try { setComponent(r.op().hardwareMap.servo.get(id));
         } catch (Exception e)
         {
-            r.getLogger().logKeyed(Level.SEVERE, "Error Adding Servo " + id, e.toString());
+            r.getLogger().log(Level.SEVERE, "Error Adding Servo " + id, e.toString());
             r.op().requestOpModeStop();
         }
     }

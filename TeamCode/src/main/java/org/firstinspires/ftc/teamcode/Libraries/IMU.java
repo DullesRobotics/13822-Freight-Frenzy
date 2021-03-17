@@ -34,7 +34,7 @@ public class IMU extends HardwareComponent {
         super(r, id, HardwareComponentArea.IMU);
         try { setComponent(r.op().hardwareMap.get(BNO055IMU.class, id));
         } catch (Exception e) {
-            r.getLogger().logKeyed(Level.SEVERE, "Error Adding IMU " + id, e.toString());
+            r.getLogger().log(Level.SEVERE, "Error Adding IMU " + id, e.toString());
             r.op().requestOpModeStop();
             return;
         }
