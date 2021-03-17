@@ -45,14 +45,13 @@ public class Robot {
     private volatile Logger logger;
     private volatile HashMap<String, Object> state = new HashMap<>();
 
-    protected Robot(LinearOpMode op, HardwareComponent[] hardwareComponents){
+    protected Robot(LinearOpMode op){
         this.op = op;
+        logger = new Logger(op);
+        getLogger().log(Level.INFO, "---CONSOLE---");
         controller1 = new Controller(op.gamepad1);
         controller2 = new Controller(op.gamepad2);
-        logger = new Logger(op);
         addOnHandler = new AddOnHandler(this);
-        startLogger();
-        addHardware(hardwareComponents);
     }
 
     /** Add hardware to the robot array
@@ -260,14 +259,6 @@ public class Robot {
     }
 
     public Logger getLogger(){ return logger; }
-
-    /** Starts the logger thread */
-    private void startLogger(){
-        addThread(new Thread(()->{
-            //while(op.opModeIsActive())
-                //logger.updateConsole();
-        }), true);
-    }
 
     /**
      * Set if the controller should be locked

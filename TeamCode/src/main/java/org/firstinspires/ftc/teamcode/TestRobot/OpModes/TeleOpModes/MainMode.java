@@ -5,36 +5,48 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOnType;
+import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.RobotRecorder;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.RobotManager.StandardDriveTrain;
+import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
 import org.firstinspires.ftc.teamcode.TestRobot.OpModes.Functions;
+import org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines.UltimateGoalPipeline;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 @TeleOp
 public class MainMode extends LinearOpMode {
 
-    private MecanumDriveTrain robot;
+    private StandardDriveTrain robot;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new MecanumDriveTrain(this, /*HardwareConfigurator.getHardware(robot)*/ new HardwareComponent[]{}, new PID(1, 1, 1));
+        robot = new StandardDriveTrain(this, new PID(1, 1, 1));
+        robot.addHardware(Configurator.getHardware(robot));
 
         /* Add-on initializing */
         //UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
-        //robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, OpenCvInternalCamera.CameraDirection.BACK, OpenCvCameraRotation.UPRIGHT));
-        robot.addOnManager().initAddOn(new RobotRecorder());
+        //robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam()));
+        //robot.addOnManager().initAddOn(new RobotRecorder());
 
         waitForStart();
 
         /* Add-on starting */
-        robot.addOnManager().startAddOn(AddOnType.ROBOT_RECORDER);
+        //robot.addOnManager().startAddOn(AddOnType.ROBOT_RECORDER);
 
         /* Robot functions */
         robot.driveWithController(robot.ctrl1());
-        Functions.startIntake(robot);
-        Functions.startShooter(robot);
+        //Functions.startIntake(robot);
+        //Functions.startShooter(robot);
 
-        while (opModeIsActive())
-            robot.stopAllThreads();
+        while (opModeIsActive()) {
+            //robot.getLogger().putData("ring amount", pipeline.getAmount().toString());
+            robot.getLogger().putData("a button pressed", robot.ctrl1().buttonA());
+            robot.getLogger().updateLog();
+        }
+
+        robot.stopAllThreads();
     }
 }

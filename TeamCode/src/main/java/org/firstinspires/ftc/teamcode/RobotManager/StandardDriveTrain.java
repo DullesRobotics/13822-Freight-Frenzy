@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
+import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
 
 import java.util.logging.Level;
 
@@ -22,10 +23,9 @@ public class StandardDriveTrain extends DriveTrain {
     /**
      * Takes in super initiators
      * @param op The op mode this is used for
-     * @param hardwareComponents The list of hardware used by the robot
      */
-    public StandardDriveTrain(LinearOpMode op, HardwareComponent[] hardwareComponents, PID pid) {
-        super(op, hardwareComponents, pid);
+    public StandardDriveTrain(LinearOpMode op, PID pid) {
+        super(op, pid);
     }
 
     /**
@@ -39,9 +39,12 @@ public class StandardDriveTrain extends DriveTrain {
             double currentSpeed;
             while(op().opModeIsActive()){
                 /* linear equation to calculate speed based on right trigger's position */
-                currentSpeed = (speed - minimumPrecisionSpeed) * (c.rightTrigger() - 1) + speed;
-                for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)) /* uses regular for-each loop because lambdas require final variables, which is just asking for a heap issue */
-                    motor.get().setPower(motor.isOpposite() ? currentSpeed * (-c.rightX() + c.rightX()) : currentSpeed * (-c.rightY() - c.rightX()));
+                currentSpeed = c.rightTrigger() > 0 ?  minimumPrecisionSpeed : speed; //(speed - minimumPrecisionSpeed) * (c.rightTrigger()) + speed;
+                getLogger().putData("Motor Speed", currentSpeed);
+                for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)) { /* uses regular for-each loop because lambdas require final variables, which is just asking for a heap issue */
+//                    motor.get().setPower(motor.isOpposite() ? currentSpeed * (-c.rightX() + c.rightX()) : currentSpeed * (-c.rightY() - c.rightX()));
+  //                  getLogger().putData(motor.getId() + " Speed", motor.get().getPower());
+                }
             }
         }), true);
     }

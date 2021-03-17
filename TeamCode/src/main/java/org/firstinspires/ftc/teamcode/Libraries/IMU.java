@@ -32,6 +32,7 @@ public class IMU extends HardwareComponent {
      */
     public IMU(Robot r, String id) {
         super(r, id, HardwareComponentArea.IMU);
+        r.getLogger().log(Level.INFO, "Adding IMU: " + id);
         try { setComponent(r.op().hardwareMap.get(BNO055IMU.class, id));
         } catch (Exception e) {
             r.getLogger().log(Level.SEVERE, "Error Adding IMU " + id, e.toString());
@@ -48,7 +49,11 @@ public class IMU extends HardwareComponent {
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         get().initialize(parameters);
 
+        r.getLogger().log(Level.INFO, "Parameterized IMU: " + id);
+
         updateIMU();
+
+        r.getLogger().log(Level.INFO, "Began updating IMU: " + id);
     }
 
     /** If the robot is running */

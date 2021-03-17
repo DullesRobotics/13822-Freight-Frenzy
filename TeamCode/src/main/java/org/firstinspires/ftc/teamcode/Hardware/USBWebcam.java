@@ -13,6 +13,7 @@ public class USBWebcam extends HardwareComponent {
      */
     public USBWebcam(Robot r, String id) {
         super(r, id, HardwareComponentArea.MISCELLANEOUS);
+        r.getLogger().log(Level.INFO, "Adding Webcam: " + id);
         try { setComponent(r.op().hardwareMap.get(WebcamName.class, id));
         } catch (Exception e)
         {

@@ -25,10 +25,9 @@ public class MecanumDriveTrain extends StandardDriveTrain {
     /**
      * Takes in super initiators
      * @param op The op mode this is used for
-     * @param hardwareComponents The list of hardware used by the robot
      */
-    public MecanumDriveTrain(LinearOpMode op, HardwareComponent[] hardwareComponents, PID pid) {
-        super(op, hardwareComponents, pid);
+    public MecanumDriveTrain(LinearOpMode op, PID pid) {
+        super(op, pid);
     }
 
     /**

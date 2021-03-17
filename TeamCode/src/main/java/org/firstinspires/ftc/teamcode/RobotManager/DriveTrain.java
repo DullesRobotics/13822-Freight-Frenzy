@@ -1,21 +1,16 @@
 package org.firstinspires.ftc.teamcode.RobotManager;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Axis;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
-import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
-import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants;
 
 //@TargetApi(Build.VERSION_CODES.N)
 public abstract class DriveTrain extends Robot {
@@ -31,10 +26,9 @@ public abstract class DriveTrain extends Robot {
     /**
      * Takes in super initiators
      * @param op The op mode this is used for
-     * @param hardwareComponents The list of hardware used by the robot
      */
-    public DriveTrain(LinearOpMode op, HardwareComponent[] hardwareComponents, PID pid) {
-        super(op, hardwareComponents);
+    public DriveTrain(LinearOpMode op, PID pid) {
+        super(op);
         this.autonMotorConfiguration = null;
         this.pid = pid;
     }
@@ -187,9 +181,9 @@ public abstract class DriveTrain extends Robot {
      * empirically tuned.
      */
     public void setFeedForwardConstants(double kV, double kA, double kStatic){
-        DriveConstants.kV = kV;
-        DriveConstants.kA = kA;
-        DriveConstants.kStatic = kStatic;
+        RoadRunnerDriveConstants.kV = kV;
+        RoadRunnerDriveConstants.kA = kA;
+        RoadRunnerDriveConstants.kStatic = kStatic;
     }
 
     /**
@@ -210,18 +204,18 @@ public abstract class DriveTrain extends Robot {
     public void adjustRoadRunnerConstants(){
         if(autonMotorConfiguration != null)
         {
-            DriveConstants.TICKS_PER_REV = autonMotorConfiguration.getMotorType().countsPerRev();
-            DriveConstants.MAX_RPM = autonMotorConfiguration.getMaxRPM();
-            DriveConstants.RUN_USING_ENCODER = autonMotorConfiguration.isEncoded();
-            DriveConstants.MOTOR_VELO_PID = new PIDFCoefficients(pid.getKp(), pid.getKi(), pid.getKd(), DriveConstants.getMotorVelocityF(autonMotorConfiguration.getMaxRPM() / 60 * autonMotorConfiguration.getMotorType().countsPerRev()));
-            DriveConstants.WHEEL_RADIUS = autonMotorConfiguration.getWheelDiameter() / 2;
-            DriveConstants.GEAR_RATIO = autonMotorConfiguration.getGearRatio();
+            RoadRunnerDriveConstants.TICKS_PER_REV = autonMotorConfiguration.getMotorType().countsPerRev();
+            RoadRunnerDriveConstants.MAX_RPM = autonMotorConfiguration.getMotorType().getMaxRPM();
+            RoadRunnerDriveConstants.RUN_USING_ENCODER = autonMotorConfiguration.isEncoded();
+            RoadRunnerDriveConstants.MOTOR_VELO_PID = new PIDFCoefficients(pid.getKp(), pid.getKi(), pid.getKd(), RoadRunnerDriveConstants.getMotorVelocityF(autonMotorConfiguration.getMotorType().getMaxRPM() / 60 * autonMotorConfiguration.getMotorType().countsPerRev()));
+            RoadRunnerDriveConstants.WHEEL_RADIUS = autonMotorConfiguration.getWheelDiameter() / 2;
+            RoadRunnerDriveConstants.GEAR_RATIO = autonMotorConfiguration.getGearRatio();
         }
-        DriveConstants.TRACK_WIDTH = trackWidth;
-        DriveConstants.MAX_VEL = maxVel;
-        DriveConstants.MAX_ACCEL = maxAccel;
-        DriveConstants.MAX_ANG_VEL = maxAngularVel;
-        DriveConstants.MAX_ANG_ACCEL = maxAngularAccel;
-        DriveConstants.IMU_AXIS = imuAxis;
+        RoadRunnerDriveConstants.TRACK_WIDTH = trackWidth;
+        RoadRunnerDriveConstants.MAX_VEL = maxVel;
+        RoadRunnerDriveConstants.MAX_ACCEL = maxAccel;
+        RoadRunnerDriveConstants.MAX_ANG_VEL = maxAngularVel;
+        RoadRunnerDriveConstants.MAX_ANG_ACCEL = maxAngularAccel;
+        RoadRunnerDriveConstants.IMU_AXIS = imuAxis;
     }
 }

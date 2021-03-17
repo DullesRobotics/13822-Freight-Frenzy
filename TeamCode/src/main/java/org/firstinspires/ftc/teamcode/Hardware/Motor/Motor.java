@@ -29,12 +29,12 @@ public class Motor extends HardwareComponent {
     public Motor(Robot r, String id, HardwareComponentArea componentArea, MotorConfiguration motorConfiguration, boolean isOpposite)
     {
         super(r, id, componentArea);
+        r.getLogger().log(Level.INFO, "Adding Motor: " + id);
         this.motorConfiguration = motorConfiguration;
-        setOpposite(isOpposite);
+        this.isOpposite = isOpposite;
         try {
             setComponent(r.op().hardwareMap.dcMotor.get(id));
             r.op().hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            r.op().hardwareMap.get(WebcamName.class, "Webcam");
         } catch (Exception e) {
             r.getLogger().log(Level.SEVERE, "Error Adding Motor (encoded = " + motorConfiguration.isEncoded() + ") " + id, e.toString());
             r.op().requestOpModeStop();

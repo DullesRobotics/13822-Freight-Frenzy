@@ -16,18 +16,8 @@ import java.util.HashMap;
 
 public class Configurator {
 
-    private final static String ID_frontLeft = "FL", ID_frontRight = "FR", ID_backLeft = "BL", ID_backRight = "BR";
-    private final static double KP = 1, KI = 1, KD = 1;
+    private final static String ID_frontLeft = "FLM", ID_frontRight = "FRM", ID_backLeft = "BLM", ID_backRight = "BRM";
 
-    public static HashMap<String, Object> getDefaultState(){
-        HashMap<String, Object> defaultState = new HashMap<String, Object>();
-
-        defaultState.put("kp", KP);
-        defaultState.put("ki", KI);
-        defaultState.put("kd", KD);
-
-        return defaultState;
-    }
 
     /**
      * It's HIGHLY recommended every motor has the same motor configuration for autonomous driving
@@ -36,12 +26,10 @@ public class Configurator {
      */
     public static HardwareComponent[] getHardware(Robot r){
         MotorConfiguration mC = new MotorConfiguration(
-                MotorType.CORE_HEX_MOTOR,
+                MotorType.NEVEREST_ORBITAL,
+                false,
                 true,
-                true,
-                2,
-                1,
-                100,
+                2.9528,
                 1);
 
         Motor motorFrontLeft = new Motor(r, ID_frontLeft, HardwareComponentArea.DRIVE_TRAIN, mC, false),
@@ -50,7 +38,7 @@ public class Configurator {
         motorBackRight = motorFrontRight.clone(ID_backRight);
 
         //front left & back right are strafe opposite
-        motorFrontLeft.setStrafeOpposite(true);
+        motorBackLeft.setStrafeOpposite(false);
         motorBackRight.setStrafeOpposite(true);
 
         return(new HardwareComponent[]{
@@ -58,14 +46,15 @@ public class Configurator {
                 motorFrontRight, //right front motor
                 motorBackLeft, //left back motor
                 motorBackRight, //right back motor
-                new Servo(r, "CL", HardwareComponentArea.CLAW),
-                new Servo(r, "IN", HardwareComponentArea.INTAKE),
-                new TouchSensor(r, "TC", HardwareComponentArea.CLAW),
-                new TouchSensor(r, "TI", HardwareComponentArea.INTAKE),
-                new ColorSensor(r, "CC", HardwareComponentArea.CLAW),
-                new ColorSensor(r, "CI", HardwareComponentArea.INTAKE),
+//                new Servo(r, "CL", HardwareComponentArea.CLAW),
+//                new Servo(r, "IN", HardwareComponentArea.INTAKE),
+//                new TouchSensor(r, "TC", HardwareComponentArea.CLAW),
+//                new TouchSensor(r, "TI", HardwareComponentArea.INTAKE),
+//                new ColorSensor(r, "CC", HardwareComponentArea.CLAW),
+//                new ColorSensor(r, "CI", HardwareComponentArea.INTAKE),
                 new IMU(r, "IMU"),
-                new USBWebcam(r, "Webcam")});
+                /*new USBWebcam(r, "Webcam")*/
+        });
     }
 
 }

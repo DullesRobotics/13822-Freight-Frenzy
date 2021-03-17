@@ -19,19 +19,18 @@ import java.util.HashMap;
 import java.util.logging.Level;
 
 //@TargetApi(Build.VERSION_CODES.N)
-@Deprecated
 public class Logger {
 
     private PrintWriter writer;
 
     private LinearOpMode op;
 
-    private volatile HashMap<String, Telemetry.Item> items = new HashMap<>();
+    private volatile HashMap<Telemetry.Item, Object> items = new HashMap<>();
 
     public Logger (LinearOpMode op) {
         this.op = op;
-        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        String date = DateFormat.format("MM/dd:HH:mm:SS", Calendar.getInstance().getTime()).toString();
+        File path = Environment.getExternalStoragePublicDirectory("FIRST/logs");
+        String date = DateFormat.format("MM/dd:HH:mm:ss", Calendar.getInstance().getTime()).toString();
         File logFile = new File(path, formatTextFileName("ftclog_" + date));
         try { writer = new PrintWriter(new FileWriter(logFile, true)); }
         catch (Exception e) {
@@ -47,7 +46,7 @@ public class Logger {
      * @param data The data to put in the dynamic logger
      */
     public void putData(String dataClassification, Object data){
-            items.put(dataClassification, op.telemetry.addData(dataClassification, data));
+            items.put(op.telemetry.addData(dataClassification, data), data);
             updateFileLog(Level.INFO, dataClassification + ": " + data);
     }
 
@@ -56,14 +55,20 @@ public class Logger {
      * @param dataClassification The key of the data to be removed
      */
     public void removeData(String dataClassification){
-        if(dataClassification != null && items.containsKey(dataClassification))
-            op.telemetry.removeItem(items.get(dataClassification));
+        if(dataClassification != null)
+            for(Telemetry.Item item : items.keySet())
+                if(item.getCaption().equals(dataClassification)) {
+                    op.telemetry.removeItem(item);
+                    break;
+                }
+
     }
 
     /** Clears the dynamically logged entries */
     public void clearData(){
-        for(String key : items.keySet())
-            op.telemetry.removeItem(items.remove(key));
+        for(Telemetry.Item key : items.keySet())
+            op.telemetry.removeItem(key);
+        items.clear();
     }
 
     /**
@@ -73,9 +78,9 @@ public class Logger {
      * @param data The data itself
      */
     public void log(Level logLevel, String dataClassification, Object data){
-        String date = DateFormat.format("HH:mm:SS", Calendar.getInstance().getTime()).toString();
-        items.put(dataClassification, op.telemetry.addData(date + " [" + logLevel.getName() + "] " + (dataClassification == null ? "" : dataClassification), data.toString()));
-        updateFileLog(logLevel, (dataClassification == null ? "" : dataClassification) + ": " + data.toString());
+        String date = DateFormat.format("HH:mm:ss", Calendar.getInstance().getTime()).toString();
+        op.telemetry.log().add(date + " [" + logLevel.getName() + "] " + (dataClassification == null ? "" : dataClassification + ": ") + data);
+        updateFileLog(logLevel, (dataClassification == null ? "" : dataClassification + ": ") + data);
     }
 
     /**
@@ -84,14 +89,22 @@ public class Logger {
      * @param data The data itself
      */
     public void log(Level logLevel, String data){
-        String date = DateFormat.format("HH:mm:SS", Calendar.getInstance().getTime()).toString();
+        String date = DateFormat.format("HH:mm:ss", Calendar.getInstance().getTime()).toString();
         op.telemetry.log().add(date + " [" + logLevel.getName() + "] " + data);
         updateFileLog(logLevel, data);
     }
 
+    public void updateLog(){
+        for(Telemetry.Item item : items.keySet()) {
+            Object o = items.get(item);
+            op.telemetry.addData(item.getCaption(), o == null ? "null" : o.toString());
+        }
+        op.telemetry.update();
+    }
+
     /** Updates log file */
     private void updateFileLog(@NotNull Level level, String s){
-        String date = DateFormat.format("HH:mm:SS", Calendar.getInstance().getTime()).toString();
+        String date = DateFormat.format("HH:mm:ss", Calendar.getInstance().getTime()).toString();
         writer.println(date + " [" + level.getName() + "] " + s);
     }
 

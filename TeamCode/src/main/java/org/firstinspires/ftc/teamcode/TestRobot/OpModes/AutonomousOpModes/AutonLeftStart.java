@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorType;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
-import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
@@ -26,9 +25,10 @@ public class AutonLeftStart extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         //sets default drivetrain motor configuration for each motor
-        MotorConfiguration mC = new MotorConfiguration(MotorType.CORE_HEX_MOTOR,true, true, 2, 1, 100, 1);
+        MotorConfiguration mC = new MotorConfiguration(MotorType.CORE_HEX_MOTOR,true, true, 2, 2.9528);
         //creates central drivetrain object
-        robot = new MecanumDriveTrain(this, Configurator.getHardware(robot), new PID(1,1,1));
+        robot = new MecanumDriveTrain(this, new PID(1,1,1));
+        robot.addHardware(Configurator.getHardware(robot));
         //sets motor configuration
         robot.setAutonMotorConfiguration(mC);
         //sets max speeds/accelerations in inches/sec

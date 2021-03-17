@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Axis;
  * and op modes themselves.
  */
 @Config
-public class DriveConstants {
+public class RoadRunnerDriveConstants {
 
     /*
      * These are motor constants that should be listed online for your motors.

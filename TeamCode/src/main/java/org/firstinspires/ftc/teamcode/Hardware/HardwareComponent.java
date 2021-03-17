@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.logging.Level;
+
 /**
  * Acts as a shell around a hardware component to more easily store and reference information about it
  */
