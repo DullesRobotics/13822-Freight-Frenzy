@@ -30,8 +30,8 @@ public class MainMode extends LinearOpMode {
         robot.addHardware(Configurator.getHardware(robot));
 
         /* Add-on initializing */
-        UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
-        robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam(), rotation));
+        //UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
+        //robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam(), rotation));
         //robot.addOnManager().initAddOn(new RobotRecorder());
 
         waitForStart();
@@ -45,7 +45,7 @@ public class MainMode extends LinearOpMode {
         //Functions.startShooter(robot);
 
         while (opModeIsActive()) {
-            robot.getLogger().putData("ring analysis", pipeline.getAnalysis() + " (" + pipeline.getAmount().toString() + ")", true);
+          //  robot.getLogger().putData("ring analysis", pipeline.getAnalysis() + " (" + pipeline.getAmount().toString() + ")", true);
             //robot.getLogger().putData("a button pressed", robot.ctrl1().buttonA());
             robot.getLogger().updateLog();
         }

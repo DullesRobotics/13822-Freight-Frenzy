@@ -35,6 +35,8 @@ public class Motor extends HardwareComponent {
         try {
             setComponent(r.op().hardwareMap.dcMotor.get(id));
             r.op().hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            if(isOpposite)
+                get().setDirection(isOpposite ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
         } catch (Exception e) {
             r.getLogger().log(Level.SEVERE, "Error Adding Motor (encoded = " + motorConfiguration.isEncoded() + ") " + id, e.toString());
             r.op().requestOpModeStop();

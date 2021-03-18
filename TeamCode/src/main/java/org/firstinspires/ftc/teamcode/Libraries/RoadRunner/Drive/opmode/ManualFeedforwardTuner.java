@@ -13,16 +13,19 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
 
 import java.util.Objects;
 
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.kV;
 
 /*
  * This routine is designed to tune the open-loop feedforward coefficients. Although it may seem unnecessary,
@@ -67,6 +70,9 @@ public class ManualFeedforwardTuner extends LinearOpMode {
             RobotLog.setGlobalErrorMsg("Feedforward constants usually don't need to be tuned " +
                     "when using the built-in drive motor velocity PID.");
         }
+
+        MecanumDriveTrain driveTrain = new MecanumDriveTrain(this, new PID(1,1,1));
+        driveTrain.addHardware(Configurator.getHardware(driveTrain));
 
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 

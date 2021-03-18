@@ -44,9 +44,9 @@ public class StandardDriveTrain extends DriveTrain {
                 for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)) { /* uses regular for-each loop because lambdas require final variables, which is just asking for a heap issue */
 //                    motor.get().setPower(motor.isOpposite() ? currentSpeed * (-c.rightX() + c.rightX()) : currentSpeed * (-c.rightY() - c.rightX()));
                     if(motor.isOpposite())
-                        motor.get().setPower(-1 * currentSpeed * c.rightY());
-                    else
                         motor.get().setPower(currentSpeed * c.leftY());
+                    else
+                        motor.get().setPower(currentSpeed * c.rightY());
                     getLogger().putData(motor.getId() + " Speed", motor.get().getPower());
                 }
             }

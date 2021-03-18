@@ -26,18 +26,18 @@ public class AutonLeftStart extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         //sets default drivetrain motor configuration for each motor
-        MotorConfiguration mC = new MotorConfiguration(MotorType.CORE_HEX_MOTOR,true, true, 2, 2.9528);
+//        MotorConfiguration mC = new MotorConfiguration(MotorType.CORE_HEX_MOTOR,true, true, 2.9528, 1);
         //creates central drivetrain object
-        robot = new StandardDriveTrain(this, new PID(1,1,1));
+        robot = new StandardDriveTrain(this, new PID(0,0,0));
         robot.addHardware(Configurator.getHardware(robot));
         //sets motor configuration
-        robot.setAutonMotorConfiguration(mC);
-        //sets max speeds/accelerations in inches/sec
-        robot.setVelocityConstants(30, 30, 60, 60);
-        //sets axis that the control hub is facing
-        robot.setIMUAxis(Axis.Z);
-        //sets how far apart parallel motors are
-        robot.setTrackWidth(11);
+//        robot.setAutonMotorConfiguration(mC);
+//        //sets max speeds/accelerations in inches/sec
+//        robot.setVelocityConstants(30, 30, 60, 60);
+//        //sets axis that the control hub is facing
+//        robot.setIMUAxis(Axis.Z);
+//        //sets how far apart parallel motors are
+//        robot.setTrackWidth(11);
         //creates road runner with the information above
         //drive = new SampleMecanumDrive(hardwareMap);
 

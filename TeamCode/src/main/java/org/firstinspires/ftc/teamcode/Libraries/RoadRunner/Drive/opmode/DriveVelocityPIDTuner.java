@@ -13,15 +13,18 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
 
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.kV;
 
 /*
  * This routine is designed to tune the PID coefficients used by the REV Expansion Hubs for closed-
@@ -69,6 +72,9 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
             RobotLog.setGlobalErrorMsg("%s does not need to be run if the built-in motor velocity" +
                     "PID is not in use", getClass().getSimpleName());
         }
+
+        MecanumDriveTrain driveTrain = new MecanumDriveTrain(this, new PID(1,1,1));
+        driveTrain.addHardware(Configurator.getHardware(driveTrain));
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 

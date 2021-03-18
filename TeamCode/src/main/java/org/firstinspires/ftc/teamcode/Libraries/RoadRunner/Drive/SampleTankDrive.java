@@ -41,18 +41,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.IMU_AXIS;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.MAX_ANG_ACCEL;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.IMU_AXIS;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.MAX_ANG_ACCEL;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.kV;
 
 /*
  * Simple tank drive hardware implementation for REV hardware.
@@ -124,7 +124,7 @@ public class SampleTankDrive extends TankDrive {
         }
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu = hardwareMap.get(BNO055IMU.class, "IMU");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
@@ -134,10 +134,10 @@ public class SampleTankDrive extends TankDrive {
         // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
 
         // add/remove motors depending on your robot (e.g., 6WD)
-        DcMotorEx leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        DcMotorEx leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        DcMotorEx rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        DcMotorEx rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        DcMotorEx leftFront = hardwareMap.get(DcMotorEx.class, "FLM");
+        DcMotorEx leftRear = hardwareMap.get(DcMotorEx.class, "BLM");
+        DcMotorEx rightRear = hardwareMap.get(DcMotorEx.class, "BRM");
+        DcMotorEx rightFront = hardwareMap.get(DcMotorEx.class, "FRM");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
         leftMotors = Arrays.asList(leftFront, leftRear);
