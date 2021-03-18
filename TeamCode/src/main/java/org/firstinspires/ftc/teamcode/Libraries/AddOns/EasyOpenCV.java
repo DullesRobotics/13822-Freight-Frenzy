@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.Libraries.AddOns;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Hardware.USBWebcam;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
@@ -13,6 +16,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.UUID;
 
+@Config
 public class EasyOpenCV extends AddOn {
 
     private Robot r;
@@ -25,14 +29,14 @@ public class EasyOpenCV extends AddOn {
     private OpenCvInternalCamera.CameraDirection cameraDirection;
 
     /** The width and height to set the camera's dimensions to. Should be smaller to make it faster */
-    private final static int VIEWPORT_WIDTH = 320, VIEWPORT_HEIGHT = 240;
+    public static int VIEWPORT_WIDTH = 320, VIEWPORT_HEIGHT = 240;
 
     /**
      * The EasyOpenCV constructor for usb webcams
      * @param pipeline The {@link Pipeline} to use for the robot. Use any object implementing
      * @param webcam the robot's {@link USBWebcam} that OpenCV will use
      */
-    public EasyOpenCV(Pipeline pipeline, @Nullable USBWebcam webcam){
+    public EasyOpenCV(Pipeline pipeline, @Nullable USBWebcam webcam, OpenCvCameraRotation phoneOrientation){
         super(AddOnType.EASY_OPEN_CV);
         this.cameraType = CameraType.USB_WEBCAM;
         this.pipeline = pipeline;
@@ -62,14 +66,14 @@ public class EasyOpenCV extends AddOn {
         /*
          * Initializes the viewing monitor on the driver station phone
          */
-        int cameraMonitorViewId = r.op().hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", r.op().hardwareMap.appContext.getPackageName());
+       // int cameraMonitorViewId = r.op().hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", r.op().hardwareMap.appContext.getPackageName());
 
         /*
          * Depending on the type of camera, we use a different method
          */
         switch(cameraType){
-            case USB_WEBCAM: camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId); break;
-            case INTERNAL_PHONE: camera = OpenCvCameraFactory.getInstance().createInternalCamera(cameraDirection, cameraMonitorViewId); break;
+            case USB_WEBCAM: camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName/*, cameraMonitorViewId*/); break;
+            case INTERNAL_PHONE: camera = OpenCvCameraFactory.getInstance().createInternalCamera(cameraDirection/*, cameraMonitorViewId*/); break;
         }
 
         camera.setPipeline((OpenCvPipeline) pipeline);
@@ -85,10 +89,9 @@ public class EasyOpenCV extends AddOn {
             public void onOpened()
             {
                 // Usually this is where you'll want to start streaming from the camera (see section 4)
-                switch(cameraType){
-                    case USB_WEBCAM: camera.startStreaming(VIEWPORT_WIDTH, VIEWPORT_HEIGHT); break;
-                    case INTERNAL_PHONE: camera.startStreaming(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, phoneOrientation); break;
-                }
+
+                camera.startStreaming(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, phoneOrientation);
+                FtcDashboard.getInstance().startCameraStream(camera, 30);
 
             }
         });

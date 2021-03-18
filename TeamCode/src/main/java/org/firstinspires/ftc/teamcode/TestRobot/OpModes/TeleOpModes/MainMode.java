@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.TestRobot.OpModes.TeleOpModes;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -17,9 +18,11 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
 @TeleOp
+@Config
 public class MainMode extends LinearOpMode {
 
     private StandardDriveTrain robot;
+    public static OpenCvCameraRotation rotation = OpenCvCameraRotation.UPRIGHT;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -27,8 +30,8 @@ public class MainMode extends LinearOpMode {
         robot.addHardware(Configurator.getHardware(robot));
 
         /* Add-on initializing */
-        //UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
-        //robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam()));
+        UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
+        robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam(), rotation));
         //robot.addOnManager().initAddOn(new RobotRecorder());
 
         waitForStart();
@@ -42,8 +45,8 @@ public class MainMode extends LinearOpMode {
         //Functions.startShooter(robot);
 
         while (opModeIsActive()) {
-            //robot.getLogger().putData("ring amount", pipeline.getAmount().toString());
-            robot.getLogger().putData("a button pressed", robot.ctrl1().buttonA());
+            robot.getLogger().putData("ring analysis", pipeline.getAnalysis() + " (" + pipeline.getAmount().toString() + ")", true);
+            //robot.getLogger().putData("a button pressed", robot.ctrl1().buttonA());
             robot.getLogger().updateLog();
         }
 

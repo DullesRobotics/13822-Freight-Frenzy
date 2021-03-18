@@ -53,7 +53,7 @@ public class Configurator {
 //                new ColorSensor(r, "CC", HardwareComponentArea.CLAW),
 //                new ColorSensor(r, "CI", HardwareComponentArea.INTAKE),
                 new IMU(r, "IMU"),
-                /*new USBWebcam(r, "Webcam")*/
+                new USBWebcam(r, "Webcam")
         });
     }
 

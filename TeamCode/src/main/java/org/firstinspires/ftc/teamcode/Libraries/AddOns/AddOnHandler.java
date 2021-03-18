@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.logging.Level;
 
 public class AddOnHandler {
 
@@ -36,6 +37,7 @@ public class AddOnHandler {
         if(addOns.containsKey(ao.getType()))
             addOns.get(ao.getType()).stop();
         addOns.put(ao.getType(), ao);
+        addOns.get(ao.getType()).init(r);
         addOns.get(ao.getType()).start();
     }
 

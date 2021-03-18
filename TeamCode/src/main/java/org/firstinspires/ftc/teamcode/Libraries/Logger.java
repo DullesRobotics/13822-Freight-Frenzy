@@ -5,6 +5,8 @@ import android.os.Build;
 import android.os.Environment;
 import android.text.format.DateFormat;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -15,17 +17,23 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.logging.Level;
 
 //@TargetApi(Build.VERSION_CODES.N)
 public class Logger {
 
+    private final static long DATA_UPDATE_MIN_MILLIS = 100;
+
     private PrintWriter writer;
 
     private LinearOpMode op;
 
-    private volatile HashMap<Telemetry.Item, Object> items = new HashMap<>();
+    private volatile HashMap<String, Object> items = new HashMap<>();
+    private volatile HashMap<String, Telemetry.Item> telemItems = new HashMap<>();
+    private volatile HashMap<String, Long> itemUpdate = new HashMap<>();
 
     public Logger (LinearOpMode op) {
         this.op = op;
@@ -46,8 +54,22 @@ public class Logger {
      * @param data The data to put in the dynamic logger
      */
     public void putData(String dataClassification, Object data){
-            items.put(op.telemetry.addData(dataClassification, data), data);
+        if(!items.containsKey(dataClassification) || (!items.get(dataClassification).equals(data) && itemUpdate.get(dataClassification) + DATA_UPDATE_MIN_MILLIS < System.currentTimeMillis())) {
+            items.put(dataClassification, data);
+            telemItems.put(dataClassification, op.telemetry.addData(dataClassification, data));
+            itemUpdate.put(dataClassification, System.currentTimeMillis());
             updateFileLog(Level.INFO, dataClassification + ": " + data);
+        }
+    }
+
+    public void putData(String dataClassification, Object data, boolean useDash) {
+        if(useDash) {
+            TelemetryPacket packet = new TelemetryPacket();
+            packet.put(dataClassification, data);
+            packet.addTimestamp();
+            FtcDashboard.getInstance().sendTelemetryPacket(packet);
+        }
+        putData(dataClassification, data);
     }
 
     /**
@@ -55,20 +77,19 @@ public class Logger {
      * @param dataClassification The key of the data to be removed
      */
     public void removeData(String dataClassification){
-        if(dataClassification != null)
-            for(Telemetry.Item item : items.keySet())
-                if(item.getCaption().equals(dataClassification)) {
-                    op.telemetry.removeItem(item);
-                    break;
-                }
-
+        if(dataClassification != null){
+            op.telemetry.removeItem(telemItems.get(dataClassification));
+            items.remove(dataClassification);
+            telemItems.remove(dataClassification);
+        }
     }
 
     /** Clears the dynamically logged entries */
     public void clearData(){
-        for(Telemetry.Item key : items.keySet())
-            op.telemetry.removeItem(key);
+        for(Telemetry.Item item : telemItems.values())
+            op.telemetry.removeItem(item);
         items.clear();
+        telemItems.clear();
     }
 
     /**
@@ -79,7 +100,8 @@ public class Logger {
      */
     public void log(Level logLevel, String dataClassification, Object data){
         String date = DateFormat.format("HH:mm:ss", Calendar.getInstance().getTime()).toString();
-        op.telemetry.log().add(date + " [" + logLevel.getName() + "] " + (dataClassification == null ? "" : dataClassification + ": ") + data);
+        String text = date + " [" + logLevel.getName() + "] " + (dataClassification == null ? "" : dataClassification + ": ") + data;
+        op.telemetry.log().add(text);
         updateFileLog(logLevel, (dataClassification == null ? "" : dataClassification + ": ") + data);
     }
 
@@ -90,15 +112,16 @@ public class Logger {
      */
     public void log(Level logLevel, String data){
         String date = DateFormat.format("HH:mm:ss", Calendar.getInstance().getTime()).toString();
-        op.telemetry.log().add(date + " [" + logLevel.getName() + "] " + data);
+        String text = date + " [" + logLevel.getName() + "] " + data;
+        op.telemetry.log().add(text);
         updateFileLog(logLevel, data);
     }
 
     public void updateLog(){
-        for(Telemetry.Item item : items.keySet()) {
-            Object o = items.get(item);
-            op.telemetry.addData(item.getCaption(), o == null ? "null" : o.toString());
-        }
+        try {
+            for(String s : items.keySet())
+                op.telemetry.addData(s, items.get(s));
+        } catch (ConcurrentModificationException ignored) {}
         op.telemetry.update();
     }
 

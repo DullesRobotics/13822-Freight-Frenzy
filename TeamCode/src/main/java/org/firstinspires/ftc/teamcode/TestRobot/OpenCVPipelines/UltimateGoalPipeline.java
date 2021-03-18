@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.Pipeline;
 import org.firstinspires.ftc.teamcode.Libraries.Logger;
 import org.opencv.core.Core;
@@ -13,6 +15,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 /**
  * This class is courtesy of Wizards.exe
  */
+@Config
 public class UltimateGoalPipeline extends OpenCvPipeline implements Pipeline {
 
     public enum RingAmount {
@@ -23,19 +26,19 @@ public class UltimateGoalPipeline extends OpenCvPipeline implements Pipeline {
     private static final Scalar BLUE = new Scalar(0, 0, 255), GREEN = new Scalar(0, 255, 0);
 
     /* The core values which define the location and size of the sample regions */
-    private static final Point REGION1_TOP_LEFT_ANCHOR_POINT = new Point(181,98);
+    private final static Point REGION1_TOP_LEFT_ANCHOR_POINT = new Point(78,98);
 
     /* How large the box should be to check */
-    private static final int REGION_WIDTH = 35, REGION_HEIGHT = 25;
+    private final static int REGION_WIDTH = 112, REGION_HEIGHT = 82;
 
     /* Values that determine rings. Guess & check until it works */
-    private static final int FOUR_RING_THRESHOLD = 150, ONE_RING_THRESHOLD = 135;
+    public static int FOUR_RING_THRESHOLD = 132, ONE_RING_THRESHOLD = 123;
 
-    private static final Point
-                region1_pointA = new Point(
+    public static Point region1_pointA = new Point(
                     REGION1_TOP_LEFT_ANCHOR_POINT.x,
-                    REGION1_TOP_LEFT_ANCHOR_POINT.y),
-                region1_pointB = new Point(
+                    REGION1_TOP_LEFT_ANCHOR_POINT.y);
+
+    public static Point region1_pointB = new Point(
                 REGION1_TOP_LEFT_ANCHOR_POINT.x + REGION_WIDTH,
                 REGION1_TOP_LEFT_ANCHOR_POINT.y + REGION_HEIGHT);
 

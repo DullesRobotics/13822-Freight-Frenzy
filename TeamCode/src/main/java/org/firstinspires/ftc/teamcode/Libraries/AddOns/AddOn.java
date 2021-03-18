@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Libraries.AddOns;
 
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
+import java.util.logging.Level;
+
 /**
  * An external addition that can be added to the robot class to perform further action
  * This class acts as a barrier to functions performed to ensure nothing bad happens
@@ -11,6 +13,7 @@ public abstract class AddOn {
     private AddOnType type;
     private boolean isRunning = false;
     private boolean isInitialized = false;
+    private volatile Robot r;
 
     /**
      * Passes up add-on var
@@ -31,16 +34,25 @@ public abstract class AddOn {
     protected void start(){
         if(isRunning || !isInitialized) return;
         isRunning = true;
+        if(r != null)
+            r.getLogger().log(Level.INFO, "Starting addon " + getType().toString() + " ...");
         startAO();
+        if(r != null)
+            r.getLogger().log(Level.INFO, "Started addon " + getType().toString() + " ...");
     }
 
     /**
      * Stops the add-on
      */
     protected void stop(){
-        if(!isRunning) return;
+        if(!isRunning || !isInitialized) return;
         isRunning = false;
+        isInitialized = false;
+        if(r != null)
+            r.getLogger().log(Level.INFO, "Stopping addon " + getType().toString() + " ...");
         stopAO();
+        if(r != null)
+            r.getLogger().log(Level.INFO, "Stopped addon " + getType().toString());
     }
 
     /**
@@ -54,7 +66,12 @@ public abstract class AddOn {
      * Initializes the add-on
      */
     public void init(Robot r){
+        this.r = r;
+        if(r != null)
+            r.getLogger().log(Level.INFO, "Initializing addon " + getType().toString() + " ...");
         initAO(r);
+        if(r != null)
+            r.getLogger().log(Level.INFO, "Initialized addon " + getType().toString());
         isInitialized = true;
     }
 

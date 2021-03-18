@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.RobotManager;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -13,9 +14,10 @@ import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.RoadRunnerDriveConstants;
 
 //@TargetApi(Build.VERSION_CODES.N)
+@Config
 public abstract class DriveTrain extends Robot {
 
-    protected volatile double speed = 0.8f, minimumPrecisionSpeed = 0.2f;
+    public static double speed = 0.8, minimumPrecisionSpeed = 0.2;
     protected MotorConfiguration autonMotorConfiguration;
     protected final PID pid;
     protected volatile double maxVel = 30, maxAccel = 30, maxAngularVel = 60, maxAngularAccel = 60;
@@ -60,22 +62,6 @@ public abstract class DriveTrain extends Robot {
     public void setIndependentDrivePower(double leftPower, double rightPower){
         for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
             motor.get().setPower( motor.isOpposite() ? rightPower : leftPower );
-    }
-
-    /**
-     * Set the normal speed of the robot in manual control
-     * @param speed The speed of the robot in manual control
-     */
-    public void setRobotBaseSpeed(double speed) {
-        this.speed = speed;
-    }
-
-    /**
-     * Set the lowest speed the robot will move if the trigger is pulled all the way
-     * @param minimumPrecisionSpeed The LOWEST speed the robot will go in precision mode.
-     */
-    public void setMinimumPrecisionSpeed(double minimumPrecisionSpeed) {
-        this.minimumPrecisionSpeed = minimumPrecisionSpeed;
     }
 
     /** Stops and resets the motor, and then reverts state */

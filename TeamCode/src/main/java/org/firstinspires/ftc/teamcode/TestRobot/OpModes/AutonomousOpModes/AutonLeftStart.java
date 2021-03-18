@@ -12,13 +12,14 @@ import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.RobotManager.StandardDriveTrain;
 import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
 import org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines.UltimateGoalPipeline;
 
 @Autonomous
 public class AutonLeftStart extends LinearOpMode {
 
-    MecanumDriveTrain robot;
+    StandardDriveTrain robot;
     SampleMecanumDrive drive;
 
     @Override
@@ -27,7 +28,7 @@ public class AutonLeftStart extends LinearOpMode {
         //sets default drivetrain motor configuration for each motor
         MotorConfiguration mC = new MotorConfiguration(MotorType.CORE_HEX_MOTOR,true, true, 2, 2.9528);
         //creates central drivetrain object
-        robot = new MecanumDriveTrain(this, new PID(1,1,1));
+        robot = new StandardDriveTrain(this, new PID(1,1,1));
         robot.addHardware(Configurator.getHardware(robot));
         //sets motor configuration
         robot.setAutonMotorConfiguration(mC);
@@ -36,16 +37,16 @@ public class AutonLeftStart extends LinearOpMode {
         //sets axis that the control hub is facing
         robot.setIMUAxis(Axis.Z);
         //sets how far apart parallel motors are
-        robot.setTrackWidth(10);
+        robot.setTrackWidth(11);
         //creates road runner with the information above
-        drive = new SampleMecanumDrive(hardwareMap);
+        //drive = new SampleMecanumDrive(hardwareMap);
 
-        UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
-        robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam()));
+        //UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
+        //robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam()));
 
-        Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
-                .forward(60)
-                .build();
+        //Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
+        //        .forward(60)
+        //        .build();
 
         waitForStart();
 
@@ -54,13 +55,13 @@ public class AutonLeftStart extends LinearOpMode {
         /* Give time for robot to calculate just in case */
         robot.autonWait(1000);
 
-        drive.followTrajectory(trajectory);
+        //drive.followTrajectory(trajectory);
 
-        Pose2d poseEstimate = drive.getPoseEstimate();
-        telemetry.addData("finalX", poseEstimate.getX());
-        telemetry.addData("finalY", poseEstimate.getY());
-        telemetry.addData("finalHeading", poseEstimate.getHeading());
-        telemetry.update();
+        //Pose2d poseEstimate = drive.getPoseEstimate();
+        //telemetry.addData("finalX", poseEstimate.getX());
+        //telemetry.addData("finalY", poseEstimate.getY());
+        //telemetry.addData("finalHeading", poseEstimate.getHeading());
+        //telemetry.update();
 
         /*
             Each tile is 2 feet by 2 feet, so it must drive up 3-5 tiles.
@@ -74,25 +75,28 @@ public class AutonLeftStart extends LinearOpMode {
                 For Tile C: 120 inches forward, 12 inches right
          */
 
-        if(pipeline.getAmount() == UltimateGoalPipeline.RingAmount.NONE){
-            robot.autoStraightEncodedPID(72, 3);
-            robot.autoStrafeEncodedPID(12, 3);
-            robot.autoStraightEncodedPID(6, 3);
-            /* Subtracts 8 to correct for it moving 12 left earlier. */
-            robot.autoStrafeEncodedPID(-36 - 8, 3);
-        } else if (pipeline.getAmount() == UltimateGoalPipeline.RingAmount.ONE){
-            robot.autoStraightEncodedPID(96, 3);
-            robot.autoStrafeEncodedPID(12, 3);
-            robot.autoStraightEncodedPID(6, 3);
-            /* Subtracts 8 to correct for it moving 12 left earlier. */
-            robot.autoStrafeEncodedPID(-12 - 8, 3);
-        } else {
-            robot.autoStraightEncodedPID(120, 3);
-            robot.autoStrafeEncodedPID(12, 3);
-            robot.autoStraightEncodedPID(6, 3);
-            /* Subtracts 8 to correct for it moving 12 left earlier. */
-            robot.autoStrafeEncodedPID(-36 - 8, 3);
-        }
+//
+//        if(pipeline.getAmount() == UltimateGoalPipeline.RingAmount.NONE){
+//            robot.autoStraightEncodedPID(72, 3);
+//            robot.autoStrafeEncodedPID(12, 3);
+//            robot.autoStraightEncodedPID(6, 3);
+//            /* Subtracts 8 to correct for it moving 12 left earlier. */
+//            robot.autoStrafeEncodedPID(-36 - 8, 3);
+//        } else if (pipeline.getAmount() == UltimateGoalPipeline.RingAmount.ONE){
+//            robot.autoStraightEncodedPID(96, 3);
+//            robot.autoStrafeEncodedPID(12, 3);
+//            robot.autoStraightEncodedPID(6, 3);
+//            /* Subtracts 8 to correct for it moving 12 left earlier. */
+//            robot.autoStrafeEncodedPID(-12 - 8, 3);
+//        } else {
+//            robot.autoStraightEncodedPID(120, 3);
+//            robot.autoStrafeEncodedPID(12, 3);
+//            robot.autoStraightEncodedPID(6, 3);
+//            /* Subtracts 8 to correct for it moving 12 left earlier. */
+//            robot.autoStrafeEncodedPID(-36 - 8, 3);
+//        }
+
+        robot.autoDriveTimed(500, false, false);
 
         robot.autonWait(1000);
 
