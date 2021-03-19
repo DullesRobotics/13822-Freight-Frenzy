@@ -71,12 +71,9 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     "when using the built-in drive motor velocity PID.");
         }
 
-        MecanumDriveTrain driveTrain = new MecanumDriveTrain(this, new PID(1,1,1));
-        driveTrain.addHardware(Configurator.getHardware(driveTrain));
-
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
-        drive = new SampleMecanumDrive(hardwareMap);
+        drive = new SampleMecanumDrive(this);
 
         mode = Mode.TUNING_MODE;
 

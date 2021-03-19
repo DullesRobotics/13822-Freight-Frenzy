@@ -47,12 +47,9 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
                     "when using the built-in drive motor velocity PID.");
         }
 
-        MecanumDriveTrain driveTrain = new MecanumDriveTrain(this, new PID(1,1,1));
-        driveTrain.addHardware(Configurator.getHardware(driveTrain));
-
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(this);
 
         NanoClock clock = NanoClock.system();
 

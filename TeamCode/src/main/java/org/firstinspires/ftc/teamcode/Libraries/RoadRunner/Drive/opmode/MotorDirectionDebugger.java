@@ -49,11 +49,9 @@ public class MotorDirectionDebugger extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        MecanumDriveTrain driveTrain = new MecanumDriveTrain(this, new PID(1,1,1));
-        driveTrain.addHardware(Configurator.getHardware(driveTrain));
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(this);
 
         telemetry.addLine("Press play to begin the debugging opmode");
         telemetry.update();

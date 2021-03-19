@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.Hardware.Motor;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Level;
 
@@ -33,7 +35,7 @@ public class Motor extends HardwareComponent {
         this.motorConfiguration = motorConfiguration;
         this.isOpposite = isOpposite;
         try {
-            setComponent(r.op().hardwareMap.dcMotor.get(id));
+            setComponent(r.op().hardwareMap.get(motorConfiguration.isEncoded() ? DcMotorEx.class : DcMotor.class, id));
             r.op().hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             if(isOpposite)
                 get().setDirection(isOpposite ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
@@ -56,7 +58,7 @@ public class Motor extends HardwareComponent {
         this.isOpposite = isOpposite;
         get().setDirection(isOpposite ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
         try {
-            setComponent(r.op().hardwareMap.dcMotor.get(id));
+            setComponent(r.op().hardwareMap.get(motorConfiguration.isEncoded() ? DcMotorEx.class : DcMotor.class, id));
             r.op().hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } catch (Exception e) {
             r.getLogger().log(Level.SEVERE, "Error Adding Motor " + id, e.toString());
@@ -67,6 +69,11 @@ public class Motor extends HardwareComponent {
     @Override
     public DcMotor get() {
         return (DcMotor) component;
+    }
+
+    @Nullable
+    public DcMotorEx getEncoded() {
+        return getConfiguration().isEncoded() ? (DcMotorEx) component : null;
     }
 
     /**

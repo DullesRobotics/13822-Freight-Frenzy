@@ -33,7 +33,7 @@ public class RoadRunnerDriveConstants {
      * If using the built-in motor velocity PID, update MOTOR_VELO_PID with the tuned coefficients
      * from DriveVelocityPIDTuner.
      */
-    public static boolean RUN_USING_ENCODER = true;
+    public static boolean RUN_USING_ENCODER = false;
     public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(30, 0, 8,
             getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
@@ -55,6 +55,7 @@ public class RoadRunnerDriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
+    //0.011311706322128667
     public static double kV = 1.0 / rpmToVelocity(MAX_RPM);
     public static double kA = 0;
     public static double kStatic = 0;
