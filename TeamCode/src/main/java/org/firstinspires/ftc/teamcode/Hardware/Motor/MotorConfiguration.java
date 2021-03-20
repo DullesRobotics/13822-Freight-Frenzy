@@ -4,7 +4,7 @@ public class MotorConfiguration {
 
     private final MotorType mt;
     private final double wheelDiameter, gearRatio;
-    private final boolean canStrafe, isEncoded;
+    private final boolean canStrafe;
 
     /**
      * For non-drivetrain motors
@@ -15,7 +15,6 @@ public class MotorConfiguration {
     public MotorConfiguration(MotorType mt, boolean isEncoded, double wheelDiameter){
         this.mt = mt;
         this.wheelDiameter = wheelDiameter;
-        this.isEncoded = isEncoded;
         this.canStrafe = false;
         this.gearRatio = 1;
     }
@@ -25,7 +24,6 @@ public class MotorConfiguration {
      * @param mt The type of motor hardware being used
      * @param wheelDiameter The diameter of the wheel in INCHES
      * @param canStrafe If the wheel can strafe
-     * @param isEncoded If the motor is encoded
      * @param gearRatio GEAR_RATIO is the ratio of the output (wheel) speed to input (motor) speed.
      *                  If you are using direct drive—no gears/belts—GEAR_RATIO should be 1.
      *                  A gear ratio more than 1 will indicate that your wheel spins faster
@@ -34,11 +32,10 @@ public class MotorConfiguration {
      *                  includes a set of 1:2 bevel gears, reducing your output speed by half.
      *                  So your gear ratio will be 1/2 or 0.5
      */
-    public MotorConfiguration(MotorType mt, boolean canStrafe, boolean isEncoded, double wheelDiameter, double gearRatio){
+    public MotorConfiguration(MotorType mt, boolean canStrafe, double wheelDiameter, double gearRatio){
         this.mt = mt;
         this.wheelDiameter = wheelDiameter;
         this.canStrafe = canStrafe;
-        this.isEncoded = isEncoded;
         this.gearRatio = gearRatio;
     }
 
@@ -73,13 +70,6 @@ public class MotorConfiguration {
      */
     public double getWheelDiameter() {
         return wheelDiameter;
-    }
-
-    /**
-     * @return If the wheel supports encoding
-     */
-    public boolean isEncoded() {
-        return isEncoded;
     }
 
     /**

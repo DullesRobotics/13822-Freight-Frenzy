@@ -1,16 +1,11 @@
 package org.firstinspires.ftc.teamcode.RobotManager;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Axis;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
-import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
-import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.DrivetrainMotor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
-import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
 
@@ -38,23 +33,25 @@ public class MecanumDriveTrain extends StandardDriveTrain {
      * @param c The controller to move the robot with
      */
     @Override
-    public void driveWithController(Controller c) {
+    public void driveWithController(Controller ctrl) {
         getLogger().log(Level.INFO, "Beginning drive with controller, mechanum");
         double staticPrecisionSpeed = minimumPrecisionSpeed + ((speed - minimumPrecisionSpeed) / 4);
         addThread(new Thread(() -> {
-            double currentSpeed = -1;
+            double flmPower, frmPower, blmPower, brmPower, currentSpeed;
             while(op().opModeIsActive()){
-                currentSpeed = c.rightBumper() ? staticPrecisionSpeed : speed;
+                currentSpeed = ctrl.rightBumper() ? staticPrecisionSpeed : speed;
                 getLogger().putData("Joystick Speed", currentSpeed);
 
-                double originalPower = (-c.rightY() + c.leftTrigger() - c.rightTrigger()) * currentSpeed,
-                        oppositePower = (-c.leftY() - c.leftTrigger() + c.rightTrigger()) * currentSpeed;
+                flmPower = (-ctrl.rightY() + ctrl.leftTrigger() - ctrl.rightTrigger());
+                frmPower = (-ctrl.leftY() - ctrl.leftTrigger() + ctrl.rightTrigger());
+                blmPower = (-ctrl.rightY() - ctrl.leftTrigger() + ctrl.rightTrigger());
+                brmPower = (-ctrl.leftY() + ctrl.leftTrigger() - ctrl.rightTrigger());
 
-                getLogger().putData("Set Power (Original, Opposite)", originalPower + " " + oppositePower);
+                getLogger().putData("Set Power (FL, FR, BL, BR)", flmPower + ", " + frmPower + ", " + blmPower + ", " + brmPower);
                 getLogger().putData("Power (FL, FR, BL, BR)", getMotor("FLM").get().getPower() + ", " + getMotor("FRM").get().getPower() + ", " + getMotor("BLM").get().getPower() + ", " + getMotor("BRM").get().getPower());
                 getLogger().putData("Velocity (FL, FR, BL, BR):", getMotor("FLM").getEncoded().getVelocity() + ", " + getMotor("FRM").getEncoded().getVelocity() + ", " + getMotor("BLM").getEncoded().getVelocity() + ", " + getMotor("BRM").getEncoded().getVelocity());
 
-                setMechanumPower2D(originalPower, oppositePower);
+                setIndividualDrivePower(flmPower, frmPower, blmPower, brmPower);
             }
         }), true, () -> getLogger().clearData());
     }
@@ -77,9 +74,9 @@ public class MecanumDriveTrain extends StandardDriveTrain {
          *
          * Loops through every motor and sets the position for it to go to. If it's a front motor is subtracts the ticks, otherwise it adds
          */
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)){
+        for(DrivetrainMotor motor : getDrivetrainMotors()){
             /* if is front motor */
-            boolean isFront = (motor.isOpposite() && motor.isStrafeOpposite()) || (!motor.isOpposite() && !motor.isStrafeOpposite());
+            boolean isFront = (motor.isFlipped() && motor.isStrafeFlipped()) || (!motor.isFlipped() && !motor.isStrafeFlipped());
             motor.get().setTargetPosition(motor.get().getCurrentPosition() + (isFront ? -1 : 1) * motor.getConfiguration().inchesToCounts(inches));
         }
 
@@ -104,7 +101,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
         double tempSpeed = speed;
         while(op().opModeIsActive() && time > System.currentTimeMillis()){
             if(goLeft) tempSpeed *= -1;
-            setMechanumPower4D(speed, -speed, speed, -speed);
+            setIndividualDrivePower(speed, -speed, speed, -speed);
             getLogger().putData("Speed (FL, BL, FR, BR)", "(" + speed + ", " + -speed + ", " + -speed + ", " + speed + ")");
         }
         setUniformDrivePower(0);
@@ -131,7 +128,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
             leftSpeed = speed - steer;
             rightSpeed = speed + steer;
 
-            setMechanumPower4D(leftSpeed, -leftSpeed, rightSpeed, -rightSpeed);
+            setIndividualDrivePower(leftSpeed, -leftSpeed, rightSpeed, -rightSpeed);
 
             getLogger().putData("Steer", steer);
             getLogger().putData("Speed (FL, BL, FR, BR)", "(" + leftSpeed + ", " + -leftSpeed + ", " + -rightSpeed + ", " + rightSpeed + ")");
@@ -161,8 +158,8 @@ public class MecanumDriveTrain extends StandardDriveTrain {
         setAllRunToPosition();
 
         /* Loops through every motor and sets the position for it to go to. If it's strafe opposite (front right, back left), it subtracts the ticks. Otherwise it adds them. */
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
-            motor.get().setTargetPosition(motor.get().getCurrentPosition() + (motor.isStrafeOpposite() ? -1 : 1) * motor.getConfiguration().inchesToCounts(inches));
+        for(DrivetrainMotor motor : getDrivetrainMotors())
+            motor.get().setTargetPosition(motor.get().getCurrentPosition() + (motor.isStrafeFlipped() ? -1 : 1) * motor.getConfiguration().inchesToCounts(inches));
 
         double steer, leftSpeed, rightSpeed, target = imu.getYaw();
 
@@ -171,12 +168,12 @@ public class MecanumDriveTrain extends StandardDriveTrain {
             leftSpeed = speed - steer;
             rightSpeed = speed + steer;
 
-            setMechanumPower4D(leftSpeed, -leftSpeed, rightSpeed, -rightSpeed);
+            setIndividualDrivePower(leftSpeed, -leftSpeed, rightSpeed, -rightSpeed);
 
             getLogger().putData("Steer", steer);
-            if(getMotors(HardwareComponentArea.DRIVE_TRAIN).size() > 0) {
+            if(getDrivetrainMotors().size() > 0) {
                 /* TODO make this more clear, not sure WHICH motor has its ticks recorded */
-                getLogger().putData("Target Ticks", getMotors(HardwareComponentArea.DRIVE_TRAIN).get(0).get().getTargetPosition());
+                getLogger().putData("Target Ticks", getDrivetrainMotors().get(0).get().getTargetPosition());
                 getLogger().putData("Current Ticks", steer);
             }
             getLogger().putData("Speed (FL, BL, FR, BR)", "(" + leftSpeed + ", " + -leftSpeed + ", " + -rightSpeed + ", " + rightSpeed + ")");
@@ -191,40 +188,6 @@ public class MecanumDriveTrain extends StandardDriveTrain {
         double angleDiff = IMU.distanceBetweenAngles(imu.getYaw(), target);
         if(op().opModeIsActive() && Math.abs(angleDiff) > tolerance)
             autoTurnPID(angleDiff, tolerance, true);
-    }
-
-    /**
-     * Sets the power for mechanum motors and the opposite ones
-     * @param original The original power
-     * @param opposite The opposite power
-     */
-    private void setMechanumPower2D(double original, double opposite){
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
-            motor.get().setPower(motor.isStrafeOpposite() ? opposite : original);
-    }
-
-    /**
-     * Sets power for each kind of drive-train motor
-     * @param originalLeft The power for the "original" left motor (usually front left)
-     * @param oppositeLeft The power for the "opposite" left motor (usually back left)
-     * @param originalRight The power for the "original" right motor (usually back right)
-     * @param oppositeRight The power for the "opposite" right motor (usually front right)
-     */
-    private void setMechanumPower4D(double originalLeft, double oppositeLeft, double originalRight, double oppositeRight){
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
-            motor.get().setPower(!motor.isOpposite() ? !motor.isStrafeOpposite() ? originalLeft : oppositeLeft : !motor.isStrafeOpposite() ? originalRight : oppositeRight);
-    }
-
-    /**
-     * Sets power for the front and back motors
-     * @param frontPower The front motor power
-     * @param backPower The back motor power
-     */
-    private void setMechanumPowerFB(double frontPower, double backPower){
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)){
-            boolean isFront = (motor.isOpposite() && motor.isStrafeOpposite()) || (!motor.isOpposite() && !motor.isStrafeOpposite());
-            motor.get().setPower(isFront ? frontPower : backPower);
-        }
     }
 
 }

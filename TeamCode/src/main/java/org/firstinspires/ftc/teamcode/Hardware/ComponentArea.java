@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
-public enum HardwareComponentArea {
+public enum ComponentArea {
 
     DRIVE_TRAIN,
     LIFT,

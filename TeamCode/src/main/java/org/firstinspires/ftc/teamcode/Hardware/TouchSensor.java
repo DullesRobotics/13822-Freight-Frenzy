@@ -11,7 +11,7 @@ public class TouchSensor extends HardwareComponent {
      * @param id The id of the servo in the hardware map
      * @param componentArea Where the servo is on the robot
      */
-    public TouchSensor(Robot r, String id, HardwareComponentArea componentArea) {
+    public TouchSensor(Robot r, String id, ComponentArea componentArea) {
         super(r, id, componentArea);
         r.getLogger().log(Level.INFO, "Adding Touch Sensor: " + id);
         try { setComponent(r.op().hardwareMap.touchSensor.get(id));

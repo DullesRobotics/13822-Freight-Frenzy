@@ -11,7 +11,7 @@ public class ColorSensor extends HardwareComponent {
      * @param id The id of the servo in the hardware map
      * @param componentArea Where the servo is on the robot
      */
-    public ColorSensor(Robot r, String id, HardwareComponentArea componentArea) {
+    public ColorSensor(Robot r, String id, ComponentArea componentArea) {
         super(r, id, componentArea);
         r.getLogger().log(Level.INFO, "Adding Color Sensor: " + id);
         try { setComponent(r.op().hardwareMap.colorSensor.get(id));

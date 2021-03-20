@@ -3,15 +3,14 @@ package org.firstinspires.ftc.teamcode.RobotManager;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Axis;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
-import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.DrivetrainMotor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorType;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
-import org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants;
 
 //@TargetApi(Build.VERSION_CODES.N)
 @Config
@@ -38,12 +37,47 @@ public abstract class DriveTrain extends Robot {
     public abstract void driveWithController(Controller c);
 
     /**
-     * moves every drive train motor forward
-     * @param power The speed to move the motor
+     * moves every drive train motor forward/backward
+     * @param power The speed to move the motors
      */
     public void setUniformDrivePower(double power){
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
-            motor.get().setPower(power);
+        for(DrivetrainMotor motor : getDrivetrainMotors())
+            if(motor.get() != null)
+                motor.get().setPower(power);
+    }
+
+    /**
+     * Sets the power of each individual motor
+     * @param leftSidePower Left motors' power
+     * @param rightSidePower right motors' power
+     */
+    public void setSidedDrivePower(double leftSidePower, double rightSidePower) {
+        DrivetrainMotor flm = getDrivetrainMotor(MotorType.DrivetrainPosition.FLM);
+        DrivetrainMotor frm = getDrivetrainMotor(MotorType.DrivetrainPosition.FRM);
+        DrivetrainMotor blm = getDrivetrainMotor(MotorType.DrivetrainPosition.BLM);
+        DrivetrainMotor brm = getDrivetrainMotor(MotorType.DrivetrainPosition.BRM);
+        if(flm != null && flm.get() != null) flm.get().setPower(leftSidePower);
+        if(frm != null && frm.get() != null) frm.get().setPower(rightSidePower);
+        if(blm != null && blm.get() != null) blm.get().setPower(leftSidePower);
+        if(brm != null && brm.get() != null) brm.get().setPower(rightSidePower);
+    }
+
+    /**
+     * Sets the power of each individual motor
+     * @param flmPower Front left motor power
+     * @param frmPower Front right motor power
+     * @param blmPower Back left motor power
+     * @param brmPower Back right motor power
+     */
+    public void setIndividualDrivePower(double flmPower, double frmPower, double blmPower, double brmPower) {
+        DrivetrainMotor flm = getDrivetrainMotor(MotorType.DrivetrainPosition.FLM);
+        DrivetrainMotor frm = getDrivetrainMotor(MotorType.DrivetrainPosition.FRM);
+        DrivetrainMotor blm = getDrivetrainMotor(MotorType.DrivetrainPosition.BLM);
+        DrivetrainMotor brm = getDrivetrainMotor(MotorType.DrivetrainPosition.BRM);
+        if(flm != null && flm.get() != null) flm.get().setPower(flmPower);
+        if(frm != null && frm.get() != null) frm.get().setPower(frmPower);
+        if(blm != null && blm.get() != null) blm.get().setPower(blmPower);
+        if(brm != null && brm.get() != null) brm.get().setPower(brmPower);
     }
 
     /**
@@ -51,46 +85,42 @@ public abstract class DriveTrain extends Robot {
      * @param power The speed to move the motor
      */
     public void setTurningDrivePower(double power){
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
-            motor.get().setPower( motor.isOpposite() ? power : -power );
-    }
-
-    public void setIndependentDrivePower(double leftPower, double rightPower){
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
-            motor.get().setPower( motor.isOpposite() ? rightPower : leftPower );
+        for(Motor motor : getDrivetrainMotors())
+            if(motor.get() != null)
+                motor.get().setPower( motor.isFlipped() ? power : -power );
     }
 
     /** Stops and resets the motor, and then reverts state */
     public void resetAllEncoders(){
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+        for(Motor motor : getDrivetrainMotors())
             motor.stopAndResetEncoder();
     }
 
     /** Makes all motors run with encoders */
     public void setAllRunWithEncoder(){
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
-            if(motor.getConfiguration().isEncoded())
+        for(Motor motor : getDrivetrainMotors())
+            if(motor.isEncoded() && motor.get() != null)
                 motor.get().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     /** Makes motors run without encoders */
     public void setAllRunWithoutEncoder(){
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
-            if(motor.getConfiguration().isEncoded())
+        for(Motor motor : getDrivetrainMotors())
+            if(motor.isEncoded() && motor.get() != null)
                 motor.get().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     /** Makes all motors go into run_to_position mode */
     public void setAllRunToPosition(){
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
-            if(motor.getConfiguration().isEncoded())
+        for(Motor motor : getDrivetrainMotors())
+            if(motor.isEncoded() && motor.get() != null)
                 motor.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     /** @return If any drive train motor is moving */
     public boolean isAnyDriveTrainMotorBusy(){
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
-            if(motor.get().isBusy())
+        for(Motor motor : getDrivetrainMotors())
+            if(motor.get() != null && motor.get().isBusy())
                 return true;
         return false;
     }

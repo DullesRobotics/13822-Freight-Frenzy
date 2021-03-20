@@ -4,9 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
-import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,48 +16,20 @@ import java.util.logging.Level;
  */
 public class Motor extends HardwareComponent {
 
-    private boolean isOpposite;
-    private MotorConfiguration motorConfiguration;
-    private boolean isStrafeOpposite = false;
-
-    /**
-     * @param r The op mode this motor is registered in
-     * @param id The id of the motor in the hardware map
-     * @param componentArea Where the motor is on the robot
-     * @param motorConfiguration The motor configuration, including the counts per inch and more
-     * @param isOpposite If the motor should be inverted
-     */
-    public Motor(Robot r, String id, HardwareComponentArea componentArea, MotorConfiguration motorConfiguration, boolean isOpposite)
-    {
-        super(r, id, componentArea);
-        r.getLogger().log(Level.INFO, "Adding Motor: " + id);
-        this.motorConfiguration = motorConfiguration;
-        this.isOpposite = isOpposite;
-        try {
-            setComponent(r.op().hardwareMap.get(motorConfiguration.isEncoded() ? DcMotorEx.class : DcMotor.class, id));
-            r.op().hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            if(isOpposite)
-                get().setDirection(isOpposite ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
-        } catch (Exception e) {
-            r.getLogger().log(Level.SEVERE, "Error Adding Motor (encoded = " + motorConfiguration.isEncoded() + ") " + id, e.toString());
-            r.op().requestOpModeStop();
-        }
-    }
+    private boolean isFlipped, isEncoded;
 
     /**
      * Without a provided motorConfiguration, the motor cannot be encoded
      * @param r The op mode this motor is registered in
      * @param id The id of the motor in the hardware map
      * @param componentArea Where the motor is on the robot
-     * @param isOpposite If the motor should be inverted
      */
-    public Motor(Robot r, String id, HardwareComponentArea componentArea, boolean isOpposite)
+    public Motor(Robot r, String id, ComponentArea componentArea, boolean isEncoded)
     {
         super(r, id, componentArea);
-        this.isOpposite = isOpposite;
-        get().setDirection(isOpposite ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
+        this.isEncoded = isEncoded;
         try {
-            setComponent(r.op().hardwareMap.get(motorConfiguration.isEncoded() ? DcMotorEx.class : DcMotor.class, id));
+            setComponent(r.op().hardwareMap.get(isEncoded ? DcMotorEx.class : DcMotor.class, id));
             r.op().hardwareMap.dcMotor.get(id).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } catch (Exception e) {
             r.getLogger().log(Level.SEVERE, "Error Adding Motor " + id, e.toString());
@@ -73,26 +44,31 @@ public class Motor extends HardwareComponent {
 
     @Nullable
     public DcMotorEx getEncoded() {
-        return getConfiguration().isEncoded() ? (DcMotorEx) component : null;
+        return isEncoded() ? (DcMotorEx) component : null;
     }
 
     /**
-     * @param isOpposite Whether or not the robot is inverted
+     * @param isFlipped Whether or not the robot is inverted
      */
-    public void setOpposite(boolean isOpposite){
-        this.isOpposite = isOpposite;
-        get().setDirection(isOpposite ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
+    public void setFlipped(boolean isFlipped){
+        this.isFlipped = isFlipped;
+        get().setDirection(isFlipped ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
     }
 
     /**
      * Usually a right wheel
      * @return Whether or not the robot is inverted
      */
-    public boolean isOpposite(){
-        return isOpposite;
+    public boolean isFlipped(){
+        return isFlipped;
     }
 
-    public MotorConfiguration getConfiguration(){ return motorConfiguration; }
+    /**
+     * @return If the motor is encoded
+     */
+    public boolean isEncoded(){
+        return isEncoded;
+    }
 
     /**
      * clones the same motor with a different ID
@@ -100,9 +76,7 @@ public class Motor extends HardwareComponent {
      * @return The new motor with the same traits
      */
     public Motor clone(String newID){
-        Motor newM = new Motor(r, newID, getComponentArea(), motorConfiguration, isOpposite);
-        newM.setStrafeOpposite(isStrafeOpposite);
-        return newM;
+        return new Motor(r, newID, getComponentArea(), isEncoded);
     }
 
     /**
@@ -114,29 +88,11 @@ public class Motor extends HardwareComponent {
         get().setMode(_tempM);
     }
 
-    /**
-     * Initiates this motor as a mechanum motor. <br/>
-     * <strong>Only true if front right or back left.</strong><br/>
-     * @param isOpposite If this motor is a Mechanum opposite
-     */
-    public void setStrafeOpposite(boolean isOpposite){
-        this.isStrafeOpposite = isOpposite;
-    }
-
-    /**
-     * Returns if this motor is mechanum and if it is or is not opposite. <br/>
-     * <strong>Opposite if front right or back left.</strong><br/>
-     * @return If this motor is or is not opposite regarding mechanum movement.
-     */
-    public boolean isStrafeOpposite(){
-        return motorConfiguration.canStrafe() && isStrafeOpposite;
-    }
-
     /** @return The textual representation of this motor */
     @Override
     public String toString(){
         return "ID: " + getId() +  ", Component Area: " +  getComponentArea() +
-                ", isOpposite: " + isOpposite() + ", isStrafeOpposite(FR,BL): " + isStrafeOpposite() + ", Port: " + get().getPortNumber();
+                ", isFlipped: " + isFlipped() + ", Port: " + get().getPortNumber();
     }
 
 }

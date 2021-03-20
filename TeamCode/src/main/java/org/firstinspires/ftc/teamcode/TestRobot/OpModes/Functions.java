@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.TestRobot.OpModes;
 
-import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
@@ -30,7 +30,7 @@ public class Functions {
                     on = !on;
 
                     /* When toggled it updates the intake motor(s) */
-                    for(Motor m : r.getMotors(HardwareComponentArea.INTAKE))
+                    for(Motor m : r.getMotors(ComponentArea.INTAKE))
                         if(on)
                             m.get().setPower(INTAKE_SPEED);
                         else
@@ -64,7 +64,7 @@ public class Functions {
                 }
 
                 /* If it's on, run the shooter motor(s). Otherwise, set power to 0 */
-                for(Motor m : r.getMotors(HardwareComponentArea.SHOOTER))
+                for(Motor m : r.getMotors(ComponentArea.SHOOTER))
                     m.get().setPower(on ? SHOOTER_SPEED : 0);
 
                 /* If it's on, still initializing, but init time has passed, stop initializing. */
@@ -85,7 +85,7 @@ public class Functions {
                                 firstShot = false;
                                 alreadyPressed = true;
                                 cooldownTime = System.currentTimeMillis() + SHOOTER_COOLDOWN;
-                                for(Servo s : r.getServos(HardwareComponentArea.SHOOTER)){
+                                for(Servo s : r.getServos(ComponentArea.SHOOTER)){
                                     s.get().scaleRange(0,1);
                                     state = !state;
                                     s.get().setPosition(state ? 0.5 : 0);

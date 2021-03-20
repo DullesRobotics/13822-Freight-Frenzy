@@ -30,4 +30,16 @@ public enum MotorType {
     public double getDriveGearReduction() {
         return driveGearReduction;
     }
+
+    public enum DrivetrainPosition {
+        /** Front Left Motor */
+        FLM,
+        /** Front Right Motor */
+        FRM,
+        /** Back Left Motor */
+        BLM,
+        /** Back Right Motor */
+        BRM
+    }
+
 }

@@ -1,16 +1,13 @@
 package org.firstinspires.ftc.teamcode.RobotManager;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.util.Hardware;
 
 import org.firstinspires.ftc.teamcode.Hardware.ColorSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
-import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.DrivetrainMotor;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorType;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
@@ -26,7 +23,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 /**
  * Hello, code begins here :D
@@ -72,6 +68,31 @@ public class Robot {
     }
 
     /**
+     * Returns the drive train motor with the matching position
+     * @param drivetrainPosition position of component on the drivetrain
+     * @return the hardware component
+     */
+    @Nullable
+    public DrivetrainMotor getDrivetrainMotor(MotorType.DrivetrainPosition drivetrainPosition){
+        for(HardwareComponent hdw : hardwareComponents)
+            if(hdw instanceof DrivetrainMotor && ((DrivetrainMotor) hdw).getDrivetrainPosition() == drivetrainPosition)
+                return (DrivetrainMotor) hdw;
+        return null;
+    }
+
+    /**
+     * Returns the drive train motors in the specified hardware area
+     * @return the hardware components
+     */
+    public ArrayList<DrivetrainMotor> getDrivetrainMotors(){
+        ArrayList<DrivetrainMotor> ar = new ArrayList<>();
+        for(HardwareComponent hdw : hardwareComponents)
+            if(hdw instanceof DrivetrainMotor)
+                ar.add((DrivetrainMotor) hdw);
+        return ar;
+    }
+
+    /**
      * Returns the motor with the matching ID
      * @param id id of hardware component
      * @return the hardware component
@@ -89,7 +110,7 @@ public class Robot {
      * @param area the area where the hardware components are
      * @return the hardware components
      */
-    public ArrayList<Motor> getMotors(HardwareComponentArea area){
+    public ArrayList<Motor> getMotors(ComponentArea area){
         ArrayList<Motor> ar = new ArrayList<>();
         for(HardwareComponent hdw : hardwareComponents)
             if(hdw instanceof Motor && hdw.getComponentArea() == area)
@@ -115,7 +136,7 @@ public class Robot {
      * @param area the area where the hardware components are
      * @return the hardware components
      */
-    public ArrayList<Servo> getServos(HardwareComponentArea area){
+    public ArrayList<Servo> getServos(ComponentArea area){
         ArrayList<Servo> ar = new ArrayList<>();
         for(HardwareComponent hdw : hardwareComponents)
             if(hdw instanceof Servo && hdw.getComponentArea() == area)

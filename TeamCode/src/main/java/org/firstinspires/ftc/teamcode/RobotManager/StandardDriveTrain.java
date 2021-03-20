@@ -1,20 +1,11 @@
 package org.firstinspires.ftc.teamcode.RobotManager;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Axis;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
-import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
-import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
-import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
-import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.DrivetrainMotor;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
-import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Util.Encoder;
-import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
 
 import java.util.logging.Level;
 
@@ -40,16 +31,9 @@ public class StandardDriveTrain extends DriveTrain {
             double currentSpeed;
             while(op().opModeIsActive()){
                 /* linear equation to calculate speed based on right trigger's position */
-                currentSpeed = c.rightTrigger() > 0 ?  minimumPrecisionSpeed : speed; //(speed - minimumPrecisionSpeed) * (c.rightTrigger()) + speed;
+                currentSpeed = c.rightTrigger() > 0 ?  minimumPrecisionSpeed : speed;
                 getLogger().putData("Motor Speed", currentSpeed);
-                for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)) { /* uses regular for-each loop because lambdas require final variables, which is just asking for a heap issue */
-                    if(motor.isOpposite()) motor.get().setPower(-1 * currentSpeed * c.rightY());
-                    else motor.get().setPower(-1 * currentSpeed * c.leftY());
-
-                    /* depending on if the motor is encoded you can get the actual motor velocity */
-                    getLogger().putData(motor.getId() + " Speed", motor.getConfiguration().isEncoded() ? motor.getEncoded().getVelocity() : motor.get().getPower());
-                }
-//                if(ctrl1().buttonA()) getMotor("BRM").get().setPower(1);
+                setSidedDrivePower(-1 * currentSpeed * c.leftY(), -1 * currentSpeed * c.rightY());
             }
         }), true);
     }
@@ -73,7 +57,7 @@ public class StandardDriveTrain extends DriveTrain {
                 case RIGHT: leftPower = speed; rightPower = -speed; break;
             }
 
-            setIndependentDrivePower(leftPower, rightPower);
+            setSidedDrivePower(leftPower, rightPower);
         }
         setUniformDrivePower(0);
         getLogger().removeData("Time Left");
@@ -97,7 +81,7 @@ public class StandardDriveTrain extends DriveTrain {
             steer = (forward ? 1 : -1) * pid.update(PID.PIDType.THREE_SIXTY_ANGLE, imu.getYaw(), target);
             leftSpeed = speed - steer;
             rightSpeed = speed + steer;
-            setIndependentDrivePower(leftSpeed, rightSpeed);
+            setSidedDrivePower(leftSpeed, rightSpeed);
             getLogger().putData("Steer", steer);
             getLogger().putData("Time Left", time - System.currentTimeMillis());
             getLogger().putData("Speed (L, R)", "(" + leftSpeed + ", " + rightSpeed + ")");
@@ -127,7 +111,7 @@ public class StandardDriveTrain extends DriveTrain {
         resetAllEncoders();
         setAllRunToPosition();
 
-        for(Motor m : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+        for(DrivetrainMotor m : getDrivetrainMotors())
             m.get().setTargetPosition(m.get().getCurrentPosition() + m.getConfiguration().inchesToCounts(inches));
 
         double steer, leftSpeed, rightSpeed, target = imu.getYaw();
@@ -135,11 +119,11 @@ public class StandardDriveTrain extends DriveTrain {
             steer = (inches < 0 ? -1 : 1) * pid.update(PID.PIDType.THREE_SIXTY_ANGLE, imu.getYaw(), target);
             leftSpeed = speed - steer;
             rightSpeed = speed + steer;
-            setIndependentDrivePower(leftSpeed, rightSpeed);
+            setSidedDrivePower(leftSpeed, rightSpeed);
 
             getLogger().putData("Steer", steer);
-            if(getMotors(HardwareComponentArea.DRIVE_TRAIN).size() > 0) {
-                getLogger().putData("Target Ticks", getMotors(HardwareComponentArea.DRIVE_TRAIN).get(0).get().getTargetPosition());
+            if(getDrivetrainMotors().size() > 0) {
+                getLogger().putData("Target Ticks", getDrivetrainMotors().get(0).get().getTargetPosition());
                 getLogger().putData("Current Ticks", steer);
             }
             getLogger().putData("Speed (L, R)", "(" + leftSpeed + ", " + rightSpeed + ")");
@@ -221,13 +205,13 @@ public class StandardDriveTrain extends DriveTrain {
             case RIGHT: leftPower = speed; rightPower = -speed; break;
         }
 
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)) {
+        for(DrivetrainMotor motor : getDrivetrainMotors()) {
             int currentPosition = motor.get().getCurrentPosition();
             int ticksToAdd = motor.getConfiguration().inchesToCounts(inches);
             motor.get().setTargetPosition(currentPosition + ticksToAdd);
         }
 
-//        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+//        for(Motor motor : getDriveTrainMotors())
 //            motor.get().setTargetPosition(motor.get().getCurrentPosition() +
 //                    ((motor.isOpposite() && turnRight) || (!motor.isOpposite() && !turnRight) || !turn ? 1 : -1 ) *
 //                            (motor.getConfiguration().inchesToCounts(inches)));
@@ -235,10 +219,10 @@ public class StandardDriveTrain extends DriveTrain {
 //        double power = inches < 0 ? -speed : speed;
 //        setUniformDrivePower(power);
 
-       setIndependentDrivePower(leftPower, rightPower);
+       setSidedDrivePower(leftPower, rightPower);
 
         while(op().opModeIsActive() && isAnyDriveTrainMotorBusy())
-            setIndependentDrivePower(leftPower, rightPower);
+            setSidedDrivePower(leftPower, rightPower);
 
         setUniformDrivePower(0);
     }

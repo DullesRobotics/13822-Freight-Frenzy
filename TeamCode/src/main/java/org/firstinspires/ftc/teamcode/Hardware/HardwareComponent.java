@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.logging.Level;
-
 /**
  * Acts as a shell around a hardware component to more easily store and reference information about it
  */
@@ -17,14 +15,14 @@ public abstract class HardwareComponent {
     /** The ID of the motor in the hardwareMap */
     private final String id;
     /** What area this component controls */
-    private final HardwareComponentArea componentArea;
+    private final ComponentArea componentArea;
 
     /**
      * Constructs this component without a predefined hardware map entry
      * @param id The id of this component
      * @param componentArea The area of the robot this component controls
      */
-    public HardwareComponent(Robot r, String id, HardwareComponentArea componentArea){
+    public HardwareComponent(Robot r, String id, ComponentArea componentArea){
         this.r = r;
         this.id = id;
         this.componentArea = componentArea;
@@ -36,7 +34,7 @@ public abstract class HardwareComponent {
      * @param component The raw hardware reference
      * @param componentArea The area of the robot this component controls
      */
-    public HardwareComponent(Robot r, String id, Object component, HardwareComponentArea componentArea){
+    public HardwareComponent(Robot r, String id, Object component, ComponentArea componentArea){
         this.r = r;
         this.id = id;
         this.component = component;
@@ -62,7 +60,7 @@ public abstract class HardwareComponent {
      * Where this motor is on the robot
      * @return Where this motor is on the robot
      */
-    public HardwareComponentArea getComponentArea(){
+    public ComponentArea getComponentArea(){
         return componentArea;
     }
 

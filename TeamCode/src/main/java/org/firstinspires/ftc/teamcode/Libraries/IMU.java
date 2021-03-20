@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
-import org.firstinspires.ftc.teamcode.Hardware.HardwareComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +31,7 @@ public class IMU extends HardwareComponent {
      * @param id Usually "IMU"
      */
     public IMU(Robot r, String id) {
-        super(r, id, HardwareComponentArea.IMU);
+        super(r, id, ComponentArea.IMU);
         r.getLogger().log(Level.INFO, "Adding IMU: " + id);
         try { setComponent(r.op().hardwareMap.get(BNO055IMU.class, id));
         } catch (Exception e) {
