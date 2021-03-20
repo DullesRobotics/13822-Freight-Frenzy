@@ -30,7 +30,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
      * Braking is NOT dynamic this time, you must hold the bumper
      * TODO make braking toggle?
      * TODO is there any way to make braking dynamic?
-     * @param c The controller to move the robot with
+     * @param ctrl The controller to move the robot with
      */
     @Override
     public void driveWithController(Controller ctrl) {
@@ -42,10 +42,10 @@ public class MecanumDriveTrain extends StandardDriveTrain {
                 currentSpeed = ctrl.rightBumper() ? staticPrecisionSpeed : speed;
                 getLogger().putData("Joystick Speed", currentSpeed);
 
-                flmPower = (-ctrl.rightY() + ctrl.leftTrigger() - ctrl.rightTrigger());
-                frmPower = (-ctrl.leftY() - ctrl.leftTrigger() + ctrl.rightTrigger());
-                blmPower = (-ctrl.rightY() - ctrl.leftTrigger() + ctrl.rightTrigger());
-                brmPower = (-ctrl.leftY() + ctrl.leftTrigger() - ctrl.rightTrigger());
+                flmPower = currentSpeed * (-ctrl.leftY() + ctrl.rightTrigger() - ctrl.leftTrigger());
+                frmPower = currentSpeed * (-ctrl.rightY() - ctrl.rightTrigger() + ctrl.leftTrigger());
+                blmPower = currentSpeed * (-ctrl.leftY() - ctrl.rightTrigger() + ctrl.leftTrigger());
+                brmPower = currentSpeed * (-ctrl.rightY() + ctrl.rightTrigger() - ctrl.leftTrigger());
 
                 getLogger().putData("Set Power (FL, FR, BL, BR)", flmPower + ", " + frmPower + ", " + blmPower + ", " + brmPower);
                 getLogger().putData("Power (FL, FR, BL, BR)", getMotor("FLM").get().getPower() + ", " + getMotor("FRM").get().getPower() + ", " + getMotor("BLM").get().getPower() + ", " + getMotor("BRM").get().getPower());
