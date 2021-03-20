@@ -5,8 +5,11 @@ import org.firstinspires.ftc.teamcode.Hardware.Motor.DrivetrainMotor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorType;
+import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
+
+import static org.firstinspires.ftc.teamcode.Hardware.ComponentArea.*;
 
 public class Configurator {
 
@@ -33,12 +36,8 @@ public class Configurator {
                 motorFrontRight,
                 motorBackLeft,
                 motorBackRight,
-//                new Servo(robot, "CL", HardwareComponentArea.CLAW),
-//                new Servo(robot, "IN", HardwareComponentArea.INTAKE),
-//                new TouchSensor(robot, "TC", HardwareComponentArea.CLAW),
-//                new TouchSensor(robot, "TI", HardwareComponentArea.INTAKE),
-//                new ColorSensor(robot, "CC", HardwareComponentArea.CLAW),
-//                new ColorSensor(robot, "CI", HardwareComponentArea.INTAKE),
+//                new Servo(robot, "CL", CLAW),
+             //   new Servo(robot, "SHS", SHOOTER),
                 new IMU(robot, "IMU"),
                 //new USBWebcam(robot, "Webcam")
         });

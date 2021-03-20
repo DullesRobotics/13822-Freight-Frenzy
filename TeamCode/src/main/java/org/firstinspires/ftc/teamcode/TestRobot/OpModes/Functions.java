@@ -13,8 +13,9 @@ import java.util.logging.Level;
 @Config
 public class Functions {
 
-    public static float INTAKE_SPEED = 1, SHOOTER_SPEED = 1;
-    public static long SHOOTER_INIT_MILLIS = 2000, SHOOTER_WAIT_MILLIS = 8000, SHOOTER_COOLDOWN = 2000;
+    //lowered for battery life
+    public static float INTAKE_SPEED = 0.5f, SHOOTER_SPEED = 0.5f;
+    public static long SHOOTER_INIT_MILLIS = 1000, SHOOTER_WAIT_MILLIS = 8000, SHOOTER_COOLDOWN = 2000;
 
     /**
      * Handles intake functions
@@ -62,12 +63,28 @@ public class Functions {
      */
     public static void startShooter(Robot r, Controller ctrl){
         r.getLogger().log(Level.INFO, "Starting shooter function");
+
+        for(Servo s : r.getServos(ComponentArea.SHOOTER)) {
+            s.get().scaleRange(0,1);
+            s.get().setPosition(0);
+        }
+
         r.addThread(new Thread(() -> {
             boolean on = false, init = false, firstShot = false, state = false;
             long initTime = -1, endTime = 0, cooldownTime = 0;
             boolean alreadyPressed = false;
             while(r.op().opModeIsActive()){
                 /* When the button is pressed and it's not already on, begin initializing */
+
+                r.getLogger().putData("isOn", on);
+                r.getLogger().putData("init", init);
+                r.getLogger().putData("firstShot", firstShot);
+                r.getLogger().putData("state", state);
+                r.getLogger().putData("initTime", initTime);
+                r.getLogger().putData("endTime", endTime);
+                r.getLogger().putData("cooldownTime", cooldownTime);
+                r.getLogger().putData("alreadyPressed", alreadyPressed);
+
                 if(ctrl.buttonB() && !on){
                     on = true;
                     init = true;
@@ -96,12 +113,12 @@ public class Functions {
                             if (firstShot || (ctrl.buttonB() && !alreadyPressed)) {
                                 firstShot = false;
                                 alreadyPressed = true;
+                                //reset timers
+                                endTime = System.currentTimeMillis() + SHOOTER_WAIT_MILLIS;
                                 cooldownTime = System.currentTimeMillis() + SHOOTER_COOLDOWN;
-                                for(Servo s : r.getServos(ComponentArea.SHOOTER)){
-                                    s.get().scaleRange(0,1);
-                                    state = !state;
-                                    s.get().setPosition(state ? 0.5 : 0);
-                                }
+                                state = !state;
+                                for(Servo s : r.getServos(ComponentArea.SHOOTER))
+                                    s.get().setPosition(state ? 1 : 0);
                             }
                     }
 
