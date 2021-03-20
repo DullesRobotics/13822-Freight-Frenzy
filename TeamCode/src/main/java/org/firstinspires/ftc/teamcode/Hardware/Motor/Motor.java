@@ -136,7 +136,7 @@ public class Motor extends HardwareComponent {
     @Override
     public String toString(){
         return "ID: " + getId() +  ", Component Area: " +  getComponentArea() +
-                ", isOpposite: " + isOpposite() + ", isStrafeOpposite(FR,BL): " + isStrafeOpposite() + ", ";
+                ", isOpposite: " + isOpposite() + ", isStrafeOpposite(FR,BL): " + isStrafeOpposite() + ", Port: " + get().getPortNumber();
     }
 
 }

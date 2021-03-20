@@ -42,16 +42,17 @@ public class MecanumDriveTrain extends StandardDriveTrain {
         getLogger().log(Level.INFO, "Beginning drive with controller, mechanum");
         double staticPrecisionSpeed = minimumPrecisionSpeed + ((speed - minimumPrecisionSpeed) / 4);
         addThread(new Thread(() -> {
-            double currentJoystickSpeed = -1;
-            getLogger().putData("Joystick Speed", currentJoystickSpeed);
+            double currentSpeed = -1;
             while(op().opModeIsActive()){
-                currentJoystickSpeed = c.rightBumper() ? staticPrecisionSpeed : speed;
+                currentSpeed = c.rightBumper() ? staticPrecisionSpeed : speed;
+                getLogger().putData("Joystick Speed", currentSpeed);
 
-                double originalPower = (-c.rightY() + c.leftTrigger() - c.rightTrigger()) * currentJoystickSpeed,
-                        oppositePower = (-c.leftY() - c.leftTrigger() + c.rightTrigger()) * currentJoystickSpeed;
+                double originalPower = (-c.rightY() + c.leftTrigger() - c.rightTrigger()) * currentSpeed,
+                        oppositePower = (-c.leftY() - c.leftTrigger() + c.rightTrigger()) * currentSpeed;
 
-                getLogger().putData("Front Power (FLM, FRM)", originalPower + " " + oppositePower);
-                getLogger().putData("Back Power (BLM, BRM)", oppositePower + " " + originalPower);
+                getLogger().putData("Set Power (Original, Opposite)", originalPower + " " + oppositePower);
+                getLogger().putData("Power (FL, FR, BL, BR)", getMotor("FLM").get().getPower() + ", " + getMotor("FRM").get().getPower() + ", " + getMotor("BLM").get().getPower() + ", " + getMotor("BRM").get().getPower());
+                getLogger().putData("Velocity (FL, FR, BL, BR):", getMotor("FLM").getEncoded().getVelocity() + ", " + getMotor("FRM").getEncoded().getVelocity() + ", " + getMotor("BLM").getEncoded().getVelocity() + ", " + getMotor("BRM").getEncoded().getVelocity());
 
                 setMechanumPower2D(originalPower, oppositePower);
             }

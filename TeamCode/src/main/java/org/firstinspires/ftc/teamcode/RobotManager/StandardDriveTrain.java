@@ -43,12 +43,13 @@ public class StandardDriveTrain extends DriveTrain {
                 currentSpeed = c.rightTrigger() > 0 ?  minimumPrecisionSpeed : speed; //(speed - minimumPrecisionSpeed) * (c.rightTrigger()) + speed;
                 getLogger().putData("Motor Speed", currentSpeed);
                 for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)) { /* uses regular for-each loop because lambdas require final variables, which is just asking for a heap issue */
-                    if(motor.isOpposite()) motor.get().setPower(-1 * currentSpeed * c.leftY());
-                    else motor.get().setPower(-1 * currentSpeed * c.rightY());
+                    if(motor.isOpposite()) motor.get().setPower(-1 * currentSpeed * c.rightY());
+                    else motor.get().setPower(-1 * currentSpeed * c.leftY());
 
                     /* depending on if the motor is encoded you can get the actual motor velocity */
                     getLogger().putData(motor.getId() + " Speed", motor.getConfiguration().isEncoded() ? motor.getEncoded().getVelocity() : motor.get().getPower());
                 }
+//                if(ctrl1().buttonA()) getMotor("BRM").get().setPower(1);
             }
         }), true);
     }

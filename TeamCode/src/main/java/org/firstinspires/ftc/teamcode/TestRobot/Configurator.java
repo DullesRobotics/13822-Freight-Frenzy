@@ -27,7 +27,7 @@ public class Configurator {
     public static HardwareComponent[] getHardware(Robot r){
         MotorConfiguration mC = new MotorConfiguration(
                 MotorType.NEVEREST_ORBITAL,
-                false,
+                true,
                 true,
                 2.9528,
                 1);
@@ -38,8 +38,8 @@ public class Configurator {
         motorBackRight = motorFrontRight.clone(ID_backRight);
 
         //front left & back right are strafe opposite
-        motorBackLeft.setStrafeOpposite(false);
-        motorBackRight.setStrafeOpposite(true);
+        motorFrontRight.setStrafeOpposite(true);
+        motorBackLeft.setStrafeOpposite(true);
 
         return(new HardwareComponent[]{
                 motorFrontLeft, //left front motor

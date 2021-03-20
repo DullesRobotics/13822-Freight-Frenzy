@@ -73,7 +73,9 @@ public class Controller {
 
     public float rightTrigger() {
         float preReading = autoMode ? right_trigger : g.right_trigger;
-        return preReading;
+        float reading = (float) (Math.pow(g.right_trigger, 2));
+        if (preReading < 0)
+            reading *= -1;
     }
 
     public float leftX() {
