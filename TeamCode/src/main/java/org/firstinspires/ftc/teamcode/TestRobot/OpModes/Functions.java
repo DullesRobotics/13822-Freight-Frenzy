@@ -50,6 +50,7 @@ public class Functions {
      * @param on If the intake should be on or off
      */
     public static void setIntake(Robot r, boolean on) {
+        r.getLogger().log(Level.INFO, "Turning intake motor(s) " + (on ? "on" : "off"));
         for(Motor m : r.getMotors(ComponentArea.INTAKE))
             m.get().setPower(on ? INTAKE_SPEED : 0);
     }
@@ -125,6 +126,44 @@ public class Functions {
 
             }
         }), true);
+    }
+
+    /**
+     * Starts or stops the shooter motor(s) for auton
+     * @param r The robot with the shooter motor
+     * @param on If the motor should be turned on or off
+     */
+    public static void setShooterMotor(Robot r, boolean on) {
+        r.getLogger().log(Level.INFO, "Turning Shooter Motor " + (on ? "on" : "off"));
+        for(Motor m : r.getMotors(ComponentArea.SHOOTER))
+            m.get().setPower(on ? SHOOTER_SPEED : 0);
+    }
+
+    /**
+     * Calibrates the shooter servo by setting their scale range to (0, 1) and setting their position to 0.
+     * @param r The robot with the shooter servo
+     */
+    public static void calibrateShooterServos(Robot r){
+        r.getLogger().log(Level.INFO, "Calibrating Shooter Servo");
+        for(Servo s : r.getServos(ComponentArea.SHOOTER)) {
+            s.get().scaleRange(0,1);
+            s.get().setPosition(0);
+        }
+    }
+
+    /**
+     * Moves shooter servos between 0 and 1
+     * @param r The robot with the shooter servo
+     */
+    public static void moveShooterServos(Robot r){
+        r.getLogger().log(Level.INFO, "Moving shooter servos");
+        for(Servo s : r.getServos(ComponentArea.SHOOTER)) {
+            double currentPosition = Math.round(s.get().getPosition());
+            if(currentPosition == 0)
+                s.get().setPosition(1);
+            else if(currentPosition == 1)
+                s.get().setPosition(0);
+        }
     }
 
 }
