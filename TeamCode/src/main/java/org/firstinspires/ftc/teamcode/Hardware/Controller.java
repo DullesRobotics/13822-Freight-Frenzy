@@ -76,6 +76,7 @@ public class Controller {
         float reading = (float) (Math.pow(g.right_trigger, 2));
         if (preReading < 0)
             reading *= -1;
+        return reading;
     }
 
     public float leftX() {
