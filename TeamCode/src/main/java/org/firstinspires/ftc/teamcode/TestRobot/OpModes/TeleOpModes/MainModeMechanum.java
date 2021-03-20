@@ -27,17 +27,17 @@ public class MainModeMechanum extends LinearOpMode {
         /* Add-on initializing */
         //UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
         //robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam(), rotation));
-        robot.addOnManager().initAddOn(new RobotRecorder());
+        //robot.addOnManager().initAddOn(new RobotRecorder());
 
         waitForStart();
 
         /* Add-on starting */
-        robot.addOnManager().startAddOn(AddOnType.ROBOT_RECORDER);
+        //robot.addOnManager().startAddOn(AddOnType.ROBOT_RECORDER);
 
         /* Robot functions */
         robot.driveWithController(robot.ctrl1());
-        //Functions.startIntake(robot);
-        //Functions.startShooter(robot);
+        //Functions.startIntake(robot, robot.ctrl1());
+        //Functions.startShooter(robot, robot.ctrl1());
 
         while (opModeIsActive()) {
           //  robot.getLogger().putData("ring analysis", pipeline.getAnalysis() + " (" + pipeline.getAmount().toString() + ")");

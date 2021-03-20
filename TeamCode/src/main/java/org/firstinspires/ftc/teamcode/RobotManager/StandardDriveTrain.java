@@ -22,18 +22,18 @@ public class StandardDriveTrain extends DriveTrain {
 
     /**
      * Drives using the joystick with the defined speed <br/>
-     * By pressing the right trigger, you can brake the robot linearly to the minimumSpeed
-     * @param c The controller to move the robot with
+     * By pressing the right or left trigger, you can enter precision mode
+     * @param ctrl The controller to move the robot with
      */
-    public void driveWithController(Controller c){
+    public void driveWithController(Controller ctrl){
         getLogger().log(Level.INFO, "Beginning drive with controller, standard");
         addThread(new Thread(() -> {
             double currentSpeed;
             while(op().opModeIsActive()){
                 /* linear equation to calculate speed based on right trigger's position */
-                currentSpeed = c.rightTrigger() > 0 ?  minimumPrecisionSpeed : speed;
+                currentSpeed = ctrl.rightTrigger() > 0 || ctrl.leftTrigger() > 0 ? precisionSpeed : speed;
                 getLogger().putData("Motor Speed", currentSpeed);
-                setSidedDrivePower(-1 * currentSpeed * c.leftY(), -1 * currentSpeed * c.rightY());
+                setSidedDrivePower(-1 * currentSpeed * ctrl.leftY(), -1 * currentSpeed * ctrl.rightY());
             }
         }), true);
     }

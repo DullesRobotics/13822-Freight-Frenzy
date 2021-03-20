@@ -3,9 +3,7 @@ package org.firstinspires.ftc.teamcode.RobotManager;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
-import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.DrivetrainMotor;
-import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
 
@@ -27,19 +25,16 @@ public class MecanumDriveTrain extends StandardDriveTrain {
 
     /**
      * Driving with the controller, including strafing
-     * Braking is NOT dynamic this time, you must hold the bumper
-     * TODO make braking toggle?
-     * TODO is there any way to make braking dynamic?
+     * Hold either bumper for precision mode
      * @param ctrl The controller to move the robot with
      */
     @Override
     public void driveWithController(Controller ctrl) {
         getLogger().log(Level.INFO, "Beginning drive with controller, mechanum");
-        double staticPrecisionSpeed = minimumPrecisionSpeed + ((speed - minimumPrecisionSpeed) / 4);
         addThread(new Thread(() -> {
             double flmPower, frmPower, blmPower, brmPower, currentSpeed;
             while(op().opModeIsActive()){
-                currentSpeed = ctrl.rightBumper() ? staticPrecisionSpeed : speed;
+                currentSpeed = ctrl.rightBumper() || ctrl.leftBumper() ? precisionSpeed : speed;
                 getLogger().putData("Joystick Speed", currentSpeed);
 
                 flmPower = currentSpeed * (-ctrl.leftY() + ctrl.rightTrigger() - ctrl.leftTrigger());
@@ -49,7 +44,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
 
                 getLogger().putData("Set Power (FL, FR, BL, BR)", flmPower + ", " + frmPower + ", " + blmPower + ", " + brmPower);
                 getLogger().putData("Power (FL, FR, BL, BR)", getMotor("FLM").get().getPower() + ", " + getMotor("FRM").get().getPower() + ", " + getMotor("BLM").get().getPower() + ", " + getMotor("BRM").get().getPower());
-                getLogger().putData("Velocity (FL, FR, BL, BR):", getMotor("FLM").getEncoded().getVelocity() + ", " + getMotor("FRM").getEncoded().getVelocity() + ", " + getMotor("BLM").getEncoded().getVelocity() + ", " + getMotor("BRM").getEncoded().getVelocity());
+                getLogger().putData("Velocity (FL, FR, BL, BR)", getMotor("FLM").getEncoded().getVelocity() + ", " + getMotor("FRM").getEncoded().getVelocity() + ", " + getMotor("BLM").getEncoded().getVelocity() + ", " + getMotor("BRM").getEncoded().getVelocity());
 
                 setIndividualDrivePower(flmPower, frmPower, blmPower, brmPower);
             }

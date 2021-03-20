@@ -1,16 +1,20 @@
 package org.firstinspires.ftc.teamcode.TestRobot.OpModes;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.Controller;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
 import java.util.logging.Level;
 
+@Config
 public class Functions {
 
-    private static final float INTAKE_SPEED = 1, SHOOTER_SPEED = 2;
-    private static final long SHOOTER_INIT_MILLIS = 2000, SHOOTER_WAIT_MILLIS = 8000, SHOOTER_COOLDOWN = 2000;
+    public static float INTAKE_SPEED = 1, SHOOTER_SPEED = 1;
+    public static long SHOOTER_INIT_MILLIS = 2000, SHOOTER_WAIT_MILLIS = 8000, SHOOTER_COOLDOWN = 2000;
 
     /**
      * Handles intake functions
@@ -19,26 +23,33 @@ public class Functions {
      * variable. It then uses that to update the intake motors' power.
      * @param r The robot the motors are on
      */
-    public static void startIntake(Robot r){
+    public static void startIntake(Robot r, Controller ctrl){
         r.getLogger().log(Level.INFO, "Starting intake function");
         r.addThread(new Thread(() -> {
             boolean on = false, togglePressed = false;
             while(r.op().opModeIsActive()){
                 /* Toggles on variable */
-                if(!togglePressed && r.ctrl2().buttonY() || togglePressed && !r.ctrl2().buttonY()) {
-                    togglePressed = r.ctrl2().buttonY();
+                if(!togglePressed && ctrl.buttonY() || togglePressed && !ctrl.buttonY()) {
+                    togglePressed = ctrl.buttonY();
                     on = !on;
-
-                    /* When toggled it updates the intake motor(s) */
-                    for(Motor m : r.getMotors(ComponentArea.INTAKE))
-                        if(on)
-                            m.get().setPower(INTAKE_SPEED);
-                        else
-                            m.get().setPower(0);
-
+                    setIntake(r, on);
                 }
             }
         }), true);
+    }
+
+    /**
+     * Toggles the intake motor
+     * @param r The robot to toggle the intake motors with
+     * @param on If the intake should be on or off
+     */
+    public static void setIntake(Robot r, boolean on) {
+        for(Motor m : r.getMotors(ComponentArea.INTAKE)) {
+            m.get().setPower(on ? INTAKE_SPEED : 0);
+            if(m.isEncoded())
+                r.getLogger().putData("Motor " + m.getId() + " Velocity", m.getEncoded().getVelocity());
+        }
+        r.getLogger().putData("Intake Power", on ? INTAKE_SPEED : 0);
     }
 
     /**
@@ -48,7 +59,7 @@ public class Functions {
      * variable. It then uses that to update the shooter motors' power.
      * @param r The robot the motors are on
      */
-    public static void startShooter(Robot r){
+    public static void startShooter(Robot r, Controller ctrl){
         r.getLogger().log(Level.INFO, "Starting shooter function");
         r.addThread(new Thread(() -> {
             boolean on = false, init = false, firstShot = false, state = false;
@@ -56,7 +67,7 @@ public class Functions {
             boolean alreadyPressed = false;
             while(r.op().opModeIsActive()){
                 /* When the button is pressed and it's not already on, begin initializing */
-                if(r.ctrl2().buttonB() && !on){
+                if(ctrl.buttonB() && !on){
                     on = true;
                     init = true;
                     firstShot = true;
@@ -78,10 +89,10 @@ public class Functions {
                     if(System.currentTimeMillis() > endTime)
                         on = false;
                     else {
-                        if(!r.ctrl2().buttonB())
+                        if(!ctrl.buttonB())
                             alreadyPressed = false;
                         if (System.currentTimeMillis() > cooldownTime)
-                            if (firstShot || (r.ctrl2().buttonB() && !alreadyPressed)) {
+                            if (firstShot || (ctrl.buttonB() && !alreadyPressed)) {
                                 firstShot = false;
                                 alreadyPressed = true;
                                 cooldownTime = System.currentTimeMillis() + SHOOTER_COOLDOWN;
