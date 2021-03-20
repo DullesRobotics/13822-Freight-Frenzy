@@ -26,6 +26,7 @@ import java.util.logging.Level;
 public class Logger {
 
     private final static long DATA_UPDATE_MIN_MILLIS = 100;
+    private long lastDashUpdateTime = System.currentTimeMillis();
 
     private PrintWriter writer;
 
@@ -60,16 +61,6 @@ public class Logger {
             itemUpdate.put(dataClassification, System.currentTimeMillis());
             updateFileLog(Level.INFO, dataClassification + ": " + data);
         }
-    }
-
-    public void putData(String dataClassification, Object data, boolean useDash) {
-        if(useDash) {
-            TelemetryPacket packet = new TelemetryPacket();
-            packet.put(dataClassification, data);
-            packet.addTimestamp();
-            FtcDashboard.getInstance().sendTelemetryPacket(packet);
-        }
-        putData(dataClassification, data);
     }
 
     /**
@@ -118,9 +109,16 @@ public class Logger {
     }
 
     public void updateLog(){
+        boolean updateDash = lastDashUpdateTime + DATA_UPDATE_MIN_MILLIS < System.currentTimeMillis();
+        TelemetryPacket packet = new TelemetryPacket();
         try {
-            for(String s : items.keySet())
-                op.telemetry.addData(s, items.get(s));
+            for(String s : items.keySet()) {
+                Object data = items.get(s);
+                op.telemetry.addData(s, data == null ? "null" : data);
+                if(updateDash)
+                    packet.addLine(s + ": " + (data == null ? "null" : data));
+            }
+            if(updateDash) FtcDashboard.getInstance().sendTelemetryPacket(packet);
         } catch (ConcurrentModificationException ignored) {}
         op.telemetry.update();
     }

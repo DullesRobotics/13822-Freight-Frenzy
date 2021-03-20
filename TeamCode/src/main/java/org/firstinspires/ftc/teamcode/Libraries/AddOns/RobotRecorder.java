@@ -37,13 +37,13 @@ public class RobotRecorder extends AddOn {
      */
     public RobotRecorder () {
         super(AddOnType.ROBOT_RECORDER);
-        this.masterController = r.ctrl1();
-        this.secondaryController = r.ctrl2();
     }
 
     @Override
     protected void initAO(Robot r) {
         this.r = r;
+        this.masterController = r.ctrl1();
+        this.secondaryController = r.ctrl2();
     }
 
     /**
@@ -54,6 +54,7 @@ public class RobotRecorder extends AddOn {
     protected void startAO(){
         r.addThread(new Thread(() -> {
             while(r.op().opModeIsActive()) {
+                if(masterController == null || secondaryController == null) return;
                 if (masterController.asStandard().buttonUp()) startRecording();
                 if (masterController.asStandard().buttonLeft()) beginPlayback();
                 if (masterController.asStandard().buttonDown()) stopAO();
@@ -119,9 +120,10 @@ public class RobotRecorder extends AddOn {
             playBackThreadUUID = r.addThread(new Thread(() -> {
                 long startTime = SystemClock.uptimeMillis();
                 try {
-                    Iterator<Long> timeStampIterator1 = actions1.keySet().iterator();
-                    Iterator<Long> timeStampIterator2 = actions1.keySet().iterator();
-                    long nextTimeStamp1 = timeStampIterator1.next(),  nextTimeStamp2 = timeStampIterator2.next();
+                    Iterator<Long> timeStampIterator1 = actions1.keySet().iterator(),
+                            timeStampIterator2 = actions1.keySet().iterator();
+                    long nextTimeStamp1 = timeStampIterator1.next(),
+                            nextTimeStamp2 = timeStampIterator2.next();
                     while(r.op().opModeIsActive()){
                         if(nextTimeStamp1 != -999 && SystemClock.uptimeMillis() - startTime > nextTimeStamp1){
                             byte[] controllerMap = actions1.get(nextTimeStamp1);

@@ -26,6 +26,7 @@ public class AddOnHandler {
     public void initAddOn(@NotNull AddOn ao){
         if(addOns.containsKey(ao.getType()))
             addOns.get(ao.getType()).stop();
+        ao.init(r);
         addOns.put(ao.getType(), ao);
     }
 

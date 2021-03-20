@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
+import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Util.Encoder;
 import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
 
 import java.util.logging.Level;
@@ -42,12 +43,11 @@ public class StandardDriveTrain extends DriveTrain {
                 currentSpeed = c.rightTrigger() > 0 ?  minimumPrecisionSpeed : speed; //(speed - minimumPrecisionSpeed) * (c.rightTrigger()) + speed;
                 getLogger().putData("Motor Speed", currentSpeed);
                 for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)) { /* uses regular for-each loop because lambdas require final variables, which is just asking for a heap issue */
-//                    motor.get().setPower(motor.isOpposite() ? currentSpeed * (-c.rightX() + c.rightX()) : currentSpeed * (-c.rightY() - c.rightX()));
-                    if(motor.isOpposite())
-                        motor.get().setPower(currentSpeed * c.leftY());
-                    else
-                        motor.get().setPower(currentSpeed * c.rightY());
-                    getLogger().putData(motor.getId() + " Speed", motor.get().getPower());
+                    if(motor.isOpposite()) motor.get().setPower(-1 * currentSpeed * c.leftY());
+                    else motor.get().setPower(-1 * currentSpeed * c.rightY());
+
+                    /* depending on if the motor is encoded you can get the actual motor velocity */
+                    getLogger().putData(motor.getId() + " Speed", motor.getConfiguration().isEncoded() ? motor.getEncoded().getVelocity() : motor.get().getPower());
                 }
             }
         }), true);
@@ -56,18 +56,26 @@ public class StandardDriveTrain extends DriveTrain {
     /**
      * Moves the robot for a certain amount of time
      * @param millis The amount of milliseconds to move the robot
-     * @param turn If the robot should turn
-     * @param turnRight If the robot should turn right
+     * @param direction Direction to go
      */
-    public void autoDriveTimed(long millis, boolean turn, boolean turnRight){
-        getLogger().log(Level.INFO, "Moving ( turning = " + turn + ", isRight = " + turnRight + ") for " + millis + " milliseconds.");
+    public void autoDriveTimed(long millis, Direction direction){
+        if(direction == null) direction = Direction.FORWARD;
+
+        getLogger().log(Level.INFO, "Moving ( direction = " + direction.toString() + " ) for " + millis + " milliseconds.");
         long time = System.currentTimeMillis() + millis;
         while(op().opModeIsActive() && time >= System.currentTimeMillis()) {
             getLogger().putData("Time Left", time - System.currentTimeMillis());
-            setIndependentDrivePower(turn && !turnRight ? -speed : speed, turn && turnRight ? speed : -speed);
+
+            double leftPower = speed, rightPower = speed;
+            switch(direction) {
+                case LEFT: leftPower = -speed; rightPower = speed; break;
+                case RIGHT: leftPower = speed; rightPower = -speed; break;
+            }
+
+            setIndependentDrivePower(leftPower, rightPower);
         }
         setUniformDrivePower(0);
-        getLogger().clearData();
+        getLogger().removeData("Time Left");
         getLogger().log(Level.INFO, "Done moving.");
     }
 
@@ -201,21 +209,35 @@ public class StandardDriveTrain extends DriveTrain {
     /**
      * Moves the robot forward a specified number of inches
      * @param inches The number of inches to move
-     * @param turn Whether or not to turn
+     * @param direction what direction to turn
      */
-    public void autoDriveEncoded(double inches, boolean turn, boolean turnRight){
+    public void autoDriveEncoded(double inches, Direction direction){
         setAllRunToPosition();
 
-        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
-            motor.get().setTargetPosition(motor.get().getCurrentPosition() +
-                    ((motor.isOpposite() && turnRight) || (!motor.isOpposite() && !turnRight) || !turn ? 1 : -1 ) *
-                            (motor.getConfiguration().inchesToCounts(inches)));
+        double leftPower = speed, rightPower = speed;
+        switch(direction) {
+            case LEFT: leftPower = -speed; rightPower = speed; break;
+            case RIGHT: leftPower = speed; rightPower = -speed; break;
+        }
 
-        double power = inches < 0 ? -speed : speed;
-        setUniformDrivePower(power);
+        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN)) {
+            int currentPosition = motor.get().getCurrentPosition();
+            int ticksToAdd = motor.getConfiguration().inchesToCounts(inches);
+            motor.get().setTargetPosition(currentPosition + ticksToAdd);
+        }
+
+//        for(Motor motor : getMotors(HardwareComponentArea.DRIVE_TRAIN))
+//            motor.get().setTargetPosition(motor.get().getCurrentPosition() +
+//                    ((motor.isOpposite() && turnRight) || (!motor.isOpposite() && !turnRight) || !turn ? 1 : -1 ) *
+//                            (motor.getConfiguration().inchesToCounts(inches)));
+
+//        double power = inches < 0 ? -speed : speed;
+//        setUniformDrivePower(power);
+
+       setIndependentDrivePower(leftPower, rightPower);
 
         while(op().opModeIsActive() && isAnyDriveTrainMotorBusy())
-            setUniformDrivePower(power);
+            setIndependentDrivePower(leftPower, rightPower);
 
         setUniformDrivePower(0);
     }

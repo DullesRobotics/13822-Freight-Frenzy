@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorType;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.RobotManager.DriveTrain;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.RobotManager.StandardDriveTrain;
 import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
@@ -96,11 +97,11 @@ public class AutonLeftStart extends LinearOpMode {
 //            robot.autoStrafeEncodedPID(-36 - 8, 3);
 //        }
 
-        robot.autoDriveTimed(500, false, false);
+        robot.autoDriveTimed(500, DriveTrain.Direction.LEFT);
 
         robot.autonWait(1000);
 
-        while (!isStopRequested() && opModeIsActive()) ;
+        while (!isStopRequested() && opModeIsActive());
 
         robot.stopAllThreads();
     }

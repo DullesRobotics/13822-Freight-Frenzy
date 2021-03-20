@@ -26,18 +26,18 @@ public class MainMode extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new StandardDriveTrain(this, new PID(1, 1, 1));
+        robot = new StandardDriveTrain(this, new PID(0,0,0));
         robot.addHardware(Configurator.getHardware(robot));
 
         /* Add-on initializing */
         //UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
         //robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam(), rotation));
-        //robot.addOnManager().initAddOn(new RobotRecorder());
+        robot.addOnManager().initAddOn(new RobotRecorder());
 
         waitForStart();
 
         /* Add-on starting */
-        //robot.addOnManager().startAddOn(AddOnType.ROBOT_RECORDER);
+        robot.addOnManager().startAddOn(AddOnType.ROBOT_RECORDER);
 
         /* Robot functions */
         robot.driveWithController(robot.ctrl1());
@@ -45,7 +45,7 @@ public class MainMode extends LinearOpMode {
         //Functions.startShooter(robot);
 
         while (opModeIsActive()) {
-          //  robot.getLogger().putData("ring analysis", pipeline.getAnalysis() + " (" + pipeline.getAmount().toString() + ")", true);
+          //  robot.getLogger().putData("ring analysis", pipeline.getAnalysis() + " (" + pipeline.getAmount().toString() + ")");
             //robot.getLogger().putData("a button pressed", robot.ctrl1().buttonA());
             robot.getLogger().updateLog();
         }
