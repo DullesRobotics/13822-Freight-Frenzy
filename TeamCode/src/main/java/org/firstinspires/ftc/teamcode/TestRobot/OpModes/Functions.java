@@ -28,9 +28,14 @@ public class Functions {
         r.addThread(new Thread(() -> {
             boolean on = false, togglePressed = false;
             while(r.op().opModeIsActive()){
+
+                if(togglePressed && !ctrl.buttonY())
+                    togglePressed = false;
+
                 /* Toggles on variable */
-                if(!togglePressed && ctrl.buttonY() || togglePressed && !ctrl.buttonY()) {
-                    togglePressed = ctrl.buttonY();
+                r.getLogger().putData("Intake Power", on ? INTAKE_SPEED : 0);
+                if(!togglePressed && ctrl.buttonY()) {
+                    togglePressed = true;
                     on = !on;
                     setIntake(r, on);
                 }
@@ -44,12 +49,8 @@ public class Functions {
      * @param on If the intake should be on or off
      */
     public static void setIntake(Robot r, boolean on) {
-        for(Motor m : r.getMotors(ComponentArea.INTAKE)) {
+        for(Motor m : r.getMotors(ComponentArea.INTAKE))
             m.get().setPower(on ? INTAKE_SPEED : 0);
-            if(m.isEncoded())
-                r.getLogger().putData("Motor " + m.getId() + " Velocity", m.getEncoded().getVelocity());
-        }
-        r.getLogger().putData("Intake Power", on ? INTAKE_SPEED : 0);
     }
 
     /**

@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.TestRobot.OpModes.AutonomousOpModes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.DriveTrain;
@@ -20,7 +22,7 @@ public class IntakeAutonTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         robot = new StandardDriveTrain(this, new PID(0,0,0));
-        robot.addHardware(Configurator.getHardware(robot));
+        robot.addHardware(new Motor(robot, "FLM", ComponentArea.INTAKE, true));
 
         waitForStart();
 
