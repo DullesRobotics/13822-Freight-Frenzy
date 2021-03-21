@@ -122,8 +122,6 @@ public class Functions {
                                     s.get().setPosition(state ? 1 : 0);
                             }
                     }
-
-
             }
         }), true);
     }

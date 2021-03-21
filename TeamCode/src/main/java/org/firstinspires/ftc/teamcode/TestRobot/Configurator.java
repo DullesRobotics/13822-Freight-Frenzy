@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorType;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
+import org.firstinspires.ftc.teamcode.Hardware.USBWebcam;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
@@ -39,7 +40,7 @@ public class Configurator {
 //                new Servo(robot, "CL", CLAW),
              //   new Servo(robot, "SHS", SHOOTER),
                 new IMU(robot, "IMU"),
-                //new USBWebcam(robot, "Webcam")
+                new USBWebcam(robot, "Webcam")
         });
     }
 
