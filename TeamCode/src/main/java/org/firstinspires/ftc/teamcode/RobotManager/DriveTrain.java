@@ -18,7 +18,7 @@ public abstract class DriveTrain extends Robot {
 
     public static double speed = 0.8, precisionSpeed = 0.2;
     protected MotorConfiguration autonMotorConfiguration;
-    protected final PID pid;
+    protected PID pid = null;
 
     /**
      * Takes in super initiators
@@ -28,6 +28,15 @@ public abstract class DriveTrain extends Robot {
         super(op);
         this.autonMotorConfiguration = null;
         this.pid = pid;
+    }
+
+    /**
+     * Takes in super initiators
+     * @param op The op mode this is used for
+     */
+    public DriveTrain(LinearOpMode op) {
+        super(op);
+        this.autonMotorConfiguration = null;
     }
 
     /**

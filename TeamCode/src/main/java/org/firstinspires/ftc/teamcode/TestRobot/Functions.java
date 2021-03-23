@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TestRobot.OpModes;
+package org.firstinspires.ftc.teamcode.TestRobot;
 
 import com.acmerobotics.dashboard.config.Config;
 
@@ -38,6 +38,7 @@ public class Functions {
                 if(!togglePressed && ctrl.buttonY()) {
                     togglePressed = true;
                     on = !on;
+                    //do something
                     setIntake(r, on);
                 }
             }

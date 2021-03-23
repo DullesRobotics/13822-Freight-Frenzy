@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.TestRobot;
 
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.DrivetrainMotor;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorType;
@@ -37,8 +38,9 @@ public class Configurator {
                 motorFrontRight,
                 motorBackLeft,
                 motorBackRight,
-//                new Servo(robot, "CL", CLAW),
-             //   new Servo(robot, "SHS", SHOOTER),
+                new Motor(robot, "SHM", SHOOTER, false),
+                new Servo(robot, "CL", CLAW),
+                new Servo(robot, "SHS", SHOOTER),
                 new IMU(robot, "IMU"),
                 new USBWebcam(robot, "Webcam")
         });

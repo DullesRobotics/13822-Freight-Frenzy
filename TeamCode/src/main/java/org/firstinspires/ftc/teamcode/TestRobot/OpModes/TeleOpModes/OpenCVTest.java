@@ -3,16 +3,11 @@ package org.firstinspires.ftc.teamcode.TestRobot.OpModes.TeleOpModes;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
-import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Hardware.USBWebcam;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
-import org.firstinspires.ftc.teamcode.TestRobot.OpModes.Functions;
 import org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines.UltimateGoalPipeline;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
@@ -25,7 +20,7 @@ public class OpenCVTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new MecanumDriveTrain(this, new PID(0,0,0));
+        robot = new MecanumDriveTrain(this);
         robot.addHardware(new USBWebcam(robot, "Webcam"));
 
         UltimateGoalPipeline pipeline = new UltimateGoalPipeline();

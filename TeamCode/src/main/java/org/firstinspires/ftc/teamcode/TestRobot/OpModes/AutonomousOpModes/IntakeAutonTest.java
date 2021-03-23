@@ -7,21 +7,19 @@ import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.RobotManager.DriveTrain;
+import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.RobotManager.StandardDriveTrain;
-import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
-import org.firstinspires.ftc.teamcode.TestRobot.OpModes.Functions;
+import org.firstinspires.ftc.teamcode.TestRobot.Functions;
 
 @Autonomous
 public class IntakeAutonTest extends LinearOpMode {
 
-    StandardDriveTrain robot;
-    SampleMecanumDrive drive;
+    MecanumDriveTrain robot;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        robot = new StandardDriveTrain(this, new PID(0,0,0));
+        robot = new MecanumDriveTrain(this);
         robot.addHardware(new Motor(robot, "FLM", ComponentArea.INTAKE, true));
 
         waitForStart();

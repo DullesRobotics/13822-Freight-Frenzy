@@ -104,10 +104,12 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private Pose2d lastPoseOnTurn;
 
+    private MecanumDriveTrain driveTrain;
+
     public SampleMecanumDrive(LinearOpMode op) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
-        MecanumDriveTrain driveTrain = new MecanumDriveTrain(op, new PID(MOTOR_VELO_PID.p, MOTOR_VELO_PID.i, MOTOR_VELO_PID.d));
+        driveTrain = new MecanumDriveTrain(op, new PID(MOTOR_VELO_PID.p, MOTOR_VELO_PID.i, MOTOR_VELO_PID.d));
         driveTrain.addHardware(Configurator.getHardware(driveTrain));
 
         HardwareMap hardwareMap = op.hardwareMap;
@@ -177,6 +179,10 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+    }
+
+    public MecanumDriveTrain getDriveTrain(){
+        return driveTrain;
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {

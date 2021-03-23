@@ -24,6 +24,14 @@ public class MecanumDriveTrain extends StandardDriveTrain {
     }
 
     /**
+     * Takes in super initiators
+     * @param op The op mode this is used for
+     */
+    public MecanumDriveTrain(LinearOpMode op) {
+        super(op);
+    }
+
+    /**
      * Driving with the controller, including strafing
      * Hold either bumper for precision mode
      * @param ctrl The controller to move the robot with
@@ -111,6 +119,10 @@ public class MecanumDriveTrain extends StandardDriveTrain {
      * @param tolerance How far apart (angle in degrees) it's okay to be off from straight
      */
     public void autoStrafeTimedPID(long millis, boolean goLeft, double tolerance){
+        if(pid != null){
+            getLogger().log(Level.WARNING, "PID Null");
+            return;
+        }
         getLogger().log(Level.INFO, "Strafing with a PID, Timed");
         IMU imu = getIMU();
         if(!imu.isRunning()) imu.startIMU();
@@ -146,6 +158,10 @@ public class MecanumDriveTrain extends StandardDriveTrain {
      * @param tolerance How far apart (angle in degrees) it's okay to be off from straight
      */
     public void autoStrafeEncodedPID(double inches, double tolerance){
+        if(pid != null){
+            getLogger().log(Level.WARNING, "PID Null");
+            return;
+        }
         getLogger().log(Level.INFO, "Strafing with a PID and Encoders");
         IMU imu = getIMU();
         if(!imu.isRunning()) imu.startIMU();

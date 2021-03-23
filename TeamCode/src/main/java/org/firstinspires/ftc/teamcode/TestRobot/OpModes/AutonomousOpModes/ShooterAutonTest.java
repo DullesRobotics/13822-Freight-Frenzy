@@ -10,19 +10,21 @@ import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.RobotManager.StandardDriveTrain;
-import org.firstinspires.ftc.teamcode.TestRobot.OpModes.Functions;
+import org.firstinspires.ftc.teamcode.TestRobot.Functions;
 
 @Autonomous
 public class ShooterAutonTest extends LinearOpMode {
 
-    StandardDriveTrain robot;
-    SampleMecanumDrive drive;
+    MecanumDriveTrain robot;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        robot = new MecanumDriveTrain(this, new PID(0,0,0));
-        robot.addHardware(new Motor(robot, "FLM", ComponentArea.SHOOTER, true), new Servo(robot, "SHS", ComponentArea.SHOOTER));
+        robot = new MecanumDriveTrain(this);
+        robot.addHardware(
+                new Motor(robot, "SHM", ComponentArea.SHOOTER, false),
+                new Servo(robot, "SHS", ComponentArea.SHOOTER)
+        );
 
         waitForStart();
 

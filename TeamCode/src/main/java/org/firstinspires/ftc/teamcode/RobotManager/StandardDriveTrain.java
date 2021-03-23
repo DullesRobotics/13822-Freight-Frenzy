@@ -21,6 +21,14 @@ public class StandardDriveTrain extends DriveTrain {
     }
 
     /**
+     * Takes in super initiators
+     * @param op The op mode this is used for
+     */
+    public StandardDriveTrain(LinearOpMode op) {
+        super(op);
+    }
+
+    /**
      * Drives using the joystick with the defined speed <br/>
      * By pressing the right or left trigger, you can enter precision mode
      * @param ctrl The controller to move the robot with
@@ -70,6 +78,10 @@ public class StandardDriveTrain extends DriveTrain {
      * @param tolerance what angle the robot can have moved to be okay
      */
     public void autoDriveForwardTimedPID(long millis, double tolerance, boolean forward){
+        if(pid != null){
+            getLogger().log(Level.WARNING, "PID Null");
+            return;
+        }
         getLogger().log(Level.INFO, "Driving Forward with PID and Timed");
         long time = System.currentTimeMillis() + millis;
         IMU imu = getIMU();
@@ -105,6 +117,10 @@ public class StandardDriveTrain extends DriveTrain {
      * @param tolerance what angle the robot can have moved to be okay
      */
     public void autoStraightEncodedPID(double inches, double tolerance){
+        if(pid != null){
+            getLogger().log(Level.WARNING, "PID Null");
+            return;
+        }
         getLogger().log(Level.INFO, "Driving Forward with PID and Encoded");
         IMU imu = getIMU();
         if(!imu.isRunning()) imu.startIMU();
@@ -149,6 +165,10 @@ public class StandardDriveTrain extends DriveTrain {
      * @param correction If this is a small correction, uses a smaller speed
      */
     public void autoTurnPID(double angle, double tolerance, boolean correction) {
+        if(pid != null){
+            getLogger().log(Level.WARNING, "PID Null");
+            return;
+        }
         getLogger().log(Level.INFO, "Turning with PID, Correction" + correction);
         double tempSpeed = correction ? 0.2 : speed;
         IMU imu = getIMU();

@@ -96,11 +96,12 @@ public class SampleTankDrive extends TankDrive {
     private BNO055IMU imu;
 
     private VoltageSensor batteryVoltageSensor;
+    private StandardDriveTrain driveTrain;
 
     public SampleTankDrive(LinearOpMode op) {
         super(kV, kA, kStatic, TRACK_WIDTH);
 
-        StandardDriveTrain driveTrain = new StandardDriveTrain(op, new PID(MOTOR_VELO_PID.p, MOTOR_VELO_PID.i, MOTOR_VELO_PID.d));
+        driveTrain = new StandardDriveTrain(op, new PID(MOTOR_VELO_PID.p, MOTOR_VELO_PID.i, MOTOR_VELO_PID.d));
         driveTrain.addHardware(Configurator.getHardware(driveTrain));
         HardwareMap hardwareMap = op.hardwareMap;
 
@@ -172,6 +173,10 @@ public class SampleTankDrive extends TankDrive {
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+    }
+
+    public StandardDriveTrain getDriveTrain(){
+        return driveTrain;
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {

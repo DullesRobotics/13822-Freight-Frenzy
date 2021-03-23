@@ -10,40 +10,28 @@ import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.RobotManager.StandardDriveTrain;
 import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
+import org.firstinspires.ftc.teamcode.TestRobot.Functions;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @TeleOp
-@Config
 public class MainModeMechanum extends LinearOpMode {
 
     private MecanumDriveTrain robot;
-    public static OpenCvCameraRotation rotation = OpenCvCameraRotation.UPRIGHT;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new MecanumDriveTrain(this, new PID(0,0,0));
+        robot = new MecanumDriveTrain(this);
         robot.addHardware(Configurator.getHardware(robot));
-
-        /* Add-on initializing */
-        //UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
-        //robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam(), rotation));
-        //robot.addOnManager().initAddOn(new RobotRecorder());
 
         waitForStart();
 
-        /* Add-on starting */
-        //robot.addOnManager().startAddOn(AddOnType.ROBOT_RECORDER);
-
         /* Robot functions */
         robot.driveWithController(robot.ctrl1());
-        //Functions.startIntake(robot, robot.ctrl1());
-        //Functions.startShooter(robot, robot.ctrl1());
+        Functions.startIntake(robot, robot.ctrl2());
+        Functions.startShooter(robot, robot.ctrl2());
 
-        while (opModeIsActive()) {
-          //  robot.getLogger().putData("ring analysis", pipeline.getAnalysis() + " (" + pipeline.getAmount().toString() + ")");
-            //robot.getLogger().putData("a button pressed", robot.ctrl1().buttonA());
+        while (opModeIsActive())
             robot.getLogger().updateLog();
-        }
 
         robot.stopAllThreads();
     }
