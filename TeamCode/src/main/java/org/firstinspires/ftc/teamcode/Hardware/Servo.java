@@ -14,7 +14,9 @@ public class Servo extends HardwareComponent {
     public Servo(Robot r, String id, ComponentArea componentArea) {
         super(r, id, componentArea);
         r.getLogger().log(Level.INFO, "Adding Servo: " + id);
-        try { setComponent(r.op().hardwareMap.servo.get(id));
+        try {
+            setComponent(r.op().hardwareMap.servo.get(id));
+            get().scaleRange(0,1);
         } catch (Exception e)
         {
             r.getLogger().log(Level.SEVERE, "Error Adding Servo " + id, e.toString());

@@ -22,6 +22,24 @@ public class Configurator {
      */
     public static HardwareComponent[] getHardware(Robot robot){
 
+        HardwareComponent[] driveTrainMotors = getDriveTrainMotors(robot);
+
+        return(new HardwareComponent[]{
+                driveTrainMotors[0],
+                driveTrainMotors[1],
+                driveTrainMotors[2],
+                driveTrainMotors[3],
+                new Motor(robot, "SHM", SHOOTER, true),
+                new Motor(robot, "CLM", CLAW, true),
+                new Servo(robot, "CLS", CLAW),
+                new Servo(robot, "SHS", SHOOTER),
+                new IMU(robot, "IMU"),
+                new USBWebcam(robot, "Webcam")
+        });
+    }
+
+    public static HardwareComponent[] getDriveTrainMotors(Robot robot){
+
         MotorConfiguration MC = new MotorConfiguration(
                 MotorType.NEVEREST_ORBITAL,
                 true,
@@ -37,12 +55,7 @@ public class Configurator {
                 motorFrontLeft,
                 motorFrontRight,
                 motorBackLeft,
-                motorBackRight,
-                new Motor(robot, "SHM", SHOOTER, false),
-                new Servo(robot, "CL", CLAW),
-                new Servo(robot, "SHS", SHOOTER),
-                new IMU(robot, "IMU"),
-                new USBWebcam(robot, "Webcam")
+                motorBackRight
         });
     }
 

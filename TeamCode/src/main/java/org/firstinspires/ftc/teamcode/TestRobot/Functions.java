@@ -14,8 +14,11 @@ import java.util.logging.Level;
 public class Functions {
 
     //lowered for battery life
-    public static float INTAKE_SPEED = 0.5f, SHOOTER_SPEED = 0.5f;
+    public static float INTAKE_SPEED = 0.7f, SHOOTER_SPEED = 1f;
     public static long SHOOTER_INIT_MILLIS = 1000, SHOOTER_WAIT_MILLIS = 8000, SHOOTER_COOLDOWN = 2000;
+    public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
+    public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 1;
+    public static int CLAW_MOTOR_MID_TICKS = 100, CLAW_MOTOR_END_TICKS = 200;
 
     /**
      * Handles intake functions
@@ -66,10 +69,7 @@ public class Functions {
     public static void startShooter(Robot r, Controller ctrl){
         r.getLogger().log(Level.INFO, "Starting shooter function");
 
-        for(Servo s : r.getServos(ComponentArea.SHOOTER)) {
-            s.get().scaleRange(0,1);
-            s.get().setPosition(0);
-        }
+        calibrateShooterServos(r);
 
         r.addThread(new Thread(() -> {
             boolean on = false, init = false, firstShot = false, state = false;
@@ -119,8 +119,7 @@ public class Functions {
                                 endTime = System.currentTimeMillis() + SHOOTER_WAIT_MILLIS;
                                 cooldownTime = System.currentTimeMillis() + SHOOTER_COOLDOWN;
                                 state = !state;
-                                for(Servo s : r.getServos(ComponentArea.SHOOTER))
-                                    s.get().setPosition(state ? 1 : 0);
+                                setShooterServos(r, state);
                             }
                     }
             }
@@ -144,25 +143,73 @@ public class Functions {
      */
     public static void calibrateShooterServos(Robot r){
         r.getLogger().log(Level.INFO, "Calibrating Shooter Servo");
-        for(Servo s : r.getServos(ComponentArea.SHOOTER)) {
-            s.get().scaleRange(0,1);
+        for(Servo s : r.getServos(ComponentArea.SHOOTER))
             s.get().setPosition(0);
-        }
     }
 
     /**
      * Moves shooter servos between 0 and 1
      * @param r The robot with the shooter servo
      */
-    public static void moveShooterServos(Robot r){
-        r.getLogger().log(Level.INFO, "Moving shooter servos");
-        for(Servo s : r.getServos(ComponentArea.SHOOTER)) {
-            double currentPosition = Math.round(s.get().getPosition());
-            if(currentPosition == 0)
-                s.get().setPosition(1);
-            else if(currentPosition == 1)
-                s.get().setPosition(0);
-        }
+    public static void setShooterServos(Robot r, boolean forward){
+        r.getLogger().log(Level.INFO, "Setting shooter servos (open = " + forward + ")");
+        for(Servo s : r.getServos(ComponentArea.SHOOTER))
+            s.get().setPosition(forward ? SHOOTER_SERVO_END_POS : SHOOTER_SERVO_START_POS);
     }
+
+    /**
+     * Sets claw servo position between two states
+     * @param r The robot with the claw servo
+     */
+    public static void setClawServos(Robot r, boolean open){
+        r.getLogger().log(Level.INFO, "Setting claw servos (open = " + open + ")");
+        for(Servo s : r.getServos(ComponentArea.CLAW))
+            s.get().setPosition(open ? CLAW_SERVO_OPEN_POS : CLAW_SERVO_CLOSED_POS);
+    }
+
+    public static void setClawArmPosition(Robot r, boolean down) {
+        r.getLogger().log(Level.INFO, "Moving claw arm (down = " + down + ")");
+        for(Motor m : r.getMotors(ComponentArea.CLAW))
+            m.getEncoded().setTargetPosition(down ? CLAW_MOTOR_END_TICKS : CLAW_MOTOR_MID_TICKS);
+    }
+
+    /**
+     * Starts claw teleop handling of both the claw servo and motor position
+     * @param r The robot with the claw
+     */
+    public static void startClaw(Robot r, Controller ctrl){
+        r.getLogger().log(Level.INFO, "Starting claw function");
+        r.addThread(new Thread(() -> {
+            boolean clawOpen = false, toggleClawPressed = false;
+            boolean armDown = false, toggleArmPressed = false;
+            while(r.op().opModeIsActive()){
+
+                if(toggleClawPressed && !ctrl.leftBumper())
+                    toggleClawPressed = false;
+
+                /* Toggles on variable for claw */
+                if(!toggleClawPressed && ctrl.leftBumper()) {
+                    toggleClawPressed = true;
+                    clawOpen = !clawOpen;
+                    //do something
+                    setClawServos(r, clawOpen);
+                }
+
+                if(toggleArmPressed && ctrl.leftTrigger() > 0)
+                    toggleArmPressed = false;
+
+                /* Toggles on variable for arm */
+                if(!toggleArmPressed && ctrl.leftTrigger() > 0) {
+                    toggleArmPressed = true;
+                    armDown = !armDown;
+                    //do something
+                    setClawArmPosition(r, armDown);
+                }
+
+            }
+        }), true);
+    }
+
+
 
 }

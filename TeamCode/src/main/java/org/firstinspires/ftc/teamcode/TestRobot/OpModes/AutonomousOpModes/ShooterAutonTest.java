@@ -6,10 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
-import org.firstinspires.ftc.teamcode.Libraries.PID;
-import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.RobotManager.StandardDriveTrain;
 import org.firstinspires.ftc.teamcode.TestRobot.Functions;
 
 @Autonomous
@@ -39,11 +36,11 @@ public class ShooterAutonTest extends LinearOpMode {
 
         robot.autonWait(2000);
 
-        Functions.moveShooterServos(robot);
+        Functions.setShooterServos(robot, true);
 
         robot.autonWait(2000);
 
-        Functions.moveShooterServos(robot);
+        Functions.setShooterServos(robot, false);
 
         robot.autonWait(2000);
 
