@@ -19,7 +19,7 @@ public class IntakeTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new MecanumDriveTrain(this);
-        robot.addHardware(new Motor(robot, "FLM", ComponentArea.INTAKE, true));
+        robot.addHardware(new Motor(robot, "INM", ComponentArea.INTAKE, false));
 
         waitForStart();
 

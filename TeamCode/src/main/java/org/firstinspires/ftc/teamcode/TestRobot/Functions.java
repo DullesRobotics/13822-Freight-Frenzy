@@ -14,8 +14,8 @@ import java.util.logging.Level;
 public class Functions {
 
     //lowered for battery life
-    public static float INTAKE_SPEED = 0.7f, SHOOTER_SPEED = 1f;
-    public static long SHOOTER_INIT_MILLIS = 1000, SHOOTER_WAIT_MILLIS = 8000, SHOOTER_COOLDOWN = 2000;
+    public static double INTAKE_SPEED = 0.7, SHOOTER_SPEED = 1;
+    public static int SHOOTER_INIT_MILLIS = 2000, SHOOTER_WAIT_MILLIS = 4000, SHOOTER_COOLDOWN = 1500;
     public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
     public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 1;
     public static int CLAW_MOTOR_MID_TICKS = 100, CLAW_MOTOR_END_TICKS = 200;
@@ -41,7 +41,7 @@ public class Functions {
                 if(!togglePressed && ctrl.buttonY()) {
                     togglePressed = true;
                     on = !on;
-                    //do something
+                    //do something`
                     setIntake(r, on);
                 }
             }
@@ -92,11 +92,8 @@ public class Functions {
                     init = true;
                     firstShot = true;
                     initTime = System.currentTimeMillis() + SHOOTER_INIT_MILLIS;
+                    setShooterMotor(r, true);
                 }
-
-                /* If it's on, run the shooter motor(s). Otherwise, set power to 0 */
-                for(Motor m : r.getMotors(ComponentArea.SHOOTER))
-                    m.get().setPower(on ? SHOOTER_SPEED : 0);
 
                 /* If it's on, still initializing, but init time has passed, stop initializing. */
                 if(on && init && System.currentTimeMillis() > initTime) {
@@ -106,9 +103,10 @@ public class Functions {
                 }
 
                 if(on && !init)
-                    if(System.currentTimeMillis() > endTime)
+                    if(System.currentTimeMillis() > endTime) {
                         on = false;
-                    else {
+                        setShooterMotor(r, false);
+                    } else {
                         if(!ctrl.buttonB())
                             alreadyPressed = false;
                         if (System.currentTimeMillis() > cooldownTime)
@@ -118,13 +116,16 @@ public class Functions {
                                 //reset timers
                                 endTime = System.currentTimeMillis() + SHOOTER_WAIT_MILLIS;
                                 cooldownTime = System.currentTimeMillis() + SHOOTER_COOLDOWN;
-                                state = !state;
-                                setShooterServos(r, state);
+                                //state = !state;
+                                useShooterServos(r);
                             }
                     }
             }
         }), true);
     }
+
+    //58in left of 0,0 blue
+
 
     /**
      * Starts or stops the shooter motor(s) for auton
@@ -144,17 +145,21 @@ public class Functions {
     public static void calibrateShooterServos(Robot r){
         r.getLogger().log(Level.INFO, "Calibrating Shooter Servo");
         for(Servo s : r.getServos(ComponentArea.SHOOTER))
-            s.get().setPosition(0);
+            s.get().setPosition(SHOOTER_SERVO_START_POS);
     }
 
     /**
      * Moves shooter servos between 0 and 1
      * @param r The robot with the shooter servo
      */
-    public static void setShooterServos(Robot r, boolean forward){
-        r.getLogger().log(Level.INFO, "Setting shooter servos (open = " + forward + ")");
+    public static void useShooterServos(Robot r){
+        r.getLogger().log(Level.INFO, "Using shooter servos");
+        final long timeToWait = System.currentTimeMillis() + 500;
         for(Servo s : r.getServos(ComponentArea.SHOOTER))
-            s.get().setPosition(forward ? SHOOTER_SERVO_END_POS : SHOOTER_SERVO_START_POS);
+            s.get().setPosition(SHOOTER_SERVO_END_POS);
+        while(r.op().opModeIsActive() && System.currentTimeMillis() < timeToWait) {}
+        for(Servo s : r.getServos(ComponentArea.SHOOTER))
+            s.get().setPosition(SHOOTER_SERVO_START_POS);
     }
 
     /**

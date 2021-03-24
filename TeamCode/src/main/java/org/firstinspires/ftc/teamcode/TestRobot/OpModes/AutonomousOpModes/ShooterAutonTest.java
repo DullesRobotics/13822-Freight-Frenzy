@@ -6,47 +6,45 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
+import org.firstinspires.ftc.teamcode.Libraries.IMU;
+import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.TestRobot.Functions;
+
+import java.util.logging.Level;
 
 @Autonomous
 public class ShooterAutonTest extends LinearOpMode {
 
-    MecanumDriveTrain robot;
+    private MecanumDriveTrain robot;
+    private SampleMecanumDrive roadrunner;
+    public static double angleDiff = -5, startingAngle = 35, endingAngle = -35;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        robot = new MecanumDriveTrain(this);
-        robot.addHardware(
-                new Motor(robot, "SHM", ComponentArea.SHOOTER, false),
-                new Servo(robot, "SHS", ComponentArea.SHOOTER)
-        );
+        double currentAngle = startingAngle;
+
+        roadrunner = new SampleMecanumDrive(this);
+        robot = roadrunner.getDriveTrain();
 
         waitForStart();
 
-        if (isStopRequested()) return;
-
-        Functions.calibrateShooterServos(robot);
-
-        /* Give time for robot to calculate just in case */
-        robot.autonWait(1000);
-
+        roadrunner.turn(Math.toRadians(startingAngle));
         Functions.setShooterMotor(robot, true);
 
-        robot.autonWait(2000);
 
-        Functions.setShooterServos(robot, true);
-
-        robot.autonWait(2000);
-
-        Functions.setShooterServos(robot, false);
-
-        robot.autonWait(2000);
+        while(currentAngle > endingAngle - angleDiff - 1) {
+            robot.autonWait(2000);
+            for(int i = 0; i < 3; i++)
+                Functions.useShooterServos(robot);
+            currentAngle += angleDiff;
+            roadrunner.turn(Math.toRadians(currentAngle));
+            robot.getLogger().log(Level.INFO, "Angle Testing: " + currentAngle + " degrees");
+            robot.getLogger().updateLog();
+        }
 
         Functions.setShooterMotor(robot, false);
-
-        robot.autonWait(10000);
 
         robot.stopAllThreads();
         requestOpModeStop();

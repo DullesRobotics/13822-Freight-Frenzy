@@ -52,8 +52,6 @@ public class IMU extends HardwareComponent {
         r.getLogger().log(Level.INFO, "Parameterized IMU: " + id);
 
         updateIMU();
-
-        r.getLogger().log(Level.INFO, "Began updating IMU: " + id);
     }
 
     /** If the robot is running */
@@ -64,18 +62,16 @@ public class IMU extends HardwareComponent {
     /** Starts thread to automagically update variables */
     public void startIMU(){
         if(isRunning()) return;
-        r.getLogger().putData("Pitch", "NUL");
-        r.getLogger().putData("Roll", "NUL");
-        r.getLogger().putData("Yaw", "NUL");
         get().startAccelerationIntegration(new Position(), new Velocity(), updateIntervalMilliseconds);
         threadID = r.addThread(new Thread(() -> {
-            while(r.op().opModeIsActive()){
+            while(isRunning() && r.op().opModeIsActive()){
+                r.getLogger().putData("IMU Running", isRunning());
                 updateIMU();
                 r.getLogger().putData("Pitch", String.valueOf(getPitch()));
                 r.getLogger().putData("Roll", String.valueOf(getRoll()));
                 r.getLogger().putData("Yaw", String.valueOf(getYaw()));
             }
-        }), true );
+        }), true);
     }
 
     /** Updates important IMU variables */

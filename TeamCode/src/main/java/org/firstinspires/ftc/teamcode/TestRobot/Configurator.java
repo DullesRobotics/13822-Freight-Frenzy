@@ -29,12 +29,13 @@ public class Configurator {
                 driveTrainMotors[1],
                 driveTrainMotors[2],
                 driveTrainMotors[3],
-                new Motor(robot, "SHM", SHOOTER, true),
-                new Motor(robot, "CLM", CLAW, true),
-                new Servo(robot, "CLS", CLAW),
+//                new Motor(robot, "INM", INTAKE, false),
+                new Motor(robot, "SHM", SHOOTER, false),
+//                new Motor(robot, "CLM", CLAW, true),
+//                new Servo(robot, "CLS", CLAW),
                 new Servo(robot, "SHS", SHOOTER),
                 new IMU(robot, "IMU"),
-                new USBWebcam(robot, "Webcam")
+//                new USBWebcam(robot, "Webcam")
         });
     }
 
