@@ -24,7 +24,7 @@ public class TrajectoryTest extends LinearOpMode {
 
     private MecanumDriveTrain robot;
     private SampleMecanumDrive roadrunner;
-    public static Point startingCoordinate = new Point(24, -60);
+    public static Point startingCoordinate = new Point(-60, 24);
     public static double startingDegrees = 0;
     public static double xMoveInches = 10, yMoveInches = 20, degreesToTurn = 90;
 
@@ -35,6 +35,7 @@ public class TrajectoryTest extends LinearOpMode {
         robot = roadrunner.getDriveTrain();
 
         Pose2d startPose = new Pose2d(startingCoordinate.x, startingCoordinate.y, Math.toRadians(startingDegrees));
+        roadrunner.setPoseEstimate(startPose);
         Trajectory trajectory = roadrunner.trajectoryBuilder(startPose)
                 .splineToSplineHeading(new Pose2d(
                         startingCoordinate.x + xMoveInches,

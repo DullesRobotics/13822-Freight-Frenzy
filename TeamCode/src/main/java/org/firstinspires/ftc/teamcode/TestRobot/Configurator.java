@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.TestRobot;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.DrivetrainMotor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
@@ -24,6 +26,8 @@ public class Configurator {
 
         HardwareComponent[] driveTrainMotors = getDriveTrainMotors(robot);
 
+        Motor m = new Motor(robot, "CLM", CLAW, true);
+
         return(new HardwareComponent[]{
                 driveTrainMotors[0],
                 driveTrainMotors[1],
@@ -31,11 +35,11 @@ public class Configurator {
                 driveTrainMotors[3],
 //                new Motor(robot, "INM", INTAKE, false),
                 new Motor(robot, "SHM", SHOOTER, false),
-//                new Motor(robot, "CLM", CLAW, true),
-//                new Servo(robot, "CLS", CLAW),
+                m,
+                new Servo(robot, "CLS", CLAW),
                 new Servo(robot, "SHS", SHOOTER),
                 new IMU(robot, "IMU"),
-//                new USBWebcam(robot, "Webcam")
+                new USBWebcam(robot, "Webcam")
         });
     }
 

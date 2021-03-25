@@ -2,14 +2,19 @@ package org.firstinspires.ftc.teamcode.TestRobot;
 
 import android.graphics.Point;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 /**
  * All numbers in degrees or inches
  */
+@Config
 public class AutonConstants {
 
     public static OpenCvCameraRotation OPEN_CV_CAM_ROTATION = OpenCvCameraRotation.UPRIGHT;
+
+    //x is y and y is -x :(
 
     /**
      * Starting positions on the blue/red lines

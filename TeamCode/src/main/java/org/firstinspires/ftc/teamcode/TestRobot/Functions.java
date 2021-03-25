@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.TestRobot;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
@@ -17,8 +18,10 @@ public class Functions {
     public static double INTAKE_SPEED = 0.7, SHOOTER_SPEED = 1;
     public static int SHOOTER_INIT_MILLIS = 2000, SHOOTER_WAIT_MILLIS = 4000, SHOOTER_COOLDOWN = 1500;
     public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
-    public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 1;
-    public static int CLAW_MOTOR_MID_TICKS = 100, CLAW_MOTOR_END_TICKS = 200;
+    public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 0.5;
+    public static int CLAW_MOTOR_MID_TICKS = 0, CLAW_MOTOR_END_TICKS = -50;
+    public static double CLAW_MOTOR_PWR = 0.8;
+    public static int TIME_TO_MOVE = 500;
 
     /**
      * Handles intake functions
@@ -174,8 +177,24 @@ public class Functions {
 
     public static void setClawArmPosition(Robot r, boolean down) {
         r.getLogger().log(Level.INFO, "Moving claw arm (down = " + down + ")");
-        for(Motor m : r.getMotors(ComponentArea.CLAW))
-            m.getEncoded().setTargetPosition(down ? CLAW_MOTOR_END_TICKS : CLAW_MOTOR_MID_TICKS);
+//        Motor m = r.getMotor("CLM");
+////        m.get().setPower(down ? -CLAW_MOTOR_PWR : CLAW_MOTOR_PWR);
+////        long timeToStop = System.currentTimeMillis() + TIME_TO_MOVE;
+////        while(System.currentTimeMillis() < timeToStop) {}
+////        m.get().setPower(0);
+//
+//        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        m.get().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        m.get().setTargetPosition(down ? CLAW_MOTOR_END_TICKS : CLAW_MOTOR_MID_TICKS);
+//        r.getLogger().putData("Claw Target Position", down ? CLAW_MOTOR_END_TICKS : CLAW_MOTOR_MID_TICKS);
+//        m.get().setPower(down ? CLAW_MOTOR_PWR : -CLAW_MOTOR_PWR);
+//        r.getLogger().putData("Claw Motor Velocity", m.getEncoded().getVelocity());
+//            while(m.get().isBusy())
+//            {
+//               // r.getLogger().putData("Claw Motor Velocity", m.getEncoded().getVelocity());
+//            }
+//            m.get().setPower(0);
+
     }
 
     /**
@@ -200,7 +219,7 @@ public class Functions {
                     setClawServos(r, clawOpen);
                 }
 
-                if(toggleArmPressed && ctrl.leftTrigger() > 0)
+                if(toggleArmPressed && !(ctrl.leftTrigger() > 0))
                     toggleArmPressed = false;
 
                 /* Toggles on variable for arm */

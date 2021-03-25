@@ -48,7 +48,7 @@ public class RoadRunnerDriveConstants {
      */
     public static double WHEEL_RADIUS = 2.9528 / 2; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 12.16; // in
+    public static double TRACK_WIDTH = 6.98; //12.16; // in //6.98
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -57,9 +57,9 @@ public class RoadRunnerDriveConstants {
      * empirically tuned.
      */
     //0.011311706322128667
-    public static double kV = 0.0203; //1.0 / rpmToVelocity(MAX_RPM);
-    public static double kA = 0.003;
-    public static double kStatic = 0.008;
+    public static double kV = 0.020314815; //1.0 / rpmToVelocity(MAX_RPM);
+    public static double kA = 0.004;
+    public static double kStatic = 0.01;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
