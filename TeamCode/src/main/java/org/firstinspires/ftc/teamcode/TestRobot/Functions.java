@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.TestRobot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
@@ -19,8 +20,8 @@ public class Functions {
     public static int SHOOTER_INIT_MILLIS = 2000, SHOOTER_WAIT_MILLIS = 4000, SHOOTER_COOLDOWN = 1500;
     public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
     public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 0.5;
-    public static int CLAW_MOTOR_MID_TICKS = 0, CLAW_MOTOR_END_TICKS = -50;
-    public static double CLAW_MOTOR_PWR = 0.8;
+    public static int CLAW_MOTOR_MID_TICKS = 500, CLAW_MOTOR_END_TICKS = 400;
+    public static double CLAW_MOTOR_PWR = 0.7;
     public static int TIME_TO_MOVE = 500;
 
     /**
@@ -90,7 +91,7 @@ public class Functions {
                 r.getLogger().putData("cooldownTime", cooldownTime);
                 r.getLogger().putData("alreadyPressed", alreadyPressed);
 
-                if(ctrl.buttonB() && !on){
+                if(ctrl.buttonX() && !on){
                     on = true;
                     init = true;
                     firstShot = true;
@@ -110,10 +111,10 @@ public class Functions {
                         on = false;
                         setShooterMotor(r, false);
                     } else {
-                        if(!ctrl.buttonB())
+                        if(!ctrl.buttonX())
                             alreadyPressed = false;
                         if (System.currentTimeMillis() > cooldownTime)
-                            if (firstShot || (ctrl.buttonB() && !alreadyPressed)) {
+                            if (firstShot || (ctrl.buttonX() && !alreadyPressed)) {
                                 firstShot = false;
                                 alreadyPressed = true;
                                 //reset timers
@@ -139,6 +140,17 @@ public class Functions {
         r.getLogger().log(Level.INFO, "Turning Shooter Motor " + (on ? "on" : "off"));
         for(Motor m : r.getMotors(ComponentArea.SHOOTER))
             m.get().setPower(on ? SHOOTER_SPEED : 0);
+    }
+
+    /**
+     * Starts or stops the shooter motor(s) for auton
+     * @param r The robot with the shooter motor
+     * @param on If the motor should be turned on or off
+     */
+    public static void setShooterMotor(Robot r, boolean on, double power) {
+        r.getLogger().log(Level.INFO, "Turning Shooter Motor " + (on ? "on" : "off") + " (power=" + power + ")");
+        for(Motor m : r.getMotors(ComponentArea.SHOOTER))
+            m.get().setPower(on ? power : 0);
     }
 
     /**
@@ -177,24 +189,26 @@ public class Functions {
 
     public static void setClawArmPosition(Robot r, boolean down) {
         r.getLogger().log(Level.INFO, "Moving claw arm (down = " + down + ")");
-//        Motor m = r.getMotor("CLM");
+        Motor m = r.getMotor("CLM");
 ////        m.get().setPower(down ? -CLAW_MOTOR_PWR : CLAW_MOTOR_PWR);
 ////        long timeToStop = System.currentTimeMillis() + TIME_TO_MOVE;
 ////        while(System.currentTimeMillis() < timeToStop) {}
 ////        m.get().setPower(0);
 //
-//        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        m.get().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        m.get().setTargetPosition(down ? CLAW_MOTOR_END_TICKS : CLAW_MOTOR_MID_TICKS);
-//        r.getLogger().putData("Claw Target Position", down ? CLAW_MOTOR_END_TICKS : CLAW_MOTOR_MID_TICKS);
-//        m.get().setPower(down ? CLAW_MOTOR_PWR : -CLAW_MOTOR_PWR);
-//        r.getLogger().putData("Claw Motor Velocity", m.getEncoded().getVelocity());
-//            while(m.get().isBusy())
-//            {
-//               // r.getLogger().putData("Claw Motor Velocity", m.getEncoded().getVelocity());
-//            }
-//            m.get().setPower(0);
-
+        m.get().setDirection(DcMotorSimple.Direction.REVERSE);
+        m.get().setTargetPosition(down ? CLAW_MOTOR_END_TICKS : CLAW_MOTOR_MID_TICKS);
+        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        m.get().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        r.getLogger().log(Level.INFO, m.get().getZeroPowerBehavior() + "");
+        r.getLogger().log(Level.INFO, m.get().getMode() + "");
+        r.getLogger().putData("Claw Target Position", m.get().getTargetPosition());
+        m.get().setPower(CLAW_MOTOR_PWR);
+        r.getLogger().putData("Claw Motor Velocity", m.getEncoded().getVelocity());
+            while(r.op().opModeIsActive() && !r.op().isStopRequested() && m.get().isBusy())
+            {
+                r.getLogger().putData("Claw Motor Velocity", m.getEncoded().getVelocity());
+            }
+            m.get().setPower(0);
     }
 
     /**
@@ -203,9 +217,11 @@ public class Functions {
      */
     public static void startClaw(Robot r, Controller ctrl){
         r.getLogger().log(Level.INFO, "Starting claw function");
+        int startingPosition = r.getMotor("CLM").get().getCurrentPosition();
         r.addThread(new Thread(() -> {
             boolean clawOpen = false, toggleClawPressed = false;
             boolean armDown = false, toggleArmPressed = false;
+            Motor m = r.getMotor("CLM");
             while(r.op().opModeIsActive()){
 
                 if(toggleClawPressed && !ctrl.leftBumper())
@@ -219,15 +235,22 @@ public class Functions {
                     setClawServos(r, clawOpen);
                 }
 
-                if(toggleArmPressed && !(ctrl.leftTrigger() > 0))
-                    toggleArmPressed = false;
+//                if(toggleArmPressed && !(ctrl.leftTrigger() > 0))
+//                    toggleArmPressed = false;
+//
+//                /* Toggles on variable for arm */
+//                if(!toggleArmPressed && ctrl.leftTrigger() > 0) {
+//                    toggleArmPressed = true;
+//                    armDown = !armDown;
+//                    //do something
+//                    setClawArmPosition(r, armDown, startingPosition);
+//                }
 
-                /* Toggles on variable for arm */
-                if(!toggleArmPressed && ctrl.leftTrigger() > 0) {
-                    toggleArmPressed = true;
-                    armDown = !armDown;
-                    //do something
-                    setClawArmPosition(r, armDown);
+
+                if(ctrl.leftTrigger() > 0){
+                    m.get().setPower(ctrl.leftTrigger());
+                } else if (ctrl.rightTrigger() > 0){
+                    m.get().setPower(-ctrl.rightTrigger());
                 }
 
             }

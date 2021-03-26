@@ -13,36 +13,45 @@ import org.firstinspires.ftc.teamcode.TestRobot.Functions;
 
 import java.util.logging.Level;
 
+import static org.firstinspires.ftc.teamcode.TestRobot.Functions.SHOOTER_SERVO_END_POS;
+import static org.firstinspires.ftc.teamcode.TestRobot.Functions.SHOOTER_SERVO_START_POS;
+
 @Autonomous
 public class ShooterAutonTest extends LinearOpMode {
 
     private MecanumDriveTrain robot;
     private SampleMecanumDrive roadrunner;
-    public static double angleDiff = -5, startingAngle = 35, endingAngle = -35;
+    public static double startPower = 0.5, endPower = 1, diff = 0.1;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        double currentAngle = startingAngle;
-
         roadrunner = new SampleMecanumDrive(this);
         robot = roadrunner.getDriveTrain();
 
+        double currentPower = startPower;
+
         waitForStart();
 
-        roadrunner.turn(Math.toRadians(startingAngle));
-        Functions.setShooterMotor(robot, true);
-
-
-        while(currentAngle > endingAngle - angleDiff - 1) {
-            robot.autonWait(2000);
-            for(int i = 0; i < 3; i++)
-                Functions.useShooterServos(robot);
-            currentAngle += angleDiff;
-            roadrunner.turn(Math.toRadians(currentAngle));
-            robot.getLogger().log(Level.INFO, "Angle Testing: " + currentAngle + " degrees");
-            robot.getLogger().updateLog();
+        while(currentPower < endPower + diff) {
+            Functions.setShooterMotor(robot, true, currentPower);
+            for(Servo s : robot.getServos(ComponentArea.SHOOTER))
+                s.get().setPosition(SHOOTER_SERVO_END_POS);
+            robot.autonWait(500);
+            for(Servo s : robot.getServos(ComponentArea.SHOOTER))
+                s.get().setPosition(SHOOTER_SERVO_START_POS);
+            robot.autonWait(1000);
+            for(Servo s : robot.getServos(ComponentArea.SHOOTER))
+                s.get().setPosition(SHOOTER_SERVO_END_POS);
+            robot.autonWait(500);
+            for(Servo s : robot.getServos(ComponentArea.SHOOTER))
+                s.get().setPosition(SHOOTER_SERVO_START_POS);
+            robot.autonWait(1000);
+            Functions.useShooterServos(robot);
+            currentPower += diff;
         }
+
+        Functions.setShooterMotor(robot, false);
 
         Functions.setShooterMotor(robot, false);
 

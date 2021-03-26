@@ -27,13 +27,15 @@ public class Configurator {
         HardwareComponent[] driveTrainMotors = getDriveTrainMotors(robot);
 
         Motor m = new Motor(robot, "CLM", CLAW, true);
+        m.get().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         return(new HardwareComponent[]{
                 driveTrainMotors[0],
                 driveTrainMotors[1],
                 driveTrainMotors[2],
                 driveTrainMotors[3],
-//                new Motor(robot, "INM", INTAKE, false),
+                new Motor(robot, "INM", INTAKE, false),
+                new Motor(robot, "INM2", INTAKE, false),
                 new Motor(robot, "SHM", SHOOTER, false),
                 m,
                 new Servo(robot, "CLS", CLAW),
@@ -55,6 +57,11 @@ public class Configurator {
         DrivetrainMotor motorFrontRight = new DrivetrainMotor(robot, "FRM", MC, true, MotorType.DrivetrainPosition.FRM);
         DrivetrainMotor motorBackLeft = new DrivetrainMotor(robot, "BLM", MC, true, MotorType.DrivetrainPosition.BLM);
         DrivetrainMotor motorBackRight = new DrivetrainMotor(robot, "BRM", MC, true, MotorType.DrivetrainPosition.BRM);
+
+        motorFrontLeft.get().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.get().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.get().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.get().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         return(new HardwareComponent[]{
                 motorFrontLeft,

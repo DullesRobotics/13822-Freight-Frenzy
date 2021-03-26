@@ -30,16 +30,16 @@ public class AutonConstants {
      * to see the starting stack
      * IN DEGREES
      */
-    public static double START_STACK_ANGLE = 18.435;
+    public static double START_STACK_ANGLE = 20;
 
     /**
      * The points at the center of each zone. <br>
      * X points reversed for red
      */
     public static Point
-            ZONE_A = new Point(-60, 12),
-            ZONE_B = new Point(-36, 36),
-            ZONE_C = new Point(-60, 60);
+            ZONE_A = new Point(-58, -5),
+            ZONE_B = new Point(-34, 19),
+            ZONE_C = new Point(-58, 43);
 
     /**
      * The offsets from the zone points
@@ -47,8 +47,10 @@ public class AutonConstants {
      * will be reversed for red
      */
     public static double
-            FIRST_WOBBLE_OFFSET = -6,
-            SECOND_WOBBLE_OFFSET = 6;
+            FIRST_WOBBLE_OFFSET_X = 0,
+            FIRST_WOBBLE_OFFSET_Y = 0,
+            SECOND_WOBBLE_OFFSET_X = 0,
+            SECOND_WOBBLE_OFFSET_Y = 0;
 
     /**
      * Inches to move back before raising claw
@@ -57,11 +59,16 @@ public class AutonConstants {
 
     /** Points to shoot from */
     public static Point
-        SHOOTING_POSITION_BLUE = new Point(-58, 6);
+        SHOOTING_POSITION_BLUE = new Point(-34, -2);
 
     /** Angles to shoot from */
     public static double
-        SHOOTING_ANGLE_BLUE = 12;
+        SHOOTING_ANGLE_BLUE = -6;
+
+    public static double ANGLE_TO_CHANGE = -5;
+    public static double POWER_TO_CHANGE = 0.03;
+
+            public static double SHOOTER_POWER = 0.65;
 
     public static Point
         BLUE_RETURN_POINT_1 = new Point(0, SHOOTING_POSITION_BLUE.y),

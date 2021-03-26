@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
 import org.firstinspires.ftc.teamcode.TestRobot.Functions;
 
 import static org.firstinspires.ftc.teamcode.Hardware.ComponentArea.CLAW;
@@ -19,10 +20,7 @@ public class ClawTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new MecanumDriveTrain(this);
-        robot.addHardware(
-                new Motor(robot, "CLM", CLAW, true),
-                new Servo(robot, "CLS", CLAW)
-        );
+        robot.addHardware(Configurator.getHardware(robot));
 
         waitForStart();
 

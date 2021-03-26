@@ -30,8 +30,6 @@ public class Motor extends HardwareComponent {
         this.isEncoded = isEncoded;
         try {
             setComponent(r.op().hardwareMap.get(isEncoded ? DcMotorEx.class : DcMotor.class, id));
-            get().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            get().setMode(isEncoded ? DcMotor.RunMode.RUN_USING_ENCODER : DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         } catch (Exception e) {
             r.getLogger().log(Level.SEVERE, "Error Adding Motor " + id, e.toString());
             r.op().requestOpModeStop();
