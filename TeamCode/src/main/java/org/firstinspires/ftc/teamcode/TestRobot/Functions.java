@@ -19,8 +19,8 @@ public class Functions {
     public static double INTAKE_SPEED = 0.7, SHOOTER_SPEED = 1;
     public static int SHOOTER_INIT_MILLIS = 2000, SHOOTER_WAIT_MILLIS = 4000, SHOOTER_COOLDOWN = 1500;
     public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
-    public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 0.5;
-    public static double CLAW_SERVO_CLOSED_POS_2 = 0, CLAW_SERVO_OPEN_POS_2 = 0.5;
+    public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 0.58;
+    public static double CLAW_SERVO_CLOSED_POS_2 = 0.06, CLAW_SERVO_OPEN_POS_2 = 0.58;
     public static int CLAW_MOTOR_MID_TICKS = 500, CLAW_MOTOR_END_TICKS = 400;
     public static double CLAW_MOTOR_PWR = 0.7;
     public static int TIME_TO_MOVE = 500;
@@ -247,11 +247,12 @@ public class Functions {
 //                    setClawArmPosition(r, armDown, startingPosition);
 //                }
 
-
                 if(ctrl.leftTrigger() > 0){
-                    m.get().setPower(ctrl.leftTrigger());
+                    m.get().setPower( CLAW_MOTOR_PWR);
                 } else if (ctrl.rightTrigger() > 0){
-                    m.get().setPower(-ctrl.rightTrigger());
+                    m.get().setPower(-CLAW_MOTOR_PWR);
+                } else {
+                    m.get().setPower(0);
                 }
 
             }

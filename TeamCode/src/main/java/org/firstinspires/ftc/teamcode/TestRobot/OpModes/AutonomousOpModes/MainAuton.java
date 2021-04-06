@@ -67,6 +67,7 @@ public class MainAuton {
          * ONE - Zone B (middle)
          * FOUR - Zone C (top)
          */
+
         UltimateGoalPipeline.RingAmount amount = pipeline.getAmount();
 
         switch(amount){
@@ -100,8 +101,6 @@ public class MainAuton {
 
         robot.autonWait(1000);
 
-        Functions.setClawServos(robot, true);
-
         robot.autonWait(500);
 
         m.get().setPower(0);
@@ -109,6 +108,8 @@ public class MainAuton {
         m.get().setTargetPosition(CLAW_MOTOR_MID_TICKS);
         m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
         m.get().setPower(CLAW_MOTOR_PWR);
+
+        Functions.setClawServos(robot, true);
 
         robot.autonWait(1000);
 

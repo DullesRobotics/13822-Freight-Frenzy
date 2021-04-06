@@ -68,7 +68,7 @@ public class AutonConstants {
     public static double ANGLE_TO_CHANGE = -5;
     public static double POWER_TO_CHANGE = 0.03;
 
-            public static double SHOOTER_POWER = 0.65;
+            public static double SHOOTER_POWER = -0.7;
 
     public static Point
         BLUE_RETURN_POINT_1 = new Point(0, SHOOTING_POSITION_BLUE.y),
