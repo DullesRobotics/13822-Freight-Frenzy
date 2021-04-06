@@ -50,7 +50,7 @@ public class MecanumDriveTrain extends StandardDriveTrain {
                 blmPower = currentSpeed * (-ctrl.leftY() - ctrl.rightTrigger() + ctrl.leftTrigger());
                 brmPower = currentSpeed * (-ctrl.rightY() + ctrl.rightTrigger() - ctrl.leftTrigger());
 
-                getLogger().putData("Set Power (FL, FR, BL, BR)", flmPower + ", " + frmPower + ", " + blmPower + ", " + brmPower);
+              //  getLogger().putData("Set Power (FL, FR, BL, BR)", flmPower + ", " + frmPower + ", " + blmPower + ", " + brmPower);
                 getLogger().putData("Power (FL, FR, BL, BR)", getMotor("FLM").get().getPower() + ", " + getMotor("FRM").get().getPower() + ", " + getMotor("BLM").get().getPower() + ", " + getMotor("BRM").get().getPower());
                 getLogger().putData("Velocity (FL, FR, BL, BR)", getMotor("FLM").getEncoded().getVelocity() + ", " + getMotor("FRM").getEncoded().getVelocity() + ", " + getMotor("BLM").getEncoded().getVelocity() + ", " + getMotor("BRM").getEncoded().getVelocity());
 

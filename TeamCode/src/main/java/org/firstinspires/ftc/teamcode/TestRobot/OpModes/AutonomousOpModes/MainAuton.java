@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
 import org.firstinspires.ftc.teamcode.TestRobot.Functions;
 import org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines.UltimateGoalPipeline;
 
@@ -37,14 +38,14 @@ public class MainAuton {
         roadrunner = new SampleMecanumDrive(op);
         robot = roadrunner.getDriveTrain();
 
-        int clawStartingPos = robot.getMotor("CLM").get().getCurrentPosition();
+        roadrunner.setPoseEstimate(startPose);
 
         robot.addThread(new Thread(() -> {
-            while(op.opModeIsActive() && !op.isStopRequested())
+            while(op.opModeIsActive() && !op.isStopRequested()) {
+                Configurator.currentPosition = roadrunner.getPoseEstimate();
                 robot.getLogger().updateLog();
+            }
         }), true);
-
-        roadrunner.setPoseEstimate(startPose);
 
         /* start OpenCV */
         UltimateGoalPipeline pipeline = new UltimateGoalPipeline();

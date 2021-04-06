@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOnType;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.RobotRecorder;
 import org.firstinspires.ftc.teamcode.Libraries.PID;
+import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.RobotManager.StandardDriveTrain;
 import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
@@ -16,12 +17,15 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 @TeleOp
 public class MainModeMechanum extends LinearOpMode {
 
+    private SampleMecanumDrive roadrunner;
     private MecanumDriveTrain robot;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new MecanumDriveTrain(this);
-        robot.addHardware(Configurator.getHardware(robot));
+
+        roadrunner = new SampleMecanumDrive(this);
+        robot = roadrunner.getDriveTrain();
+        roadrunner.setPoseEstimate(Configurator.currentPosition);
 
         waitForStart();
 
@@ -31,8 +35,10 @@ public class MainModeMechanum extends LinearOpMode {
         Functions.startShooter(robot, robot.ctrl2());
         Functions.startClaw(robot, robot.ctrl2());
 
-        while (opModeIsActive())
+        while (opModeIsActive()) {
+            robot.getLogger().putData("PostEstimate", "(" + roadrunner.getPoseEstimate().getX() + ", " + roadrunner.getPoseEstimate().getY() + ") @ " + Math.toDegrees(roadrunner.getPoseEstimate().getHeading()) + "°");
             robot.getLogger().updateLog();
+        }
 
         robot.stopAllThreads();
     }

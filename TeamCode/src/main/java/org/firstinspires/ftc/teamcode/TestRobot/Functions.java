@@ -20,6 +20,7 @@ public class Functions {
     public static int SHOOTER_INIT_MILLIS = 2000, SHOOTER_WAIT_MILLIS = 4000, SHOOTER_COOLDOWN = 1500;
     public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
     public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 0.5;
+    public static double CLAW_SERVO_CLOSED_POS_2 = 0, CLAW_SERVO_OPEN_POS_2 = 0.5;
     public static int CLAW_MOTOR_MID_TICKS = 500, CLAW_MOTOR_END_TICKS = 400;
     public static double CLAW_MOTOR_PWR = 0.7;
     public static int TIME_TO_MOVE = 500;
@@ -183,8 +184,8 @@ public class Functions {
      */
     public static void setClawServos(Robot r, boolean open){
         r.getLogger().log(Level.INFO, "Setting claw servos (open = " + open + ")");
-        for(Servo s : r.getServos(ComponentArea.CLAW))
-            s.get().setPosition(open ? CLAW_SERVO_OPEN_POS : CLAW_SERVO_CLOSED_POS);
+        r.getServo("CLS").get().setPosition(open ? CLAW_SERVO_OPEN_POS : CLAW_SERVO_CLOSED_POS);
+        r.getServo("CLS2").get().setPosition(open ? CLAW_SERVO_OPEN_POS_2 : CLAW_SERVO_CLOSED_POS_2);
     }
 
     public static void setClawArmPosition(Robot r, boolean down) {

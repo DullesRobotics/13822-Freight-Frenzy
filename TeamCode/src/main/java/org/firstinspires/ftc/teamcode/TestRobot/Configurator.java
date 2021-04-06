@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.TestRobot;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
@@ -16,6 +17,8 @@ import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 import static org.firstinspires.ftc.teamcode.Hardware.ComponentArea.*;
 
 public class Configurator {
+
+    public static Pose2d currentPosition = new Pose2d(0,0, Math.toRadians(0));
 
     /**
      * It's HIGHLY recommended every motor has the same motor configuration for autonomous driving
@@ -39,6 +42,7 @@ public class Configurator {
                 new Motor(robot, "SHM", SHOOTER, false),
                 m,
                 new Servo(robot, "CLS", CLAW),
+                new Servo(robot, "CLS2", CLAW),
                 new Servo(robot, "SHS", SHOOTER),
                 new IMU(robot, "IMU"),
                 new USBWebcam(robot, "Webcam")
