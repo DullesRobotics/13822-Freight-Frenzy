@@ -28,7 +28,7 @@ import static org.firstinspires.ftc.teamcode.TestRobot.Functions.CLAW_MOTOR_PWR;
 import static org.firstinspires.ftc.teamcode.TestRobot.Functions.SHOOTER_SERVO_END_POS;
 import static org.firstinspires.ftc.teamcode.TestRobot.Functions.SHOOTER_SERVO_START_POS;
 
-public class MainAuton {
+public class AutonRunner {
 
     private static volatile MecanumDriveTrain robot;
     private static volatile SampleMecanumDrive roadrunner;
@@ -88,7 +88,7 @@ public class MainAuton {
         Trajectory wobbleOneTrajectory2 = roadrunner.trajectoryBuilder(wobbleOneTrajectory1.end())
                 .splineToLinearHeading(new Pose2d(zonePoint.y + FIRST_WOBBLE_OFFSET_Y, -zonePoint.x - FIRST_WOBBLE_OFFSET_X, Math.toRadians(180)), Math.toRadians(0))
                 .build();
-        
+
         roadrunner.followTrajectory(wobbleOneTrajectory2);
 
         robot.autonWait(200);

@@ -32,6 +32,9 @@ public class Configurator {
         Motor m = new Motor(robot, "CLM", CLAW, true);
         m.get().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+       Motor shooter = new Motor(robot, "SHM", SHOOTER, false);
+       shooter.setFlipped(true);
+
         return(new HardwareComponent[]{
                 driveTrainMotors[0],
                 driveTrainMotors[1],
@@ -39,7 +42,7 @@ public class Configurator {
                 driveTrainMotors[3],
                 new Motor(robot, "INM", INTAKE, false),
                 new Motor(robot, "INM2", INTAKE, false),
-                new Motor(robot, "SHM", SHOOTER, false),
+                shooter,
                 m,
                 new Servo(robot, "CLS", CLAW),
                 new Servo(robot, "CLS2", CLAW),

@@ -29,11 +29,11 @@ public class IntakeAutonTest extends LinearOpMode {
         /* Give time for robot to calculate just in case */
         robot.autonWait(1000);
 
-        Functions.setIntake(robot, true);
+        Functions.setIntake(robot, true, true);
 
         robot.autonWait(1000);
 
-        Functions.setIntake(robot, false);
+        Functions.setIntake(robot, false, true);
 
         robot.autonWait(1000);
 

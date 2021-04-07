@@ -21,7 +21,7 @@ public class Functions {
     public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
     public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 0.58;
     public static double CLAW_SERVO_CLOSED_POS_2 = 0.06, CLAW_SERVO_OPEN_POS_2 = 0.58;
-    public static int CLAW_MOTOR_MID_TICKS = 500, CLAW_MOTOR_END_TICKS = 400;
+    public static int CLAW_MOTOR_MID_TICKS = 900, CLAW_MOTOR_END_TICKS = 500;
     public static double CLAW_MOTOR_PWR = 0.7;
     public static int TIME_TO_MOVE = 500;
 
@@ -35,8 +35,13 @@ public class Functions {
     public static void startIntake(Robot r, Controller ctrl){
         r.getLogger().log(Level.INFO, "Starting intake function");
         r.addThread(new Thread(() -> {
-            boolean on = false, togglePressed = false;
+            boolean on = false, togglePressed = false, forward = true;
             while(r.op().opModeIsActive()){
+
+                if(ctrl.buttonUp())
+                    forward = true;
+                else if(ctrl.buttonDown())
+                    forward = false;
 
                 if(togglePressed && !ctrl.buttonY())
                     togglePressed = false;
@@ -47,7 +52,7 @@ public class Functions {
                     togglePressed = true;
                     on = !on;
                     //do something`
-                    setIntake(r, on);
+                    setIntake(r, on, forward);
                 }
             }
         }), true);
@@ -58,10 +63,10 @@ public class Functions {
      * @param r The robot to toggle the intake motors with
      * @param on If the intake should be on or off
      */
-    public static void setIntake(Robot r, boolean on) {
+    public static void setIntake(Robot r, boolean on, boolean forward) {
         r.getLogger().log(Level.INFO, "Turning intake motor(s) " + (on ? "on" : "off"));
         for(Motor m : r.getMotors(ComponentArea.INTAKE))
-            m.get().setPower(on ? INTAKE_SPEED : 0);
+            m.get().setPower(on ? forward ? INTAKE_SPEED : -INTAKE_SPEED : 0);
     }
 
     /**

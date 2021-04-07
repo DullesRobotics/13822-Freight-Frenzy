@@ -26,21 +26,11 @@ public class UltimateGoalPipeline extends OpenCvPipeline implements Pipeline {
     private static final Scalar BLUE = new Scalar(0, 0, 255), GREEN = new Scalar(0, 255, 0);
 
     /* The core values which define the location and size of the sample regions */
-    private final static Point REGION1_TOP_LEFT_ANCHOR_POINT = new Point(200,120);
-
-    /* How large the box should be to check */
-    private final static int REGION_WIDTH = 130, REGION_HEIGHT = 122;
+    public static Point region1_pointA = new Point(50,120);
+    public static Point region1_pointB = new Point(250, 230);
 
     /* Values that determine rings. Guess & check until it works */
     public static int FOUR_RING_THRESHOLD = 129, ONE_RING_THRESHOLD = 125;
-
-    public static Point region1_pointA = new Point(
-                    REGION1_TOP_LEFT_ANCHOR_POINT.x,
-                    REGION1_TOP_LEFT_ANCHOR_POINT.y);
-
-    public static Point region1_pointB = new Point(
-                REGION1_TOP_LEFT_ANCHOR_POINT.x + REGION_WIDTH,
-                REGION1_TOP_LEFT_ANCHOR_POINT.y + REGION_HEIGHT);
 
     /*
      * Working variables
