@@ -17,15 +17,13 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 @TeleOp
 public class MainModeMechanum extends LinearOpMode {
 
-    private SampleMecanumDrive roadrunner;
     private MecanumDriveTrain robot;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        roadrunner = new SampleMecanumDrive(this);
-        robot = roadrunner.getDriveTrain();
-        roadrunner.setPoseEstimate(Configurator.currentPosition);
+        robot = new MecanumDriveTrain(this);
+        robot.addHardware(Configurator.getHardware(robot));
 
         waitForStart();
 
@@ -36,7 +34,7 @@ public class MainModeMechanum extends LinearOpMode {
         Functions.startClaw(robot, robot.ctrl2());
 
         while (opModeIsActive()) {
-            robot.getLogger().putData("PostEstimate", "(" + roadrunner.getPoseEstimate().getX() + ", " + roadrunner.getPoseEstimate().getY() + ") @ " + Math.toDegrees(roadrunner.getPoseEstimate().getHeading()) + "°");
+            //robot.getLogger().putData("PostEstimate", "(" + roadrunner.getPoseEstimate().getX() + ", " + roadrunner.getPoseEstimate().getY() + ") @ " + Math.toDegrees(roadrunner.getPoseEstimate().getHeading()) + "°");
             robot.getLogger().updateLog();
         }
 

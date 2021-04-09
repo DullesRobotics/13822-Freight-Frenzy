@@ -18,8 +18,6 @@ import static org.firstinspires.ftc.teamcode.Hardware.ComponentArea.*;
 
 public class Configurator {
 
-    public static Pose2d currentPosition = new Pose2d(0,0, Math.toRadians(0));
-
     /**
      * It's HIGHLY recommended every motor has the same motor configuration for autonomous driving
      * If not, individual motors might move incorrectly. If you have a mix-match of motors, don't use road runner.
