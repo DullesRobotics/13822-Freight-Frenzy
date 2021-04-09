@@ -40,16 +40,20 @@ public class AutonRunner {
 
         roadrunner.setPoseEstimate(startPose);
 
-        robot.addThread(new Thread(() -> {
-            while(op.opModeIsActive() && !op.isStopRequested()) {
-                Configurator.currentPosition = roadrunner.getPoseEstimate();
-                robot.getLogger().updateLog();
-            }
-        }), true);
-
         /* start OpenCV */
         UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
         robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam(), OPEN_CV_CAM_ROTATION));
+
+        robot.addThread(new Thread(() -> {
+            while(op.opModeIsActive() && !op.isStopRequested()) {
+                Configurator.currentPosition = roadrunner.getPoseEstimate();
+                robot.getLogger().putData("opencv analysis", pipeline.getAnalysis());
+                robot.getLogger().putData("ring amount", pipeline.getAmount());
+                Motor shooter = robot.getMotors(ComponentArea.SHOOTER).get(0);
+                robot.getLogger().putData("shooter velocity", shooter.getEncoded().getVelocity());
+                robot.getLogger().updateLog();
+            }
+        }), true);
 
         Point zonePoint;
 
@@ -70,6 +74,13 @@ public class AutonRunner {
 
         UltimateGoalPipeline.RingAmount amount = pipeline.getAmount();
 
+        long timeToWaitTo = System.currentTimeMillis() + 4000;
+        if(pipeline.getAnalysis() == 0) {
+            while (pipeline.getAnalysis() == 0 && System.currentTimeMillis() < timeToWaitTo) {}
+            long correctionTime = System.currentTimeMillis() + 2000;
+            while (System.currentTimeMillis() < correctionTime) {}
+        }
+
         switch(amount){
             case ONE: zonePoint = ZONE_B; break;
             case FOUR: zonePoint = ZONE_C; break;
@@ -86,7 +97,7 @@ public class AutonRunner {
         roadrunner.followTrajectory(wobbleOneTrajectory1);
 
         Trajectory wobbleOneTrajectory2 = roadrunner.trajectoryBuilder(wobbleOneTrajectory1.end())
-                .splineToLinearHeading(new Pose2d(zonePoint.y + FIRST_WOBBLE_OFFSET_Y, -zonePoint.x - FIRST_WOBBLE_OFFSET_X, Math.toRadians(180)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(zonePoint.y, -zonePoint.x, Math.toRadians(zonePoint == ZONE_B ? B_angle : AC_angle)), Math.toRadians(20))
                 .build();
 
         roadrunner.followTrajectory(wobbleOneTrajectory2);
@@ -94,24 +105,26 @@ public class AutonRunner {
         robot.autonWait(200);
 
         Motor m = robot.getMotor("CLM");
-        m.get().setDirection(DcMotorSimple.Direction.REVERSE);
-        m.get().setTargetPosition(CLAW_MOTOR_END_TICKS);
-        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        m.get().setPower(CLAW_MOTOR_PWR);
-
-        robot.autonWait(1000);
-
-        robot.autonWait(500);
-
         m.get().setPower(0);
         m.get().setDirection(DcMotorSimple.Direction.FORWARD);
         m.get().setTargetPosition(CLAW_MOTOR_MID_TICKS);
         m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
         m.get().setPower(CLAW_MOTOR_PWR);
+        robot.autonWait(2000);
+
+        m.get().setPower(0);
 
         Functions.setClawServos(robot, true);
 
-        robot.autonWait(1000);
+        robot.autonWait(1500);
+
+        m.get().setPower(0);
+        m.get().setDirection(DcMotorSimple.Direction.REVERSE);
+        m.get().setTargetPosition(CLAW_MOTOR_END_TICKS);
+        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        m.get().setPower(CLAW_MOTOR_PWR);
+
+        robot.autonWait(800);
 
         m.get().setPower(0);
 

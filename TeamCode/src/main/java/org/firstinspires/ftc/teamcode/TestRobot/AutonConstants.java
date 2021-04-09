@@ -37,9 +37,11 @@ public class AutonConstants {
      * X points reversed for red
      */
     public static Point
-            ZONE_A = new Point(-58, -5),
-            ZONE_B = new Point(-34, 19),
-            ZONE_C = new Point(-58, 43);
+            ZONE_A = new Point(-54, 1+6),
+            ZONE_B = new Point(-48, 19+6),
+            ZONE_C = new Point(-54, 52);
+
+    public static double B_angle = 180, AC_angle = 270;
 
     /**
      * The offsets from the zone points
@@ -59,16 +61,16 @@ public class AutonConstants {
 
     /** Points to shoot from */
     public static Point
-        SHOOTING_POSITION_BLUE = new Point(-34, -2);
+        SHOOTING_POSITION_BLUE = new Point(-41, -5);
 
     /** Angles to shoot from */
     public static double
-        SHOOTING_ANGLE_BLUE = -6;
+        SHOOTING_ANGLE_BLUE = 0;
 
     public static double ANGLE_TO_CHANGE = -5;
     public static double POWER_TO_CHANGE = 0.03;
 
-            public static double SHOOTER_POWER = -0.7;
+            public static double SHOOTER_POWER = 0.7;
 
     public static Point
         BLUE_RETURN_POINT_1 = new Point(0, SHOOTING_POSITION_BLUE.y),

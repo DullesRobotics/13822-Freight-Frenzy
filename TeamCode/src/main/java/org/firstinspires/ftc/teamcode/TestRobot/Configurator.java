@@ -32,7 +32,7 @@ public class Configurator {
         Motor m = new Motor(robot, "CLM", CLAW, true);
         m.get().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-       Motor shooter = new Motor(robot, "SHM", SHOOTER, false);
+       Motor shooter = new Motor(robot, "SHM", SHOOTER, true);
        shooter.setFlipped(true);
 
         return(new HardwareComponent[]{

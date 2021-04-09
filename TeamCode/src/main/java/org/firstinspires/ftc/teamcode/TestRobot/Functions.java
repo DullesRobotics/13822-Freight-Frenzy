@@ -47,7 +47,7 @@ public class Functions {
                     togglePressed = false;
 
                 /* Toggles on variable */
-                r.getLogger().putData("Intake Power", on ? INTAKE_SPEED : 0);
+                r.getLogger().putData("Intake Power", on ? forward ? INTAKE_SPEED : -INTAKE_SPEED : 0);
                 if(!togglePressed && ctrl.buttonY()) {
                     togglePressed = true;
                     on = !on;
@@ -66,7 +66,10 @@ public class Functions {
     public static void setIntake(Robot r, boolean on, boolean forward) {
         r.getLogger().log(Level.INFO, "Turning intake motor(s) " + (on ? "on" : "off"));
         for(Motor m : r.getMotors(ComponentArea.INTAKE))
-            m.get().setPower(on ? forward ? INTAKE_SPEED : -INTAKE_SPEED : 0);
+        {
+            m.setFlipped(!forward);
+            m.get().setPower(on ? INTAKE_SPEED : 0);
+        }
     }
 
     /**
@@ -102,6 +105,9 @@ public class Functions {
                     init = true;
                     firstShot = true;
                     initTime = System.currentTimeMillis() + SHOOTER_INIT_MILLIS;
+                }
+
+                if(on){
                     setShooterMotor(r, true);
                 }
 
