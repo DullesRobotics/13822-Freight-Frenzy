@@ -16,7 +16,7 @@ import java.util.logging.Level;
 public class Functions {
 
     //lowered for battery life
-    public static double INTAKE_SPEED = 0.7, SHOOTER_SPEED = 1;
+    public static double INTAKE_SPEED = 0.7, SHOOTER_SPEED = 0.95;
     public static int SHOOTER_INIT_MILLIS = 2000, SHOOTER_WAIT_MILLIS = 4000, SHOOTER_COOLDOWN = 1500;
     public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
     public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 0.58;

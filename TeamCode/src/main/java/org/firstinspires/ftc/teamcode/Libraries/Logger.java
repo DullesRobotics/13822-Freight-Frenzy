@@ -44,8 +44,8 @@ public class Logger {
         try { writer = new PrintWriter(new FileWriter(logFile, true)); }
         catch (Exception e) {
             e.printStackTrace();
-            op.telemetry.addData("ERROR", e);
-            op.telemetry.update();
+            //op.telemetry.addData("ERROR", e);
+            //op.telemetry.update();
         }
     }
 
@@ -120,7 +120,7 @@ public class Logger {
             }
             if(updateDash) FtcDashboard.getInstance().sendTelemetryPacket(packet);
         } catch (ConcurrentModificationException ignored) {}
-        op.telemetry.update();
+//        op.telemetry.update();
     }
 
     /** Updates log file */
