@@ -70,4 +70,7 @@ public class AutonConstants {
 
     public static double LAUNCH_LINE_Y_COORDINATE = 12;
 
+    public static Point SECOND_WOBBLE_GOAL_PICKUP_POSITION = new Point(STARTING_BLUE_LEFT.x + 24, STARTING_BLUE_LEFT.y);
+
+
 }
