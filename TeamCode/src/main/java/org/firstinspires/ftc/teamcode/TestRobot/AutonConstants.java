@@ -30,16 +30,16 @@ public class AutonConstants {
      * to see the starting stack
      * IN DEGREES
      */
-    public static double START_STACK_ANGLE = 20;
+    public static double START_STACK_ANGLE = 22;
 
     /**
      * The points at the center of each zone. <br>
      * X points reversed for red
      */
     public static Point
-            ZONE_A = new Point(-58, -5),
-            ZONE_B = new Point(-34, 19),
-            ZONE_C = new Point(-58, 43);
+            ZONE_A = new Point(-57, -5),
+            ZONE_B = new Point(-44, 19),
+            ZONE_C = new Point(-56, 43);
 
     public static double B_angle = 180, AC_angle = 270;
 

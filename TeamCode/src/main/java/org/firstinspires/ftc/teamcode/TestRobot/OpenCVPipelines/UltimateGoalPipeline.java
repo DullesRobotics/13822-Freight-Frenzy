@@ -30,7 +30,7 @@ public class UltimateGoalPipeline extends OpenCvPipeline implements Pipeline {
     public static Point region1_pointB = new Point(250, 230);
 
     /* Values that determine rings. Guess & check until it works */
-    public static int FOUR_RING_THRESHOLD = 131, ONE_RING_THRESHOLD = 127;
+    public static int FOUR_RING_THRESHOLD = 130, ONE_RING_THRESHOLD = 126;
 
     /*
      * Working variables
