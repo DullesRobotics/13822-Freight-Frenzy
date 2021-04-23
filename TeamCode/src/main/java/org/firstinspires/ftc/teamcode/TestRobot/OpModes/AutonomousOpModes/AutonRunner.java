@@ -39,7 +39,7 @@ public class AutonRunner {
         robot = roadrunner.getDriveTrain();
 
         robot.addThread(new Thread(() -> {
-            while(op.opModeIsActive() && !op.isStopRequested())
+            while (op.opModeIsActive() && !op.isStopRequested())
                 robot.getLogger().updateLog();
         }), true);
 
@@ -67,16 +67,22 @@ public class AutonRunner {
          */
         UltimateGoalPipeline.RingAmount amount = pipeline.getAmount();
 
-        switch(amount){
-            case ONE: zonePoint = ZONE_B; break;
-            case FOUR: zonePoint = ZONE_C; break;
+        switch (amount) {
+            case ONE:
+                zonePoint = ZONE_B;
+                break;
+            case FOUR:
+                zonePoint = ZONE_C;
+                break;
             case NONE:
-            default: zonePoint = ZONE_A; break;
+            default:
+                zonePoint = ZONE_A;
+                break;
         }
 
         robot.autonWait(200);
 
-        Trajectory wobbleOneTrajectory1 = roadrunner.trajectoryBuilder(startPose.plus(new Pose2d(0,0, Math.toRadians(-START_STACK_ANGLE))))
+        Trajectory wobbleOneTrajectory1 = roadrunner.trajectoryBuilder(startPose.plus(new Pose2d(0, 0, Math.toRadians(-START_STACK_ANGLE))))
                 .splineToLinearHeading(new Pose2d(-12, 48, Math.toRadians(0)), Math.toRadians(0))
                 .build();
 
@@ -90,41 +96,98 @@ public class AutonRunner {
 
         robot.autonWait(200);
 
-        Motor m = robot.getMotor("CLM");
-        m.get().setPower(0);
-        m.get().setDirection(DcMotorSimple.Direction.FORWARD);
-        m.get().setTargetPosition(CLAW_MOTOR_MID_TICKS);
-        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        m.get().setPower(CLAW_MOTOR_PWR);
+//        Motor m = robot.getMotor("CLM");
+//        m.get().setPower(0);
+//        m.get().setDirection(DcMotorSimple.Direction.FORWARD);
+//        m.get().setTargetPosition(CLAW_MOTOR_MID_TICKS);
+//        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        m.get().setPower(CLAW_MOTOR_PWR);
         robot.autonWait(2000);
-
-        m.get().setPower(0);
-
-        Functions.setClawServos(robot, true);
-
+//
+//        m.get().setPower(0);
+//
+//        Functions.setClawServos(robot, true);
+//
         robot.autonWait(1500);
-
-        m.get().setPower(0);
-        m.get().setDirection(DcMotorSimple.Direction.REVERSE);
-        m.get().setTargetPosition(CLAW_MOTOR_END_TICKS);
-        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        m.get().setPower(CLAW_MOTOR_PWR);
-
+//
+//        m.get().setPower(0);
+//        m.get().setDirection(DcMotorSimple.Direction.REVERSE);
+//        m.get().setTargetPosition(CLAW_MOTOR_END_TICKS);
+//        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        m.get().setPower(CLAW_MOTOR_PWR);
+//
         robot.autonWait(800);
+//
+//        m.get().setPower(0);
 
-        m.get().setPower(0);
+        if (amount == UltimateGoalPipeline.RingAmount.NONE) {
 
-        Trajectory wobbleTwoTrajectory1 = roadrunner.trajectoryBuilder(wobbleOneTrajectory2.end())
-                .splineToConstantHeading(new Vector2d(-12, 52), Math.toRadians(0))
-                .build();
+            Trajectory wobbleTwoTrajectory1 = roadrunner.trajectoryBuilder(wobbleOneTrajectory2.end())
+                    .splineToConstantHeading(new Vector2d(-12, 52), Math.toRadians(0))
+                    .build();
 
-        roadrunner.followTrajectory(wobbleTwoTrajectory1);
+            roadrunner.followTrajectory(wobbleTwoTrajectory1);
 
-        Trajectory wobbleTwoTrajectory2 = roadrunner.trajectoryBuilder(wobbleTwoTrajectory1.end())
-                .splineToLinearHeading(new Pose2d(-42.5, 33.5, Math.toRadians(90)), Math.toRadians(0))
-                .build();
+            Trajectory wobbleTwoTrajectory2 = roadrunner.trajectoryBuilder(wobbleTwoTrajectory1.end())
+                    .splineToLinearHeading(new Pose2d(-42.5, 33.5, Math.toRadians(90)), Math.toRadians(0))
+                    .build();
 
-        roadrunner.followTrajectory(wobbleTwoTrajectory2);
+            roadrunner.followTrajectory(wobbleTwoTrajectory2);
+
+            //UNCOMMENT LATER
+            //        m.get().setPower(0);
+//        m.get().setDirection(DcMotorSimple.Direction.FORWARD);
+//        m.get().setTargetPosition(CLAW_MOTOR_MID_TICKS);
+//        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        m.get().setPower(CLAW_MOTOR_PWR);
+//        robot.autonWait(2000);
+//
+//        m.get().setPower(0);
+//
+//        Functions.setClawServos(robot, true);
+//
+//        robot.autonWait(1500);
+//
+//        m.get().setPower(0);
+//        m.get().setDirection(DcMotorSimple.Direction.REVERSE);
+//        m.get().setTargetPosition(CLAW_MOTOR_END_TICKS);
+//        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        m.get().setPower(CLAW_MOTOR_PWR);
+//
+//        robot.autonWait(800);
+//
+//        m.get().setPower(0);
+
+
+            Trajectory wobbleTwoTrajectoryMiddle = roadrunner.trajectoryBuilder(wobbleTwoTrajectory2.end())
+                    .splineToLinearHeading(new Pose2d(-6, 48, Math.toRadians(0)), Math.toRadians(0))
+                    .build();
+
+            roadrunner.followTrajectory(wobbleTwoTrajectoryMiddle);
+
+            Trajectory wobbleTwoTrajectory3 = roadrunner.trajectoryBuilder(wobbleTwoTrajectoryMiddle.end())
+                    .splineToLinearHeading(new Pose2d(zonePoint.y, -zonePoint.x, Math.toRadians(180)), Math.toRadians(0))
+                    .build();
+
+            roadrunner.followTrajectory(wobbleTwoTrajectory3);
+
+            Trajectory safeDistanceTrajectory2 = roadrunner.trajectoryBuilder(wobbleTwoTrajectory3.end())
+                    .splineToLinearHeading(new Pose2d(SHOOTING_POSITION_BLUE.y, -SHOOTING_POSITION_BLUE.x, Math.toRadians(SHOOTING_ANGLE_BLUE)), Math.toRadians(0))
+                    .build();
+
+            roadrunner.followTrajectory(safeDistanceTrajectory2);
+
+            robot.autonWait(250);
+
+            double x = safeDistanceTrajectory2.end().getX(), y = safeDistanceTrajectory2.end().getY();
+
+            Trajectory moveToLine = roadrunner.trajectoryBuilder(safeDistanceTrajectory2.end())
+                    .splineToConstantHeading(new Vector2d(LAUNCH_LINE_Y_COORDINATE, y - 6), Math.toRadians(0))
+                    .build();
+
+            roadrunner.followTrajectory(moveToLine);
+
+        }
 //
 //        Trajectory wobbleGoalTrajectory3 = roadrunner.trajectoryBuilder(wobbleTwoTrajectory2.end())
 //                .splineToConstantHeading(new Vector2d(SECOND_WOBBLE_GOAL_PICKUP_POSITION.y, -SECOND_WOBBLE_GOAL_PICKUP_POSITION.x),Math.toRadians(0))
@@ -132,18 +195,20 @@ public class AutonRunner {
 //
 //        roadrunner.followTrajectory(wobbleGoalTrajectory3);
 
-        robot.autonWait(1000);
+
+//        robot.autonWait(1000);
 //        Functions.calibrateShooterServos(robot);
 //        Functions.setShooterMotor(robot, true, SHOOTER_POWER);
 //
-//        Trajectory safeDistanceTrajectory2 = roadrunner.trajectoryBuilder(wobbleOneTrajectory2.end())
-//                .splineToLinearHeading(new Pose2d(SHOOTING_POSITION_BLUE.y, -SHOOTING_POSITION_BLUE.x, Math.toRadians(SHOOTING_ANGLE_BLUE)), Math.toRadians(0))
-//                .build();
-//
-//        roadrunner.followTrajectory(safeDistanceTrajectory2);
-//
-//        robot.autonWait(250);
+        else {
+            Trajectory safeDistanceTrajectory2 = roadrunner.trajectoryBuilder(wobbleOneTrajectory2.end())
+                    .splineToLinearHeading(new Pose2d(SHOOTING_POSITION_BLUE.y, -SHOOTING_POSITION_BLUE.x, Math.toRadians(SHOOTING_ANGLE_BLUE)), Math.toRadians(0))
+                    .build();
 
+        roadrunner.followTrajectory(safeDistanceTrajectory2);
+
+        robot.autonWait(250);
+//Uncomment Later
 //        Functions.setShooterMotor(robot, true, SHOOTER_POWER);
 //        for(Servo s : robot.getServos(ComponentArea.SHOOTER))
 //            s.get().setPosition(SHOOTER_SERVO_END_POS);
@@ -170,14 +235,15 @@ public class AutonRunner {
 //        Functions.useShooterServos(robot);
 //
 //        robot.autonWait(250);
-//
-//        double x = safeDistanceTrajectory2.end().getX(), y = safeDistanceTrajectory2.end().getY();
-//
-//        Trajectory moveToLine = roadrunner.trajectoryBuilder(safeDistanceTrajectory2.end())
-//                .splineToConstantHeading(new Vector2d(LAUNCH_LINE_Y_COORDINATE, y - 6), Math.toRadians(0))
-//                .build();
-//
-//        roadrunner.followTrajectory(moveToLine);
+
+        double x = safeDistanceTrajectory2.end().getX(), y = safeDistanceTrajectory2.end().getY();
+
+        Trajectory moveToLine = roadrunner.trajectoryBuilder(safeDistanceTrajectory2.end())
+                .splineToConstantHeading(new Vector2d(LAUNCH_LINE_Y_COORDINATE, y - 6), Math.toRadians(0))
+                .build();
+
+        roadrunner.followTrajectory(moveToLine);
+    }
 
         robot.stopAllThreads();
     }
@@ -186,3 +252,4 @@ public class AutonRunner {
         RED, BLUE
     }
 }
+
