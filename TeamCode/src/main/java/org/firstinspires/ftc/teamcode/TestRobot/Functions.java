@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorType;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
@@ -16,7 +18,7 @@ import java.util.logging.Level;
 public class Functions {
 
     //lowered for battery life
-    public static double INTAKE_SPEED = 0.7, SHOOTER_SPEED = 0.95;
+    public static double INTAKE_SPEED = 0.7, SHOOTER_SPEED = 980;
     public static int SHOOTER_INIT_MILLIS = 2000, SHOOTER_WAIT_MILLIS = 4000, SHOOTER_COOLDOWN = 1500;
     public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
     public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 0.58;
@@ -24,6 +26,7 @@ public class Functions {
     public static int CLAW_MOTOR_MID_TICKS = 900, CLAW_MOTOR_END_TICKS = 500;
     public static double CLAW_MOTOR_PWR = 0.7;
     public static int TIME_TO_MOVE = 500;
+
 
     /**
      * Handles intake functions
@@ -108,6 +111,8 @@ public class Functions {
                 }
 
                 if(on){
+                    Motor m = r.getMotors(ComponentArea.SHOOTER).get(0);
+                    r.getLogger().putData("Motor Velocity", m.getEncoded().getVelocity());
                     setShooterMotor(r, true);
                 }
 
@@ -150,8 +155,12 @@ public class Functions {
      */
     public static void setShooterMotor(Robot r, boolean on) {
         r.getLogger().log(Level.INFO, "Turning Shooter Motor " + (on ? "on" : "off"));
-        for(Motor m : r.getMotors(ComponentArea.SHOOTER))
-            m.get().setPower(on ? SHOOTER_SPEED : 0);
+        for(Motor m : r.getMotors(ComponentArea.SHOOTER)) {
+            MotorConfiguration configuration = new MotorConfiguration(MotorType.HD_HEX_MOTOR, 3.543307);
+            double velocity = configuration.countsPerInch()*SHOOTER_SPEED;
+            m.getEncoded().setVelocity(on ? velocity : 0);
+        }
+
     }
 
     /**
@@ -161,8 +170,12 @@ public class Functions {
      */
     public static void setShooterMotor(Robot r, boolean on, double power) {
         r.getLogger().log(Level.INFO, "Turning Shooter Motor " + (on ? "on" : "off") + " (power=" + power + ")");
-        for(Motor m : r.getMotors(ComponentArea.SHOOTER))
-            m.get().setPower(on ? power : 0);
+        for(Motor m : r.getMotors(ComponentArea.SHOOTER)) {
+           // m.get().setPower(on ? power : 0);
+            MotorConfiguration configuration = new MotorConfiguration(MotorType.HD_HEX_MOTOR, 3.543307);
+            double velocity = configuration.countsPerInch()*power;
+            m.getEncoded().setVelocity(on ? velocity : 0);
+        }
     }
 
     /**

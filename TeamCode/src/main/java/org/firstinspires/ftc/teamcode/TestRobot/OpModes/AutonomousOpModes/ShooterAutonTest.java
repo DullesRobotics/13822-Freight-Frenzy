@@ -29,33 +29,11 @@ public class ShooterAutonTest extends LinearOpMode {
         roadrunner = new SampleMecanumDrive(this);
         robot = roadrunner.getDriveTrain();
 
-        double currentPower = startPower;
-
         waitForStart();
 
-        while(currentPower < endPower + diff) {
-            Functions.setShooterMotor(robot, true, currentPower);
-            for(Servo s : robot.getServos(ComponentArea.SHOOTER))
-                s.get().setPosition(SHOOTER_SERVO_END_POS);
-            robot.autonWait(500);
-            for(Servo s : robot.getServos(ComponentArea.SHOOTER))
-                s.get().setPosition(SHOOTER_SERVO_START_POS);
-            robot.autonWait(1000);
-            for(Servo s : robot.getServos(ComponentArea.SHOOTER))
-                s.get().setPosition(SHOOTER_SERVO_END_POS);
-            robot.autonWait(500);
-            for(Servo s : robot.getServos(ComponentArea.SHOOTER))
-                s.get().setPosition(SHOOTER_SERVO_START_POS);
-            robot.autonWait(1000);
-            Functions.useShooterServos(robot);
-            currentPower += diff;
-        }
-
-        Functions.setShooterMotor(robot, false);
-
-        Functions.setShooterMotor(robot, false);
+        while(opModeIsActive())
+            Functions.setShooterMotor(robot, true);
 
         robot.stopAllThreads();
-        requestOpModeStop();
     }
 }

@@ -10,9 +10,8 @@ public class MotorConfiguration {
      * For non-drivetrain motors
      * @param mt The type of motor hardware being used
      * @param wheelDiameter The diameter of the wheel in INCHES
-     * @param isEncoded If the motor is encoded
      */
-    public MotorConfiguration(MotorType mt, boolean isEncoded, double wheelDiameter){
+    public MotorConfiguration(MotorType mt, double wheelDiameter){
         this.mt = mt;
         this.wheelDiameter = wheelDiameter;
         this.canStrafe = false;
