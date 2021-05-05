@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
 import org.firstinspires.ftc.teamcode.TestRobot.Functions;
 import org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines.UltimateGoalPipeline;
+import org.firstinspires.ftc.teamcode.TestRobot.PoseStorage;
 
 import static org.firstinspires.ftc.teamcode.TestRobot.AutonConstants.*;
 import static org.firstinspires.ftc.teamcode.TestRobot.Functions.CLAW_MOTOR_END_TICKS;
@@ -123,7 +124,7 @@ public class AutonRunner {
         if (amount == UltimateGoalPipeline.RingAmount.NONE) {
 
             Trajectory wobbleTwoTrajectory2 = roadrunner.trajectoryBuilder(wobbleOneTrajectory2.end())
-                    .splineToLinearHeading(new Pose2d(-42.5+2, 33.5, Math.toRadians(90)), Math.toRadians(0))
+                    .splineToLinearHeading(new Pose2d(-42.5+1.5, 33.5, Math.toRadians(90)), Math.toRadians(0))
                     .build();
 
             roadrunner.followTrajectory(wobbleTwoTrajectory2);
@@ -154,9 +155,9 @@ public class AutonRunner {
         m.get().setPower(0);
 
 
-            Trajectory wobbleTwoTrajectoryMiddle = roadrunner.trajectoryBuilder(wobbleTwoTrajectory2.end())
-                    .splineToLinearHeading(new Pose2d(zonePoint.y-1.5, -zonePoint.x, Math.toRadians(180)), Math.toRadians(0))
-                    .build();
+        Trajectory wobbleTwoTrajectoryMiddle = roadrunner.trajectoryBuilder(wobbleTwoTrajectory2.end())
+                .splineToLinearHeading(new Pose2d(zonePoint.y-1.5, -zonePoint.x, Math.toRadians(180)), Math.toRadians(0))
+                .build();
 
             roadrunner.followTrajectory(wobbleTwoTrajectoryMiddle);
 
@@ -274,7 +275,10 @@ public class AutonRunner {
     }
 
         robot.stopAllThreads();
+        PoseStorage.currentPose = roadrunner.getPoseEstimate();
+
     }
+
 
     public enum Team {
         RED, BLUE

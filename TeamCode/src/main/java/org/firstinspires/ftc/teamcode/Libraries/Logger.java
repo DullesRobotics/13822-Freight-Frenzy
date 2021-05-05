@@ -115,10 +115,15 @@ public class Logger {
             for(String s : items.keySet()) {
                 Object data = items.get(s);
                 op.telemetry.addData(s, data == null ? "null" : data);
-                if(updateDash)
-                    packet.addLine(s + ": " + (data == null ? "null" : data));
+                if(updateDash) {
+                 //   packet.addLine(s + ": " + (data == null ? "null" : data));
+                    FtcDashboard.getInstance().getTelemetry().addData(s, data);
+                }
             }
-            if(updateDash) FtcDashboard.getInstance().sendTelemetryPacket(packet);
+            if(updateDash) {
+                // FtcDashboard.getInstance().sendTelemetryPacket(packet);
+                FtcDashboard.getInstance().getTelemetry().update();
+            }
         } catch (ConcurrentModificationException ignored) {}
 //        op.telemetry.update();
     }

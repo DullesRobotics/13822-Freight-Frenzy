@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.TestRobot;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
@@ -14,11 +16,13 @@ import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
 import java.util.logging.Level;
 
+import static org.firstinspires.ftc.teamcode.Hardware.ComponentArea.SHOOTER;
+
 @Config
 public class Functions {
 
     //lowered for battery life
-    public static double INTAKE_SPEED = 0.7, SHOOTER_SPEED = 980;
+    public static double INTAKE_SPEED = 1, SHOOTER_SPEED = 980;
     public static int SHOOTER_INIT_MILLIS = 2000, SHOOTER_WAIT_MILLIS = 4000, SHOOTER_COOLDOWN = 1500;
     public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
     public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 0.58;
@@ -26,6 +30,10 @@ public class Functions {
     public static int CLAW_MOTOR_MID_TICKS = 900, CLAW_MOTOR_END_TICKS = 500;
     public static double CLAW_MOTOR_PWR = 0.7;
     public static int TIME_TO_MOVE = 500;
+
+    public static int velocity = 2600; //then move up to 2210 and then 2600
+    public static int currentVelocity = 0;
+    public static double power = .5; //then move to .85 then 1 BUT dont actually keep it at 1, .85 is prob where u have to stop
 
 
     /**
@@ -70,7 +78,7 @@ public class Functions {
         r.getLogger().log(Level.INFO, "Turning intake motor(s) " + (on ? "on" : "off"));
         for(Motor m : r.getMotors(ComponentArea.INTAKE))
         {
-            m.setFlipped(!forward);
+           // m.setFlipped(!forward);
             m.get().setPower(on ? INTAKE_SPEED : 0);
         }
     }
@@ -82,7 +90,7 @@ public class Functions {
      * variable. It then uses that to update the shooter motors' power.
      * @param r The robot the motors are on
      */
-    public static void startShooter(Robot r, Controller ctrl){
+    public static void startShooter(Robot r, Controller ctrl, boolean withVelocity){
         r.getLogger().log(Level.INFO, "Starting shooter function");
 
         calibrateShooterServos(r);
@@ -112,8 +120,23 @@ public class Functions {
 
                 if(on){
                     Motor m = r.getMotors(ComponentArea.SHOOTER).get(0);
-                    r.getLogger().putData("Motor Velocity", m.getEncoded().getVelocity());
-                    setShooterMotor(r, true);
+
+                    PIDFCoefficients pid = new PIDFCoefficients(kP, kI, kD, kF);
+                    m.getEncoded().setPIDFCoefficients(m.getEncoded().getMode(),pid);
+
+                    currentVelocity = (int) m.getEncoded().getVelocity();
+
+                    r.getLogger().putData("Motor Velocity", currentVelocity);
+                    r.getLogger().putData("Target Velocity", velocity);
+                    r.getLogger().putData("Power", power);
+                    r.getLogger().putData("Battery Voltage", r.op().hardwareMap.voltageSensor.iterator().next().getVoltage());
+
+                    if(withVelocity)
+                        setShooterMotor(r, true);
+                    else
+                        setShooterPower(r,power);
+
+//                    (withVelocity ? setShooterMotor(r, true) : setShooterPower(r, .85)) //from 100% to 85%
                 }
 
                 /* If it's on, still initializing, but init time has passed, stop initializing. */
@@ -156,9 +179,21 @@ public class Functions {
     public static void setShooterMotor(Robot r, boolean on) {
         r.getLogger().log(Level.INFO, "Turning Shooter Motor " + (on ? "on" : "off"));
         for(Motor m : r.getMotors(ComponentArea.SHOOTER)) {
-            MotorConfiguration configuration = new MotorConfiguration(MotorType.HD_HEX_MOTOR, 3.543307);
-            double velocity = configuration.countsPerInch()*SHOOTER_SPEED;
+//            MotorConfiguration configuration = new MotorConfiguration(MotorType.HD_HEX_MOTOR, 3.543307);
+//            double velocity = configuration.countsPerInch()*SHOOTER_SPEED;
             m.getEncoded().setVelocity(on ? velocity : 0);
+        }
+
+    }
+
+    /**
+     * Starts or stops the shooter motor(s) for auton
+     * @param r The robot with the shooter motor
+     * @param power The power of the shooter
+     */
+    public static void setShooterPower(Robot r, double power) {
+        for(Motor m : r.getMotors(ComponentArea.SHOOTER)) {
+            m.get().setPower(power);
         }
 
     }
@@ -283,6 +318,9 @@ public class Functions {
         }), true);
     }
 
-
+    public static double kP = 1;
+    public static double kI = 0.2;
+    public static double kD = 0.02;
+    public static double kF = 4;
 
 }

@@ -30,6 +30,8 @@ public class Motor extends HardwareComponent {
         this.isEncoded = isEncoded;
         try {
             setComponent(r.op().hardwareMap.get(isEncoded ? DcMotorEx.class : DcMotor.class, id));
+            if(isEncoded)
+                get().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         } catch (Exception e) {
             r.getLogger().log(Level.SEVERE, "Error Adding Motor " + id, e.toString());
             r.op().requestOpModeStop();
@@ -49,9 +51,10 @@ public class Motor extends HardwareComponent {
     /**
      * @param isFlipped Whether or not the robot is inverted
      */
-    public void setFlipped(boolean isFlipped){
+    public Motor setFlipped(boolean isFlipped){
         this.isFlipped = isFlipped;
         get().setDirection(isFlipped ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
+        return this;
     }
 
     /**

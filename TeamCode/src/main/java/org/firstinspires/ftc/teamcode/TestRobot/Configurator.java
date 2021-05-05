@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.TestRobot;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.DrivetrainMotor;
@@ -13,6 +15,8 @@ import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.USBWebcam;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
+
+import java.security.KeyStore;
 
 import static org.firstinspires.ftc.teamcode.Hardware.ComponentArea.*;
 
@@ -38,7 +42,7 @@ public class Configurator {
                 driveTrainMotors[1],
                 driveTrainMotors[2],
                 driveTrainMotors[3],
-                new Motor(robot, "INM", INTAKE, false),
+                new Motor(robot, "INM", INTAKE, false).setFlipped(true),
                 new Motor(robot, "INM2", INTAKE, false),
                 shooter,
                 m,
