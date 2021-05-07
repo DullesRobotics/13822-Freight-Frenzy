@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
@@ -16,24 +15,20 @@ import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
 import java.util.logging.Level;
 
-import static org.firstinspires.ftc.teamcode.Hardware.ComponentArea.SHOOTER;
-
 @Config
 public class Functions {
 
     //lowered for battery life
     public static double INTAKE_SPEED = 1, SHOOTER_SPEED = 980;
-    public static int SHOOTER_INIT_MILLIS = 2000, SHOOTER_WAIT_MILLIS = 4000, SHOOTER_COOLDOWN = 1500;
+    public static int SHOOTER_INIT_MILLIS = 3000, SHOOTER_COOLDOWN = 1750;
+    public static int RING_COUNT = 3;
     public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
     public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 0.58;
     public static double CLAW_SERVO_CLOSED_POS_2 = 0.06, CLAW_SERVO_OPEN_POS_2 = 0.58;
     public static int CLAW_MOTOR_MID_TICKS = 900, CLAW_MOTOR_END_TICKS = 500;
     public static double CLAW_MOTOR_PWR = 0.7;
-    public static int TIME_TO_MOVE = 500;
 
-    public static int velocity = 2600; //then move up to 2210 and then 2600
-    public static int currentVelocity = 0;
-    public static double power = .5; //then move to .85 then 1 BUT dont actually keep it at 1, .85 is prob where u have to stop
+    public static int goalVelocity = 2000, powerShotVelocity = 1800, currentVelocity = 0, power = 0, targetVelocity = goalVelocity;
 
 
     /**
@@ -46,25 +41,51 @@ public class Functions {
     public static void startIntake(Robot r, Controller ctrl){
         r.getLogger().log(Level.INFO, "Starting intake function");
         r.addThread(new Thread(() -> {
-            boolean on = false, togglePressed = false, forward = true;
+            boolean on = false, forward = true, togglePressedUp = false, togglePressedDown = false;
             while(r.op().opModeIsActive()){
+                r.getLogger().putData("Intake Status", on ? forward ? "Forward" : "Backward" : "Off");
 
-                if(ctrl.buttonUp())
-                    forward = true;
-                else if(ctrl.buttonDown())
-                    forward = false;
+                if(togglePressedUp && !ctrl.buttonUp())
+                    togglePressedUp = false;
 
-                if(togglePressed && !ctrl.buttonY())
-                    togglePressed = false;
+                if(togglePressedDown && !ctrl.buttonDown())
+                    togglePressedDown = false;
 
-                /* Toggles on variable */
-                r.getLogger().putData("Intake Power", on ? forward ? INTAKE_SPEED : -INTAKE_SPEED : 0);
-                if(!togglePressed && ctrl.buttonY()) {
-                    togglePressed = true;
-                    on = !on;
-                    //do something`
-                    setIntake(r, on, forward);
+                if((ctrl.buttonUp() && !togglePressedUp)) {
+                    togglePressedUp = true;
+                    if(!forward) {
+                        forward = true;
+                    } else if(on) {
+                        on = false;
+                    } else {
+                        on = true;
+                        forward = true;
+                    }
                 }
+
+                if((ctrl.buttonDown() && !togglePressedDown)) {
+                    togglePressedDown = true;
+                    if(forward) {
+                        forward = false;
+                    } else if(on) {
+                        on = false;
+                    } else {
+                        on = true;
+                        forward = false;
+                    }
+                }
+
+                if(on)
+                    if(forward) {
+                        for(Motor m : r.getMotors(ComponentArea.INTAKE))
+                            m.get().setPower(INTAKE_SPEED);
+                    } else {
+                        for(Motor m : r.getMotors(ComponentArea.INTAKE))
+                            m.get().setPower(-INTAKE_SPEED);
+                    }
+                else
+                    for(Motor m : r.getMotors(ComponentArea.INTAKE))
+                        m.get().setPower(0);
             }
         }), true);
     }
@@ -90,81 +111,80 @@ public class Functions {
      * variable. It then uses that to update the shooter motors' power.
      * @param r The robot the motors are on
      */
-    public static void startShooter(Robot r, Controller ctrl, boolean withVelocity){
+    public static void startShooter(Robot r, Controller ctrl){
         r.getLogger().log(Level.INFO, "Starting shooter function");
 
         calibrateShooterServos(r);
 
         r.addThread(new Thread(() -> {
-            boolean on = false, init = false, firstShot = false, state = false;
-            long initTime = -1, endTime = 0, cooldownTime = 0;
-            boolean alreadyPressed = false;
-            while(r.op().opModeIsActive()){
-                /* When the button is pressed and it's not already on, begin initializing */
+            boolean on = false, init = false, alreadyPressedX = false, alreadyPressedY = false;
+            long initTime = -1, cooldownTime = 0, shotsLeft = 3;
+            Motor m = r.getMotors(ComponentArea.SHOOTER).get(0);
+            while(r.op().opModeIsActive()) {
 
-                r.getLogger().putData("isOn", on);
-                r.getLogger().putData("init", init);
-                r.getLogger().putData("firstShot", firstShot);
-                r.getLogger().putData("state", state);
-                r.getLogger().putData("initTime", initTime);
-                r.getLogger().putData("endTime", endTime);
-                r.getLogger().putData("cooldownTime", cooldownTime);
-                r.getLogger().putData("alreadyPressed", alreadyPressed);
+                if(alreadyPressedX && !ctrl.buttonX())
+                    alreadyPressedX = false;
 
-                if(ctrl.buttonX() && !on){
+                if(alreadyPressedY && !ctrl.buttonY())
+                    alreadyPressedY = false;
+
+                if((ctrl.buttonX() || ctrl.buttonY()) && !on && !alreadyPressedX){
+                    alreadyPressedX = true;
+                    alreadyPressedY = true;
+
+                    targetVelocity = ctrl.buttonX() ? goalVelocity : powerShotVelocity;
+
                     on = true;
                     init = true;
-                    firstShot = true;
                     initTime = System.currentTimeMillis() + SHOOTER_INIT_MILLIS;
+                    cooldownTime = System.currentTimeMillis() + SHOOTER_INIT_MILLIS;
+                    shotsLeft = RING_COUNT;
+                }
+
+                if((ctrl.buttonX() || ctrl.buttonY()) && on && !alreadyPressedX){
+                    alreadyPressedX = true;
+                    shotsLeft = 0;
+                    on = false;
+                    init = false;
                 }
 
                 if(on){
-                    Motor m = r.getMotors(ComponentArea.SHOOTER).get(0);
-
                     PIDFCoefficients pid = new PIDFCoefficients(kP, kI, kD, kF);
                     m.getEncoded().setPIDFCoefficients(m.getEncoded().getMode(),pid);
 
                     currentVelocity = (int) m.getEncoded().getVelocity();
 
                     r.getLogger().putData("Motor Velocity", currentVelocity);
-                    r.getLogger().putData("Target Velocity", velocity);
+                    r.getLogger().putData("Target Velocity", targetVelocity);
                     r.getLogger().putData("Power", power);
                     r.getLogger().putData("Battery Voltage", r.op().hardwareMap.voltageSensor.iterator().next().getVoltage());
 
-                    if(withVelocity)
-                        setShooterMotor(r, true);
-                    else
-                        setShooterPower(r,power);
+                    setShooterMotor(r, true);
 
-//                    (withVelocity ? setShooterMotor(r, true) : setShooterPower(r, .85)) //from 100% to 85%
+                    //(withVelocity ? setShooterMotor(r, true) : setShooterPower(r, .85)) //from 100% to 85%
+                } else {
+                    if(m != null)
+                        m.get().setPower(0);
                 }
 
                 /* If it's on, still initializing, but init time has passed, stop initializing. */
                 if(on && init && System.currentTimeMillis() > initTime) {
                     init = false;
-                    endTime = System.currentTimeMillis() + SHOOTER_WAIT_MILLIS;
-                    cooldownTime = System.currentTimeMillis() + SHOOTER_COOLDOWN;
                 }
 
-                if(on && !init)
-                    if(System.currentTimeMillis() > endTime) {
+                if(on && !init){
+                    if(shotsLeft <= 0) {
                         on = false;
-                        setShooterMotor(r, false);
-                    } else {
-                        if(!ctrl.buttonX())
-                            alreadyPressed = false;
-                        if (System.currentTimeMillis() > cooldownTime)
-                            if (firstShot || (ctrl.buttonX() && !alreadyPressed)) {
-                                firstShot = false;
-                                alreadyPressed = true;
-                                //reset timers
-                                endTime = System.currentTimeMillis() + SHOOTER_WAIT_MILLIS;
-                                cooldownTime = System.currentTimeMillis() + SHOOTER_COOLDOWN;
-                                //state = !state;
-                                useShooterServos(r);
-                            }
+                        init = false;
+                    } else if(System.currentTimeMillis() > cooldownTime) {
+                        cooldownTime = System.currentTimeMillis() + SHOOTER_COOLDOWN;
+                        shotsLeft--;
+                        useShooterServos(r);
                     }
+                }
+
             }
+
         }), true);
     }
 
@@ -177,11 +197,11 @@ public class Functions {
      * @param on If the motor should be turned on or off
      */
     public static void setShooterMotor(Robot r, boolean on) {
-        r.getLogger().log(Level.INFO, "Turning Shooter Motor " + (on ? "on" : "off"));
+       // r.getLogger().log(Level.INFO, "Turning Shooter Motor " + (on ? "on" : "off"));
         for(Motor m : r.getMotors(ComponentArea.SHOOTER)) {
 //            MotorConfiguration configuration = new MotorConfiguration(MotorType.HD_HEX_MOTOR, 3.543307);
 //            double velocity = configuration.countsPerInch()*SHOOTER_SPEED;
-            m.getEncoded().setVelocity(on ? velocity : 0);
+            m.getEncoded().setVelocity(on ? targetVelocity : 0);
         }
 
     }
@@ -204,7 +224,7 @@ public class Functions {
      * @param on If the motor should be turned on or off
      */
     public static void setShooterMotor(Robot r, boolean on, double power) {
-        r.getLogger().log(Level.INFO, "Turning Shooter Motor " + (on ? "on" : "off") + " (power=" + power + ")");
+        //r.getLogger().log(Level.INFO, "Turning Shooter Motor " + (on ? "on" : "off") + " (power=" + power + ")");
         for(Motor m : r.getMotors(ComponentArea.SHOOTER)) {
            // m.get().setPower(on ? power : 0);
             MotorConfiguration configuration = new MotorConfiguration(MotorType.HD_HEX_MOTOR, 3.543307);
@@ -318,9 +338,9 @@ public class Functions {
         }), true);
     }
 
-    public static double kP = 1;
-    public static double kI = 0.2;
+    public static double kP = 2;
+    public static double kI = 0.4;
     public static double kD = 0.02;
-    public static double kF = 4;
+    public static double kF = 8;
 
 }

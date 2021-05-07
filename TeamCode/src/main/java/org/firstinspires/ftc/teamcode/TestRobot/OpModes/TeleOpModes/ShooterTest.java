@@ -33,7 +33,7 @@ public class ShooterTest extends LinearOpMode {
         waitForStart();
 
         /* Robot functions */
-        Functions.startShooter(robot, robot.ctrl1(), true);
+        Functions.startShooter(robot, robot.ctrl1());
 
         robot.stopAllThreads();
     }

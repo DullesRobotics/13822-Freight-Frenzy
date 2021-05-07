@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Libraries.PID;
 @Config
 public abstract class DriveTrain extends Robot {
 
-    public static double speed = 0.8, precisionSpeed = 0.2;
+    public static double speed = 1, precisionSpeed = 0.2;
     protected MotorConfiguration autonMotorConfiguration;
     protected PID pid = null;
 

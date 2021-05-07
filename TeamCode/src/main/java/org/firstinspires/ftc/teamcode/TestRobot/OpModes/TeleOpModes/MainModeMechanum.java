@@ -30,7 +30,7 @@ public class MainModeMechanum extends LinearOpMode {
         /* Robot functions */
         robot.driveWithController(robot.ctrl1());
         Functions.startIntake(robot, robot.ctrl2());
-        Functions.startShooter(robot, robot.ctrl2(),true);
+        Functions.startShooter(robot, robot.ctrl2());
         Functions.startClaw(robot, robot.ctrl2());
 
         while (opModeIsActive()) {
