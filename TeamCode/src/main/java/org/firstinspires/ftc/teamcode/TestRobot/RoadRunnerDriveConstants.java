@@ -70,7 +70,7 @@ public class RoadRunnerDriveConstants {
      */
     public static double MAX_VEL = 46.2;
     public static double MAX_ACCEL = 50; //was 30
-    public static double MAX_ANG_VEL = Math.toRadians(192.1955126776892);
+    public static double MAX_ANG_VEL = Math.toRadians(192.1955126776892);  //226.82763169440202 replace old value with this
     public static double MAX_ANG_ACCEL = Math.toRadians(60);
 
     public static Axis IMU_AXIS = Axis.Z;

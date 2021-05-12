@@ -17,7 +17,7 @@ public class AutonBlueLeft extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Pose2d startPose = new Pose2d(STARTING_BLUE_LEFT.y, -STARTING_BLUE_LEFT.x, Math.toRadians(0));
+        Pose2d startPose = new Pose2d(STARTING_BLUE_LEFT.y, -STARTING_BLUE_LEFT.x, Math.toRadians(-START_STACK_ANGLE));
         AutonRunner.start(this, startPose, BLUE);
 
     }
