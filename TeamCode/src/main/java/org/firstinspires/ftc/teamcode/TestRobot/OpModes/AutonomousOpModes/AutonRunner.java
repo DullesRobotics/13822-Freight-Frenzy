@@ -51,6 +51,7 @@ public class AutonRunner {
         robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam(), OPEN_CV_CAM_ROTATION));
 
         Point zonePoint;
+        int zone = 4;
 
         op.waitForStart();
 
@@ -71,17 +72,18 @@ public class AutonRunner {
         switch (amount) {
             case ONE:
                 zonePoint = ZONE_B;
+                zone = 1;
                 break;
             case FOUR:
                 zonePoint = ZONE_C;
+                zone = 4;
                 break;
             case NONE:
             default:
                 zonePoint = ZONE_A;
+                zone = 0;
                 break;
         }
-
-        robot.autonWait(200);
 
         int angle = 90;
 
@@ -94,8 +96,6 @@ public class AutonRunner {
                 .build();
 
         roadrunner.followTrajectory(wobbleOneTrajectory2);
-
-        robot.autonWait(200);
 
         Motor m = robot.getMotor("CLM");
         m.get().setPower(0);
@@ -121,114 +121,110 @@ public class AutonRunner {
 
         m.get().setPower(0);
 
-        robot.autonWait(1000);
+        robot.autonWait(100);
 
-        Trajectory Middle = roadrunner.trajectoryBuilder(wobbleOneTrajectory2.end())
-                .splineToLinearHeading(new Pose2d(STARTING_BLUE_RIGHT.y, -STARTING_BLUE_RIGHT.x, Math.toRadians(0)),Math.toRadians(0))
-                .build();
+//        Trajectory Middle = roadrunner.trajectoryBuilder(wobbleOneTrajectory2.end())
+//                .splineToLinearHeading(new Pose2d(STARTING_BLUE_RIGHT.y+ ( zone == 0 ? 22 : 26), -STARTING_BLUE_RIGHT.x + (zone == 0 ? -2 : -6), Math.toRadians(0)),Math.toRadians(0))
+//                .build();
+//
+//        roadrunner.followTrajectory(Middle);
+//
+//        m.get().setPower(0);
+//        m.get().setDirection(DcMotorSimple.Direction.FORWARD);
+//        m.get().setTargetPosition(CLAW_MOTOR_MID_TICKS+200);
+//        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        m.get().setPower(CLAW_MOTOR_PWR);
+//        robot.autonWait(1000);
+//
+//        m.get().setPower(0);
+//
+//        Functions.setClawServos(robot, false);
+//
+//        robot.autonWait(750);
+//
+//        m.get().setPower(0);
+//        m.get().setDirection(DcMotorSimple.Direction.REVERSE);
+//        m.get().setTargetPosition(CLAW_MOTOR_END_TICKS);
+//        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        m.get().setPower(CLAW_MOTOR_PWR);
+//
+//        robot.autonWait(600);
+//
+//        m.get().setPower(0);
+//
+//        robot.autonWait(100);
+//
+//
+//        Trajectory wobble2 = roadrunner.trajectoryBuilder(Middle.end())
+//                .splineToLinearHeading(new Pose2d(zonePoint.y + 10, -zonePoint.x, Math.toRadians(angle)), Math.toRadians(0))
+//                .build();
+//
+//        roadrunner.followTrajectory(wobble2);
+//
+//
+//        m.get().setPower(0);
+//        m.get().setDirection(DcMotorSimple.Direction.FORWARD);
+//        m.get().setTargetPosition(CLAW_MOTOR_MID_TICKS+200);
+//        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        m.get().setPower(CLAW_MOTOR_PWR);
+//        robot.autonWait(1000);
+//
+//        m.get().setPower(0);
+//
+//        Functions.setClawServos(robot, true);
+//
+//        robot.autonWait(750);
+//
+//        m.get().setPower(0);
+//        m.get().setDirection(DcMotorSimple.Direction.REVERSE);
+//        m.get().setTargetPosition(CLAW_MOTOR_END_TICKS);
+//        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        m.get().setPower(CLAW_MOTOR_PWR);
+//
+//        robot.autonWait(600);
+//
+//        m.get().setPower(0);
+//
+//        robot.autonWait(100);
 
-        roadrunner.followTrajectory(Middle);
 
-
-        robot.autonWait(6000);
-
-        m.get().setPower(0);
-        m.get().setDirection(DcMotorSimple.Direction.FORWARD);
-        m.get().setTargetPosition(CLAW_MOTOR_MID_TICKS+200);
-        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        m.get().setPower(CLAW_MOTOR_PWR);
-        robot.autonWait(1000);
-
-        m.get().setPower(0);
-
-        Functions.setClawServos(robot, true);
-
-        robot.autonWait(750);
-
-        m.get().setPower(0);
-        m.get().setDirection(DcMotorSimple.Direction.REVERSE);
-        m.get().setTargetPosition(CLAW_MOTOR_END_TICKS);
-        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        m.get().setPower(CLAW_MOTOR_PWR);
-
-        robot.autonWait(600);
-
-        m.get().setPower(0);
-
-        Trajectory wobble2 = roadrunner.trajectoryBuilder(Middle.end())
-                .splineToLinearHeading(new Pose2d(zonePoint.y + 10, -zonePoint.x, Math.toRadians(angle)), Math.toRadians(0))
-                .build();
-
-        roadrunner.followTrajectory(wobble2);
-
-        robot.autonWait(8000);
-
-        m.get().setPower(0);
-        m.get().setDirection(DcMotorSimple.Direction.FORWARD);
-        m.get().setTargetPosition(CLAW_MOTOR_MID_TICKS+200);
-        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        m.get().setPower(CLAW_MOTOR_PWR);
-        robot.autonWait(1000);
-
-        m.get().setPower(0);
-
-        Functions.setClawServos(robot, true);
-
-        robot.autonWait(750);
-
-        m.get().setPower(0);
-        m.get().setDirection(DcMotorSimple.Direction.REVERSE);
-        m.get().setTargetPosition(CLAW_MOTOR_END_TICKS);
-        m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        m.get().setPower(CLAW_MOTOR_PWR);
-
-        robot.autonWait(600);
-
-        m.get().setPower(0);
-
-                Functions.calibrateShooterServos(robot);
-        Functions.setShooterMotor(robot, true, SHOOTER_POWER);
-
-          Functions.setShooterMotor(robot, true , Functions.SHOOTER_SPEED - 150);
-        Trajectory safeDistanceTrajectory2 = roadrunner.trajectoryBuilder(wobbleOneTrajectory2.end())
-                .splineToLinearHeading(new Pose2d(SHOOTING_POSITION_BLUE.y+2, -SHOOTING_POSITION_BLUE.x+2, Math.toRadians(SHOOTING_ANGLE_BLUE)), Math.toRadians(0))
+        Trajectory safeDistanceTrajectory2 = roadrunner.trajectoryBuilder(wobbleOneTrajectory2.end()  /*wobble2.end()*/)
+                .splineToLinearHeading(new Pose2d(SHOOTING_POSITION_BLUE.y+2, -SHOOTING_POSITION_BLUE.x + (zone == 0 || zone == 4 ? -5 : -2), Math.toRadians(SHOOTING_ANGLE_BLUE)), Math.toRadians(0))
                 .build();
 
         roadrunner.followTrajectory(safeDistanceTrajectory2);
         double x = safeDistanceTrajectory2.end().getX(), y = safeDistanceTrajectory2.end().getY();
 
-        robot.autonWait(8000);
-
-        roadrunner.turn(10);
+        Functions.calibrateShooterServos(robot);
+        roadrunner.turn(Math.toRadians(5));
+        Functions.setShooterMotor(robot, true);
+        robot.autonWait(1700);
         for(Servo s : robot.getServos(ComponentArea.SHOOTER))
             s.get().setPosition(SHOOTER_SERVO_END_POS);
         robot.autonWait(250);
         for(Servo s : robot.getServos(ComponentArea.SHOOTER))
             s.get().setPosition(SHOOTER_SERVO_START_POS);
-        Functions.setShooterMotor(robot, true, Functions.SHOOTER_SPEED - 150);
-        robot.autonWait(1000);
 
-        roadrunner.turn(4);
+        roadrunner.turn(Math.toRadians(-5));
+        Functions.setShooterMotor(robot, true);
+        robot.autonWait(1750);
         for(Servo s : robot.getServos(ComponentArea.SHOOTER))
             s.get().setPosition(SHOOTER_SERVO_END_POS);
         robot.autonWait(250);
         for(Servo s : robot.getServos(ComponentArea.SHOOTER))
             s.get().setPosition(SHOOTER_SERVO_START_POS);
-        Functions.setShooterMotor(robot, true, Functions.SHOOTER_SPEED - 150);
-        robot.autonWait(1000);
 
-        roadrunner.turn(10);
+        roadrunner.turn(Math.toRadians(-10));
+        Functions.setShooterMotor(robot, true);
+        robot.autonWait(1750);
         for(Servo s : robot.getServos(ComponentArea.SHOOTER))
             s.get().setPosition(SHOOTER_SERVO_END_POS);
-        robot.autonWait(500);
+        robot.autonWait(250);
         for(Servo s : robot.getServos(ComponentArea.SHOOTER))
             s.get().setPosition(SHOOTER_SERVO_START_POS);
 
-        robot.autonWait(250);
-
-
-        Trajectory moveToLine = roadrunner.trajectoryBuilder(wobble2.end())
-                .splineToConstantHeading(new Vector2d(LAUNCH_LINE_Y_COORDINATE, y - 6), Math.toRadians(0))
+        Trajectory moveToLine = roadrunner.trajectoryBuilder(safeDistanceTrajectory2.end().plus(new Pose2d(0,0,Math.toRadians(-15))))
+                .splineToConstantHeading(new Vector2d(LAUNCH_LINE_Y_COORDINATE, y - 4), Math.toRadians(0))
                 .build();
 
         roadrunner.followTrajectory(moveToLine);

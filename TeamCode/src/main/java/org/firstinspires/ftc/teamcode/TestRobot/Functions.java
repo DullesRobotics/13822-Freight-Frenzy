@@ -20,15 +20,17 @@ public class Functions {
 
     //lowered for battery life
     public static double INTAKE_SPEED = 1, SHOOTER_SPEED = 980;
-    public static int SHOOTER_INIT_MILLIS = 3000, SHOOTER_COOLDOWN = 1750;
-    public static int RING_COUNT = 3;
+    public static int SHOOTER_INIT_MILLIS = 3000, SHOOTER_COOLDOWN = 300, SHOOTER_COOLDOWN_SECOND = 300;
+    public static int RING_COUNT = 4;
     public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
     public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 0.58;
     public static double CLAW_SERVO_CLOSED_POS_2 = 0.06, CLAW_SERVO_OPEN_POS_2 = 0.58;
     public static int CLAW_MOTOR_MID_TICKS = 900, CLAW_MOTOR_END_TICKS = 500;
     public static double CLAW_MOTOR_PWR = 0.7;
+    public static double power = -2;
 
-    public static int goalVelocity = 2000, powerShotVelocity = 1800, currentVelocity = 0, power = 0, targetVelocity = goalVelocity;
+    //2000
+    public static int goalVelocity = -2200, powerShotVelocity = -1800, currentVelocity = 0, targetVelocity = goalVelocity;
 
 
     /**
@@ -149,8 +151,10 @@ public class Functions {
                 }
 
                 if(on){
-                    PIDFCoefficients pid = new PIDFCoefficients(kP, kI, kD, kF);
-                    m.getEncoded().setPIDFCoefficients(m.getEncoded().getMode(),pid);
+                    if(usePID) {
+                        PIDFCoefficients pid = new PIDFCoefficients(kP, kI, kD, kF);
+                        m.getEncoded().setPIDFCoefficients(m.getEncoded().getMode(), pid);
+                    }
 
                     currentVelocity = (int) m.getEncoded().getVelocity();
 
@@ -159,7 +163,10 @@ public class Functions {
                     r.getLogger().putData("Power", power);
                     r.getLogger().putData("Battery Voltage", r.op().hardwareMap.voltageSensor.iterator().next().getVoltage());
 
-                    setShooterMotor(r, true);
+                    if(usePower)
+                        setShooterPower(r, power);
+                    else
+                        setShooterMotor(r, true);
 
                     //(withVelocity ? setShooterMotor(r, true) : setShooterPower(r, .85)) //from 100% to 85%
                 } else {
@@ -177,7 +184,7 @@ public class Functions {
                         on = false;
                         init = false;
                     } else if(System.currentTimeMillis() > cooldownTime) {
-                        cooldownTime = System.currentTimeMillis() + SHOOTER_COOLDOWN;
+                        cooldownTime = System.currentTimeMillis() + (shotsLeft == RING_COUNT ? SHOOTER_COOLDOWN : SHOOTER_COOLDOWN_SECOND);
                         shotsLeft--;
                         useShooterServos(r);
                     }
@@ -197,10 +204,9 @@ public class Functions {
      * @param on If the motor should be turned on or off
      */
     public static void setShooterMotor(Robot r, boolean on) {
-       // r.getLogger().log(Level.INFO, "Turning Shooter Motor " + (on ? "on" : "off"));
+        PIDFCoefficients pid = new PIDFCoefficients(kP, kI, kD, kF);
         for(Motor m : r.getMotors(ComponentArea.SHOOTER)) {
-//            MotorConfiguration configuration = new MotorConfiguration(MotorType.HD_HEX_MOTOR, 3.543307);
-//            double velocity = configuration.countsPerInch()*SHOOTER_SPEED;
+            if(usePID) m.getEncoded().setPIDFCoefficients(m.getEncoded().getMode(),pid);
             m.getEncoded().setVelocity(on ? targetVelocity : 0);
         }
 
@@ -227,9 +233,7 @@ public class Functions {
         //r.getLogger().log(Level.INFO, "Turning Shooter Motor " + (on ? "on" : "off") + " (power=" + power + ")");
         for(Motor m : r.getMotors(ComponentArea.SHOOTER)) {
            // m.get().setPower(on ? power : 0);
-            MotorConfiguration configuration = new MotorConfiguration(MotorType.HD_HEX_MOTOR, 3.543307);
-            double velocity = configuration.countsPerInch()*power;
-            m.getEncoded().setVelocity(on ? velocity : 0);
+            m.getEncoded().setVelocity(on ? goalVelocity : 0);
         }
     }
 
@@ -249,7 +253,7 @@ public class Functions {
      */
     public static void useShooterServos(Robot r){
         r.getLogger().log(Level.INFO, "Using shooter servos");
-        final long timeToWait = System.currentTimeMillis() + 500;
+        final long timeToWait = System.currentTimeMillis() + SHOOTER_COOLDOWN / 2;
         for(Servo s : r.getServos(ComponentArea.SHOOTER))
             s.get().setPosition(SHOOTER_SERVO_END_POS);
         while(r.op().opModeIsActive() && System.currentTimeMillis() < timeToWait) {}
@@ -338,6 +342,8 @@ public class Functions {
         }), true);
     }
 
+    public static boolean usePower = true;
+    public static boolean usePID = false;
     public static double kP = 2;
     public static double kI = 0.4;
     public static double kD = 0.02;
