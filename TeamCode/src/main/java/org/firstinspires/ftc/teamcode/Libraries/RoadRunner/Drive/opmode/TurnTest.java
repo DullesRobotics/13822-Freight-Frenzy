@@ -4,10 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
 
 /*
  * This is a simple routine to test turning capabilities.

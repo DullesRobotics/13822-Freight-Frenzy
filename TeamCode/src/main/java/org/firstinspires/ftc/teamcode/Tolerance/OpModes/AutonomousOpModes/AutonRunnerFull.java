@@ -1,33 +1,26 @@
-package org.firstinspires.ftc.teamcode.TestRobot.OpModes.AutonomousOpModes;
+package org.firstinspires.ftc.teamcode.Tolerance.OpModes.AutonomousOpModes;
 
 import android.graphics.Point;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.apache.commons.math3.geometry.euclidean.twod.Line;
-import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
-import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
-import org.firstinspires.ftc.teamcode.TestRobot.Functions;
-import org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines.UltimateGoalPipeline;
-import org.firstinspires.ftc.teamcode.TestRobot.PoseStorage;
+import org.firstinspires.ftc.teamcode.Tolerance.Functions;
+import org.firstinspires.ftc.teamcode.Tolerance.OpenCVPipelines.UltimateGoalPipeline;
+import org.firstinspires.ftc.teamcode.Tolerance.PoseStorage;
 
-import static org.firstinspires.ftc.teamcode.TestRobot.AutonConstants.*;
-import static org.firstinspires.ftc.teamcode.TestRobot.Functions.CLAW_MOTOR_END_TICKS;
-import static org.firstinspires.ftc.teamcode.TestRobot.Functions.CLAW_MOTOR_MID_TICKS;
-import static org.firstinspires.ftc.teamcode.TestRobot.Functions.CLAW_MOTOR_PWR;
-import static org.firstinspires.ftc.teamcode.TestRobot.Functions.SHOOTER_SERVO_END_POS;
-import static org.firstinspires.ftc.teamcode.TestRobot.Functions.SHOOTER_SERVO_START_POS;
+import static org.firstinspires.ftc.teamcode.Tolerance.AutonConstants.*;
+import static org.firstinspires.ftc.teamcode.Tolerance.Functions.CLAW_MOTOR_END_TICKS;
+import static org.firstinspires.ftc.teamcode.Tolerance.Functions.CLAW_MOTOR_MID_TICKS;
+import static org.firstinspires.ftc.teamcode.Tolerance.Functions.CLAW_MOTOR_PWR;
 
 public class AutonRunnerFull {
 

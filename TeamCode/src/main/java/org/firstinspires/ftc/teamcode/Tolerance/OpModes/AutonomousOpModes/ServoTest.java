@@ -1,12 +1,10 @@
-package org.firstinspires.ftc.teamcode.TestRobot.OpModes.AutonomousOpModes;
+package org.firstinspires.ftc.teamcode.Tolerance.OpModes.AutonomousOpModes;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
-import org.firstinspires.ftc.teamcode.Libraries.PID;
-import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.StandardDriveTrain;
 
 import static org.firstinspires.ftc.teamcode.Hardware.ComponentArea.SHOOTER;

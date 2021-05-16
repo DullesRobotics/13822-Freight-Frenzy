@@ -1,25 +1,26 @@
-package org.firstinspires.ftc.teamcode.TestRobot.OpModes.TeleOpModes;
+package org.firstinspires.ftc.teamcode.Tolerance.OpModes.TeleOpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
-import org.firstinspires.ftc.teamcode.TestRobot.Functions;
+import org.firstinspires.ftc.teamcode.Tolerance.Configurator;
+import org.firstinspires.ftc.teamcode.Tolerance.Functions;
 
 @TeleOp
-public class MecanumTest extends LinearOpMode {
+public class ClawTest extends LinearOpMode {
 
     private MecanumDriveTrain robot;
 
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new MecanumDriveTrain(this);
-        robot.addHardware(Configurator.getDriveTrainMotors(robot));
+        robot.addHardware(Configurator.getHardware(robot));
 
         waitForStart();
 
-        robot.driveWithController(robot.ctrl1());
+        /* Robot functions */
+        Functions.startClaw(robot, robot.ctrl1());
 
         while (opModeIsActive())
             robot.getLogger().updateLog();

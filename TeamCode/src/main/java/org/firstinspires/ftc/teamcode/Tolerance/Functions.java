@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TestRobot;
+package org.firstinspires.ftc.teamcode.Tolerance;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
-import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
-import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorType;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 

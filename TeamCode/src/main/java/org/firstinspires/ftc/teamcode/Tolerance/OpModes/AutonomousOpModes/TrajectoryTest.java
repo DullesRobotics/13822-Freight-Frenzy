@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TestRobot.OpModes.AutonomousOpModes;
+package org.firstinspires.ftc.teamcode.Tolerance.OpModes.AutonomousOpModes;
 
 import android.graphics.Point;
 
@@ -8,13 +8,9 @@ import com.acmerobotics.roadrunner.path.PathContinuityViolationException;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.vuforia.ViewerParameters;
 
-import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines.UltimateGoalPipeline;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.logging.Level;
 

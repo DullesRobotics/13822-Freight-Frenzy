@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TestRobot.OpModes.TeleOpModes;
+package org.firstinspires.ftc.teamcode.Tolerance.OpModes.TeleOpModes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -13,8 +13,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Util.DashboardUtil;
-import org.firstinspires.ftc.teamcode.TestRobot.PoseStorage;
-import org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants;
+import org.firstinspires.ftc.teamcode.Tolerance.PoseStorage;
+import org.firstinspires.ftc.teamcode.Tolerance.RoadRunnerDriveConstants;
 
 
 /**

@@ -1,18 +1,11 @@
-package org.firstinspires.ftc.teamcode.TestRobot.OpModes.TeleOpModes;
+package org.firstinspires.ftc.teamcode.Tolerance.OpModes.TeleOpModes;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOnType;
-import org.firstinspires.ftc.teamcode.Libraries.AddOns.RobotRecorder;
-import org.firstinspires.ftc.teamcode.Libraries.PID;
-import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.RobotManager.StandardDriveTrain;
-import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
-import org.firstinspires.ftc.teamcode.TestRobot.Functions;
-import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.firstinspires.ftc.teamcode.Tolerance.Configurator;
+import org.firstinspires.ftc.teamcode.Tolerance.Functions;
 
 @TeleOp
 public class MainModeMechanum extends LinearOpMode {

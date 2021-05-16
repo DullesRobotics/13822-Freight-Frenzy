@@ -1,15 +1,12 @@
-package org.firstinspires.ftc.teamcode.TestRobot.OpModes.AutonomousOpModes;
+package org.firstinspires.ftc.teamcode.Tolerance.OpModes.AutonomousOpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
-import org.firstinspires.ftc.teamcode.Libraries.PID;
-import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.RobotManager.StandardDriveTrain;
-import org.firstinspires.ftc.teamcode.TestRobot.Functions;
+import org.firstinspires.ftc.teamcode.Tolerance.Functions;
 
 @Autonomous
 public class IntakeAutonTest extends LinearOpMode {

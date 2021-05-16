@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TestRobot.OpModes.TeleOpModes;
+package org.firstinspires.ftc.teamcode.Tolerance.OpModes.TeleOpModes;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -6,9 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.USBWebcam;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
-import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.TestRobot.OpenCVPipelines.UltimateGoalPipeline;
+import org.firstinspires.ftc.teamcode.Tolerance.OpenCVPipelines.UltimateGoalPipeline;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous

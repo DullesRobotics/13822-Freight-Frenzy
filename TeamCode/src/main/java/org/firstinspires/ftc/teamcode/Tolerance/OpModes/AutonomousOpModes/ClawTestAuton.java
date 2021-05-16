@@ -1,22 +1,18 @@
-package org.firstinspires.ftc.teamcode.TestRobot.OpModes.AutonomousOpModes;
+package org.firstinspires.ftc.teamcode.Tolerance.OpModes.AutonomousOpModes;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
-import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.RobotManager.StandardDriveTrain;
-import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
-import org.firstinspires.ftc.teamcode.TestRobot.Functions;
+import org.firstinspires.ftc.teamcode.Tolerance.Configurator;
+import org.firstinspires.ftc.teamcode.Tolerance.Functions;
 
-import static org.firstinspires.ftc.teamcode.Hardware.ComponentArea.SHOOTER;
-import static org.firstinspires.ftc.teamcode.TestRobot.Functions.CLAW_MOTOR_END_TICKS;
-import static org.firstinspires.ftc.teamcode.TestRobot.Functions.CLAW_MOTOR_MID_TICKS;
-import static org.firstinspires.ftc.teamcode.TestRobot.Functions.CLAW_MOTOR_PWR;
+import static org.firstinspires.ftc.teamcode.Tolerance.Functions.CLAW_MOTOR_END_TICKS;
+import static org.firstinspires.ftc.teamcode.Tolerance.Functions.CLAW_MOTOR_MID_TICKS;
+import static org.firstinspires.ftc.teamcode.Tolerance.Functions.CLAW_MOTOR_PWR;
 
 @Autonomous
 public class ClawTestAuton extends LinearOpMode {

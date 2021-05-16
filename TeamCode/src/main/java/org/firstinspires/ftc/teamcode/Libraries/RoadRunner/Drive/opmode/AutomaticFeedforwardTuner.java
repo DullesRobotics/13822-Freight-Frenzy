@@ -10,19 +10,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
-import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Util.LoggingUtil;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Util.RegressionUtil;
-import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.TestRobot.Configurator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.MAX_RPM;
-import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.TestRobot.RoadRunnerDriveConstants.rpmToVelocity;
+import static org.firstinspires.ftc.teamcode.Tolerance.RoadRunnerDriveConstants.MAX_RPM;
+import static org.firstinspires.ftc.teamcode.Tolerance.RoadRunnerDriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.Tolerance.RoadRunnerDriveConstants.rpmToVelocity;
 
 /*
  * Op mode for computing kV, kStatic, and kA from various drive routines. For the curious, here's an

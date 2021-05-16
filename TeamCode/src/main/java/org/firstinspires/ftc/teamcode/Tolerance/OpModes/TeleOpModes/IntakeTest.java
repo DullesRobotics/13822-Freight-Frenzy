@@ -1,15 +1,12 @@
-package org.firstinspires.ftc.teamcode.TestRobot.OpModes.TeleOpModes;
+package org.firstinspires.ftc.teamcode.Tolerance.OpModes.TeleOpModes;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
-import org.firstinspires.ftc.teamcode.Libraries.PID;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.TestRobot.Functions;
-import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.firstinspires.ftc.teamcode.Tolerance.Functions;
 
 @TeleOp
 public class IntakeTest extends LinearOpMode {
