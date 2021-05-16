@@ -88,7 +88,7 @@ public class RingDetectionPipeline extends OpenCvPipeline implements Pipeline {
                 region1_pointA, // First point which defines the rectangle
                 region1_pointB, // Second point which defines the rectangle
                 GREEN, // The color the rectangle is drawn in
-                -1); // Negative thickness means solid fill
+                3); // Negative thickness means solid fill
 
         return input;
     }

@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Hardware.USBWebcam;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -117,6 +118,15 @@ public class EasyOpenCV extends AddOn {
     protected void stopAO() {
         Thread t = r.getThread(threadUUID);
         if(t != null) t.interrupt();
+    }
+
+    /**
+     * Sets the opencv pipeline
+     * @param pipeline The new pipeline to use
+     */
+    public void setPipeline(@NotNull Pipeline pipeline) {
+        if(camera != null)
+            camera.setPipeline((OpenCvPipeline) pipeline);
     }
 
     private enum CameraType {

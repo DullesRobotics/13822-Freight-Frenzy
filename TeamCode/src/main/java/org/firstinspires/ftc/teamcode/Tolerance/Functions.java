@@ -23,7 +23,7 @@ public class Functions {
     public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
     public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 0.58;
     public static double CLAW_SERVO_CLOSED_POS_2 = 0.06, CLAW_SERVO_OPEN_POS_2 = 0.58;
-    public static int CLAW_MOTOR_MID_TICKS = 900, CLAW_MOTOR_END_TICKS = 500;
+    public static int CLAW_MOVE_UP_TICKS = 1100, CLAW_MOVE_DOWN_TICKS = 500;
     public static double CLAW_MOTOR_PWR = 0.7;
     public static double power = -2;
 
@@ -278,7 +278,7 @@ public class Functions {
 ////        m.get().setPower(0);
 //
         m.get().setDirection(DcMotorSimple.Direction.REVERSE);
-        m.get().setTargetPosition(down ? CLAW_MOTOR_END_TICKS : CLAW_MOTOR_MID_TICKS);
+        m.get().setTargetPosition(down ? CLAW_MOVE_DOWN_TICKS : CLAW_MOVE_UP_TICKS);
         m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
         m.get().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         r.getLogger().log(Level.INFO, m.get().getZeroPowerBehavior() + "");

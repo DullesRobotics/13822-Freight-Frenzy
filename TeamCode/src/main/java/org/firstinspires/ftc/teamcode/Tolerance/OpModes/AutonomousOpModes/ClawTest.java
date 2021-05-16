@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Tolerance.Configurator;
 import org.firstinspires.ftc.teamcode.Tolerance.Functions;
 
-import static org.firstinspires.ftc.teamcode.Tolerance.Functions.CLAW_MOTOR_END_TICKS;
-import static org.firstinspires.ftc.teamcode.Tolerance.Functions.CLAW_MOTOR_MID_TICKS;
+import static org.firstinspires.ftc.teamcode.Tolerance.Functions.CLAW_MOVE_DOWN_TICKS;
+import static org.firstinspires.ftc.teamcode.Tolerance.Functions.CLAW_MOVE_UP_TICKS;
 import static org.firstinspires.ftc.teamcode.Tolerance.Functions.CLAW_MOTOR_PWR;
 
 @Autonomous
@@ -31,7 +31,7 @@ public class ClawTest extends LinearOpMode {
         Motor m = robot.getMotor("CLM");
         m.get().setPower(0);
         m.get().setDirection(DcMotorSimple.Direction.FORWARD);
-        m.get().setTargetPosition(CLAW_MOTOR_MID_TICKS);
+        m.get().setTargetPosition(CLAW_MOVE_UP_TICKS);
         m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
         m.get().setPower(CLAW_MOTOR_PWR);
         robot.autonWait(2000);
@@ -44,7 +44,7 @@ public class ClawTest extends LinearOpMode {
 
         m.get().setPower(0);
         m.get().setDirection(DcMotorSimple.Direction.REVERSE);
-        m.get().setTargetPosition(CLAW_MOTOR_END_TICKS);
+        m.get().setTargetPosition(CLAW_MOVE_DOWN_TICKS);
         m.get().setMode(DcMotor.RunMode.RUN_TO_POSITION);
         m.get().setPower(CLAW_MOTOR_PWR);
 

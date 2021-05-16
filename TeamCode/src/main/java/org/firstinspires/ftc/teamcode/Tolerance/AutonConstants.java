@@ -30,27 +30,21 @@ public class AutonConstants {
      * to see the starting stack
      * IN DEGREES
      */
-    public static double START_STACK_ANGLE = 22;
+    public static double START_STACK_ANGLE = -22;
 
     /**
      * The points at the center of each zone. <br>
      * X points reversed for red
      */
     public static Point
-            ZONE_A = new Point(-57, -5),
-            ZONE_B = new Point(-44, 19),
-            ZONE_C = new Point(-56, 43);
-
-    public static double B_angle = 180, AC_angle = 270;
-
-    /**
-     * Inches to move back before raising claw
-     */
-    public static double WOBBLE_SAFE_CLAW_ARM_DISTANCE = 4;
+            ZONE_A = new Point(-57, -5 + 10),
+            ZONE_B = new Point(-44, 19 + 10),
+            ZONE_C = new Point(-56, 43 + 10);
 
     /** Points to shoot from */
     public static Point
-             SHOOTING_POSITION_BLUE = new Point(-34, -2);
+            SHOOTING_POSITION_BLUE = new Point(-34 + 2, -2 + 2),
+            SHOOTING_POSITION_RED = new Point(34 - 2, 0);
 
     /** Angles to shoot from */
     public static double
