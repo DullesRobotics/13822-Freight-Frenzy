@@ -63,7 +63,7 @@ import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.StandardTrackin
  */
 @Config
 @TeleOp(group = "drive")
-public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
+public class Z_TrackingWheelLateralDistanceTuner extends LinearOpMode {
     public static int NUM_TURNS = 10;
 
     @Override

@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDr
  * encoder localizer heading may be significantly off if the track width has not been tuned).
  */
 @TeleOp(group = "drive")
-public class LocalizationTest extends LinearOpMode {
+public class Z_LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(this);

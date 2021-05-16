@@ -49,7 +49,7 @@ import static org.firstinspires.ftc.teamcode.Tolerance.RoadRunnerDriveConstants.
  */
 @Config
 @Autonomous(group = "drive")
-public class DriveVelocityPIDTuner extends LinearOpMode {
+public class Z_DriveVelocityPIDTuner extends LinearOpMode {
     public static double DISTANCE = 72; // in
 
     enum Mode {

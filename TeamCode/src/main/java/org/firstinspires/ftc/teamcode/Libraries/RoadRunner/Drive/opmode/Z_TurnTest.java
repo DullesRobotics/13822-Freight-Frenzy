@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDr
  */
 @Config
 @Autonomous(group = "drive")
-public class TurnTest extends LinearOpMode {
+public class Z_TurnTest extends LinearOpMode {
     public static double ANGLE = 90; // deg
 
     @Override

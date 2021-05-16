@@ -41,7 +41,7 @@ import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDr
 @Disabled
 @Config
 @TeleOp(group = "drive")
-public class MotorDirectionDebugger extends LinearOpMode {
+public class Z_MotorDirectionDebugger extends LinearOpMode {
     public static double MOTOR_POWER = 0.7;
 
     @Override

@@ -35,7 +35,7 @@ import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.StandardTrackin
  */
 @Config
 @Autonomous(group="drive")
-public class TrackingWheelForwardOffsetTuner extends LinearOpMode {
+public class Z_TrackingWheelForwardOffsetTuner extends LinearOpMode {
     public static double ANGLE = 180; // deg
     public static int NUM_TRIALS = 5;
     public static int DELAY = 1000; // ms

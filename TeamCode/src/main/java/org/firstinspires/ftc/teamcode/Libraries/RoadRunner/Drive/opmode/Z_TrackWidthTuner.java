@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDr
  */
 @Config
 @Autonomous(group = "drive")
-public class TrackWidthTuner extends LinearOpMode {
+public class Z_TrackWidthTuner extends LinearOpMode {
     public static double ANGLE = 180; // deg
     public static int NUM_TRIALS = 5;
     public static int DELAY = 1000; // ms

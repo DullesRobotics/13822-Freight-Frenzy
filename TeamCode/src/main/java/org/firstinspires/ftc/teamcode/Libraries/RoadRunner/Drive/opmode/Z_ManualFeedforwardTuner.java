@@ -41,7 +41,7 @@ import static org.firstinspires.ftc.teamcode.Tolerance.RoadRunnerDriveConstants.
  */
 @Config
 @Autonomous(group = "drive")
-public class ManualFeedforwardTuner extends LinearOpMode {
+public class Z_ManualFeedforwardTuner extends LinearOpMode {
     public static double DISTANCE = 72; // in
 
     private FtcDashboard dashboard = FtcDashboard.getInstance();
