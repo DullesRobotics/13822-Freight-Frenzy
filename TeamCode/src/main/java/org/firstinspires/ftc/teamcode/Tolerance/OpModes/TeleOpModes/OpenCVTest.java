@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Hardware.USBWebcam;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.Tolerance.OpenCVPipelines.UltimateGoalPipeline;
+import org.firstinspires.ftc.teamcode.Tolerance.OpenCVPipelines.RingDetectionPipeline;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous
@@ -22,7 +22,7 @@ public class OpenCVTest extends LinearOpMode {
         robot = new MecanumDriveTrain(this);
         robot.addHardware(new USBWebcam(robot, "Webcam"));
 
-        UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
+        RingDetectionPipeline pipeline = new RingDetectionPipeline();
         EasyOpenCV easyOpenCV = new EasyOpenCV(pipeline, robot.getUSBWebcam(), rotation);
         robot.addOnManager().initAndStartAddOn(easyOpenCV);
 

@@ -16,7 +16,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
  * This class is courtesy of Wizards.exe
  */
 @Config
-public class UltimateGoalPipeline extends OpenCvPipeline implements Pipeline {
+public class RingDetectionPipeline extends OpenCvPipeline implements Pipeline {
 
     public enum RingAmount {
         NONE, ONE, FOUR

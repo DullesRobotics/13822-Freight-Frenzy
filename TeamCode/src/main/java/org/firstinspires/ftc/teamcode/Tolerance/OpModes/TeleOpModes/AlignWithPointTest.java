@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.Tolerance.RoadRunnerDriveConstants;
  */
 @Config
 @TeleOp(group = "advanced")
-public class AlignWithPoint extends LinearOpMode {
+public class AlignWithPointTest extends LinearOpMode {
 
     public static double DRAWING_TARGET_RADIUS = 2;
 

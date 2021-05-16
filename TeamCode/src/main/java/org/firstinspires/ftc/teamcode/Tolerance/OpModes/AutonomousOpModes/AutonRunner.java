@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Tolerance.Functions;
-import org.firstinspires.ftc.teamcode.Tolerance.OpenCVPipelines.UltimateGoalPipeline;
+import org.firstinspires.ftc.teamcode.Tolerance.OpenCVPipelines.RingDetectionPipeline;
 import org.firstinspires.ftc.teamcode.Tolerance.PoseStorage;
 
 import static org.firstinspires.ftc.teamcode.Tolerance.AutonConstants.*;
@@ -44,7 +44,7 @@ public class AutonRunner {
         roadrunner.setPoseEstimate(startPose);
 
         /* start OpenCV */
-        UltimateGoalPipeline pipeline = new UltimateGoalPipeline();
+        RingDetectionPipeline pipeline = new RingDetectionPipeline();
         robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam(), OPEN_CV_CAM_ROTATION));
 
         Point zonePoint;
@@ -64,7 +64,7 @@ public class AutonRunner {
          * ONE - Zone B (middle)
          * FOUR - Zone C (top)
          */
-        UltimateGoalPipeline.RingAmount amount = pipeline.getAmount();
+        RingDetectionPipeline.RingAmount amount = pipeline.getAmount();
 
         switch (amount) {
             case ONE:
@@ -84,7 +84,7 @@ public class AutonRunner {
 
         int angle = 90;
 
-        if((amount == UltimateGoalPipeline.RingAmount.NONE) || (amount == UltimateGoalPipeline.RingAmount.FOUR))
+        if((amount == RingDetectionPipeline.RingAmount.NONE) || (amount == RingDetectionPipeline.RingAmount.FOUR))
             angle = -90;
 
 
