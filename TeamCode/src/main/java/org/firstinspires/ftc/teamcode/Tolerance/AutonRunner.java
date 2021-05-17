@@ -26,6 +26,7 @@ public class AutonRunner {
 
     private static volatile MecanumDriveTrain robot;
     private static volatile SampleMecanumDrive roadrunner;
+    public static volatile Team team = Team.BLUE;
 
     /**
      * Starts autonomous
@@ -36,7 +37,7 @@ public class AutonRunner {
      */
     public static void start(LinearOpMode op, Point startPoint, Team team, Side side)
     {
-
+        AutonRunner.team = team;
         roadrunner = new SampleMecanumDrive(op);
         robot = roadrunner.getDriveTrain();
 
