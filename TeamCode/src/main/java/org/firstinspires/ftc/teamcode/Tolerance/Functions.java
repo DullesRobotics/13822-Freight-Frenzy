@@ -27,6 +27,11 @@ public class Functions {
     public static double CLAW_MOTOR_PWR = 0.7;
     public static double power = -2;
 
+    //values need to be calibrated!
+    public static double CAMERA_SERVO_STARTSTACK_POS = .5;
+    public static double CAMERA_SERVO_HIGHGAOL_POS = 0;
+    public static double CAMERA_SERVO_POWERSHOT_POS = .7;
+
     //2000
     public static int goalVelocity = -2200, powerShotVelocity = -1800, currentVelocity = 0, targetVelocity = goalVelocity;
 
@@ -293,6 +298,20 @@ public class Functions {
             m.get().setPower(0);
     }
 
+    /**Positions camera in correct orientation using the camera servo during auton
+     * @param r The robot with the camera servo
+     * @param detection camera orientation for starting stack, highgoal, and wobble goal
+     */
+    public static void startCameraOrientation(Robot r, Detection detection){
+        Servo s = r.getServo("CS");
+        switch(detection){
+            case StartStack: s.get().setPosition(CAMERA_SERVO_STARTSTACK_POS);
+            case HighGoal: s.get().setPosition(CAMERA_SERVO_HIGHGAOL_POS);
+            case PowerShot:
+            default: s.get().setPosition(CAMERA_SERVO_POWERSHOT_POS);
+        }
+    }
+
     /**
      * Starts claw teleop handling of both the claw servo and motor position
      * @param r The robot with the claw
@@ -338,6 +357,12 @@ public class Functions {
 
             }
         }), true);
+    }
+
+    public enum Detection{
+        StartStack,
+        HighGoal,
+        PowerShot
     }
 
     public static boolean usePower = true;

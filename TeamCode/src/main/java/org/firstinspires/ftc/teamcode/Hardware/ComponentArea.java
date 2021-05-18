@@ -8,6 +8,7 @@ public enum ComponentArea {
     SHOOTER,
     CLAW,
     IMU,
+    CAMERA,
     MISCELLANEOUS
 
 }

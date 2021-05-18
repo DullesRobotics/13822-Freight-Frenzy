@@ -43,6 +43,7 @@ public class Configurator {
                 new Servo(robot, "CLS", CLAW),
                 new Servo(robot, "CLS2", CLAW),
                 new Servo(robot, "SHS", SHOOTER),
+                new Servo(robot, "CS", CAMERA),
                 new IMU(robot, "IMU"),
                 new USBWebcam(robot, "Webcam")
         });

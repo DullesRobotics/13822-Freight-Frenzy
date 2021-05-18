@@ -47,14 +47,15 @@ public class AutonRunner {
         }), true);
 
         /* Calculating initial position and rotation */
-        double startingRadToTurn = Math.toRadians((side == Side.LEFT ? 1 : -1) * START_STACK_ANGLE);
-        Pose2d startPose = new Pose2d(startPoint.y, -startPoint.x, startingRadToTurn);
+//        double startingRadToTurn = Math.toRadians((side == Side.LEFT ? 1 : -1) * START_STACK_ANGLE);
+        Pose2d startPose = new Pose2d(startPoint.y, -startPoint.x, 0);
 
         roadrunner.setPoseEstimate(startPose);
 
         /* start OpenCV */
         RingDetectionPipeline pipeline = new RingDetectionPipeline();
         robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam(), OPEN_CV_CAM_ROTATION));
+        startCameraOrientation(robot, Detection.StartStack);
 
         Point zonePoint;
 
@@ -67,7 +68,7 @@ public class AutonRunner {
         Functions.setClawServos(robot, false);
 
         /* rotate towards start stack */
-        roadrunner.turn(startingRadToTurn);
+//        roadrunner.turn(startingRadToTurn);
 
         /*
          * NONE - Zone A (lowest)
