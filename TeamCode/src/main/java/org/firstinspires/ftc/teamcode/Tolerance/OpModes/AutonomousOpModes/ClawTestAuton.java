@@ -15,7 +15,7 @@ import static org.firstinspires.ftc.teamcode.Tolerance.Functions.CLAW_MOVE_UP_TI
 import static org.firstinspires.ftc.teamcode.Tolerance.Functions.CLAW_MOTOR_PWR;
 
 @Autonomous
-public class ClawTest extends LinearOpMode {
+public class ClawTestAuton extends LinearOpMode {
 
     MecanumDriveTrain robot;
 

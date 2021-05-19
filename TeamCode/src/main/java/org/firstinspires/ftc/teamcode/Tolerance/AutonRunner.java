@@ -54,8 +54,9 @@ public class AutonRunner {
 
         /* start OpenCV */
         RingDetectionPipeline pipeline = new RingDetectionPipeline();
-        robot.addOnManager().initAndStartAddOn(new EasyOpenCV(pipeline, robot.getUSBWebcam(), OPEN_CV_CAM_ROTATION));
-        startCameraOrientation(robot, Detection.StartStack);
+        EasyOpenCV ez = new EasyOpenCV(pipeline, robot.getUSBWebcam(), OPEN_CV_CAM_ROTATION);
+        robot.addOnManager().initAndStartAddOn(ez);
+        setWebcamServo(robot, true, ez, pipeline, null);
 
         Point zonePoint;
 

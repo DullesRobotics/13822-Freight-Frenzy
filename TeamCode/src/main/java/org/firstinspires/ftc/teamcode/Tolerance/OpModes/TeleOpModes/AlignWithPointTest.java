@@ -60,7 +60,7 @@ public class AlignWithPointTest extends LinearOpMode {
 
         // Retrieve our pose from the PoseStorage.currentPose static field
         // See AutoTransferPose.java for further details
-        drive.getLocalizer().setPoseEstimate(PoseStorage.currentPose);
+       // drive.getLocalizer().setPoseEstimate(PoseStorage.currentPose);
 
         // Set input bounds for the heading controller
         // Automatically handles overflow
