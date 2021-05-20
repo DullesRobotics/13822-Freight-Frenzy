@@ -22,7 +22,12 @@ public class ShooterTest extends LinearOpMode {
         waitForStart();
 
         /* Robot functions */
-        Functions.startShooter(robot, robot.ctrl1());
+        Functions.testShooterMotor(robot, robot.ctrl1());
+        Functions.startIntake(robot, robot.ctrl1());
+
+        while (opModeIsActive()) {
+            robot.getLogger().updateLog();
+        }
 
         robot.stopAllThreads();
     }

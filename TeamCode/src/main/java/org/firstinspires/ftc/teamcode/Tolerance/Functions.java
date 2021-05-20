@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Tolerance;
 
+import android.graphics.Point;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -7,12 +9,16 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
+import org.firstinspires.ftc.teamcode.Hardware.Motor.DrivetrainMotor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.Pipeline;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
+import org.firstinspires.ftc.teamcode.RobotManager.StandardDriveTrain;
+import org.firstinspires.ftc.teamcode.Tolerance.OpenCVPipelines.HighGoalDetectionPipeline;
 
+import java.util.UUID;
 import java.util.logging.Level;
 
 @Config
@@ -29,6 +35,10 @@ public class Functions {
     public static double CLAW_MOTOR_PWR = 0.7;
     public static double WEBCAM_DOWN_POS = 0.82, WEBCAM_UP_POS = 0.64;
     public static double power = 2;
+    public static double CENTER_TOLERANCE_PERCENT = 0.55, TURN_POWER_AUTOCORRECT = 0.25;
+    private static UUID AUTOAIM_THREAD_UUID = null;
+    private static long timeToPress = 0;
+    private static long pastTimeToPress = 0;
 
     //2000
     public static int goalVelocity = 2200, powerShotVelocity = 1800, currentVelocity = 0, targetVelocity = goalVelocity;
@@ -56,6 +66,38 @@ public class Functions {
     public static void setWebcamServo(Robot r, boolean down, EasyOpenCV easyOpenCV, Pipeline downPipeline, Pipeline upPipeline){
         easyOpenCV.setPipeline(down ? downPipeline : upPipeline);
         r.getServo("CS").get().setPosition(down ? WEBCAM_DOWN_POS : WEBCAM_UP_POS);
+    }
+
+    public static void autoAim(StandardDriveTrain r, Controller ctrl, HighGoalDetectionPipeline p, int camWidthPixels, EasyOpenCV easyOpenCV) {
+        AUTOAIM_THREAD_UUID = r.addThread(new Thread(() -> {
+            setWebcamServo(r, false, easyOpenCV, null, p);
+            boolean on = false, togglePressed = false;
+        while(r.op().opModeIsActive()) {
+
+            if(ctrl.leftBumper() && !togglePressed) {
+                    togglePressed = true;
+                    on = !on;
+                }
+
+                if(!ctrl.leftBumper() && togglePressed)
+                    togglePressed = false;
+
+                if (on) {
+                    if (p.getCamPoint() == null) continue;
+                    boolean tooLeft = p.getCamPoint().x > camWidthPixels * CENTER_TOLERANCE_PERCENT;
+                    boolean tooRight = p.getCamPoint().x < camWidthPixels - (camWidthPixels * CENTER_TOLERANCE_PERCENT);
+
+                    if (tooRight || tooLeft) {
+                        r.setTurningDrivePower(tooRight ? TURN_POWER_AUTOCORRECT : -TURN_POWER_AUTOCORRECT);
+                        r.getLogger().putData("Positioning", !p.isGoalVisible() ? "Not visible" : tooRight ? "too far right" : "too far left");
+                    } else {
+                        for (DrivetrainMotor dr : r.getDrivetrainMotors())
+                            dr.get().setPower(0);
+                        r.getLogger().putData("Positioning", "Good");
+                    }
+                }
+        }
+        }), true);
     }
 
     /**
@@ -193,7 +235,6 @@ public class Functions {
                     else
                         setShooterMotor(r, true);
 
-                    //(withVelocity ? setShooterMotor(r, true) : setShooterPower(r, .85)) //from 100% to 85%
                 } else {
                     if(m != null)
                         m.get().setPower(0);
@@ -247,6 +288,41 @@ public class Functions {
             m.get().setPower(power);
         }
 
+    }
+
+    public static void testShooterMotor(Robot r, Controller ctrl) {
+        PIDFCoefficients pid = new PIDFCoefficients(kP, kI, kD, kF);
+        r.addThread(new Thread(() -> {
+            boolean pressed = false;
+            while(r.op().opModeIsActive()){
+
+                for (Motor m : r.getMotors(ComponentArea.SHOOTER))
+                    currentVelocity = (int) m.getEncoded().getVelocity();
+
+                r.getLogger().putData("Motor Velocity", currentVelocity);
+                r.getLogger().putData("Target Velocity", targetVelocity);
+                r.getLogger().putData("Power", power);
+                r.getLogger().putData("Battery Voltage", r.op().hardwareMap.voltageSensor.iterator().next().getVoltage());
+
+            if(ctrl.buttonA() && !pressed) {
+                pressed = true;
+                pastTimeToPress = timeToPress;
+                timeToPress = (long) r.op().getRuntime();
+                r.getLogger().putData("Time Pressed", timeToPress);
+                r.getLogger().putData("Past between Press", pastTimeToPress);
+                useShooterServos(r);
+                for (Motor m : r.getMotors(ComponentArea.SHOOTER)) {
+                    if (usePID) m.getEncoded().setPIDFCoefficients(m.getEncoded().getMode(), pid);
+
+                    m.getEncoded().setVelocity(targetVelocity);
+                }
+            }
+
+                if (!ctrl.buttonA() && pressed) {
+                    pressed = false;
+                }
+            }
+    }),true);
     }
 
     /**

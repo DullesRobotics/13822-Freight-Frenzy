@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Tolerance.OpModes.TeleOpModes;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Hardware.USBWebcam;
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
@@ -13,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Tolerance.OpenCVPipelines.HighGoalDetectio
 import org.firstinspires.ftc.teamcode.Tolerance.OpenCVPipelines.RingDetectionPipeline;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous
+@TeleOp
 @Config
 public class PipelineTest extends LinearOpMode {
 
@@ -33,6 +34,7 @@ public class PipelineTest extends LinearOpMode {
         waitForStart();
 
         Functions.toggleWebcam(robot, robot.ctrl1(), easyOpenCV, ringPipeline, goalPipeline, true);
+        //Functions.autoAim(robot, goalPipeline, EasyOpenCV.VIEWPORT_WIDTH);
 
         /* Robot functions */
 
