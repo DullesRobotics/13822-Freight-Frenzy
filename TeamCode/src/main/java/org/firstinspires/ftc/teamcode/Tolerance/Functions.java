@@ -26,8 +26,8 @@ public class Functions {
 
     //lowered for battery life
     public static double INTAKE_SPEED = 1, SHOOTER_SPEED = 980;
-    public static int SHOOTER_INIT_MILLIS = 3000, SHOOTER_COOLDOWN = 300, SHOOTER_COOLDOWN_SECOND = 600;
-    public static int RING_COUNT = 4;
+    public static int SHOOTER_INIT_MILLIS = 2700, SHOOTER_COOLDOWN = 1000, SHOOTER_COOLDOWN_SECOND = 950;
+    public static int RING_COUNT = 3;
     public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
     public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 0.58;
     public static double CLAW_SERVO_CLOSED_POS_2 = 0.06, CLAW_SERVO_OPEN_POS_2 = 0.58;
@@ -41,7 +41,7 @@ public class Functions {
     private static long pastTimeToPress = 0;
 
     //2000
-    public static int goalVelocity = 2200, powerShotVelocity = 1800, currentVelocity = 0, targetVelocity = goalVelocity;
+    public static int goalVelocity = 2300, powerShotVelocity = 1800, currentVelocity = 0, targetVelocity = goalVelocity;
 
     public static void toggleWebcam(Robot r, Controller ctrl, EasyOpenCV easyOpenCV, Pipeline downPipeline, Pipeline upPipeline, boolean isDown) {
         r.getLogger().log(Level.INFO, "Starting webcam toggle function");
@@ -246,7 +246,7 @@ public class Functions {
                 }
 
                 if(on && !init){
-                    if(shotsLeft <= 0) {
+                    if(shotsLeft < 0) {
                         on = false;
                         init = false;
                     } else if(System.currentTimeMillis() > cooldownTime) {
@@ -451,9 +451,9 @@ public class Functions {
 
     public static boolean usePower = false;
     public static boolean usePID = true;
-    public static double kP = 2;
-    public static double kI = 0.4;
-    public static double kD = 0.04;
-    public static double kF = 8;
+    public static double kP = 4;
+    public static double kI = 0.5;
+    public static double kD = 0.0;
+    public static double kF = 0.0;
 
 }

@@ -36,7 +36,6 @@ public class Main extends LinearOpMode {
         Functions.startIntake(robot, robot.ctrl2());
         Functions.startShooter(robot, robot.ctrl2());
         Functions.startClaw(robot, robot.ctrl2());
-        //Functions.toggleWebcam(robot, robot.ctrl1(), easyOpenCV, null, goalPipeline, false);
         Functions.autoAim(robot, robot.ctrl1(), goalPipeline, EasyOpenCV.VIEWPORT_WIDTH, easyOpenCV);
 
         while (opModeIsActive()) {
