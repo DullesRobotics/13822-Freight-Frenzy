@@ -43,7 +43,7 @@ public class AutonConstants {
 
     /** Points to shoot from */
     public static Point
-            SHOOTING_POSITION_BLUE = new Point(-34 + 2, -2 + 2),
+            SHOOTING_POSITION_BLUE = new Point(-34 + 2 - 12, -2 + 2),
             SHOOTING_POSITION_RED = new Point(34 - 2, 0);
 
     /** Angles to shoot from */

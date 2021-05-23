@@ -47,8 +47,8 @@ public class AutonRunner {
         }), true);
 
         /* Calculating initial position and rotation */
-//        double startingRadToTurn = Math.toRadians((side == Side.LEFT ? 1 : -1) * START_STACK_ANGLE);
-        Pose2d startPose = new Pose2d(startPoint.y, -startPoint.x, 0);
+        double startingRadToTurn = Math.toRadians((side == Side.LEFT ? 1 : -1) * START_STACK_ANGLE);
+        Pose2d startPose = new Pose2d(startPoint.y, -startPoint.x, team != Team.DRIVE_FORWARD ? Math.toRadians(startingRadToTurn) : 0);
 
         roadrunner.setPoseEstimate(startPose);
 
@@ -69,77 +69,98 @@ public class AutonRunner {
         Functions.setClawServos(robot, false);
 
         /* rotate towards start stack */
-//        roadrunner.turn(startingRadToTurn);
 
-        /*
-         * NONE - Zone A (lowest)
-         * ONE - Zone B (middle)
-         * FOUR - Zone C (top)
-         */
-        RingDetectionPipeline.RingAmount amount = pipeline.getAmount();
+        if(team != Team.DRIVE_FORWARD) {
 
-        switch (amount) {
-            case ONE: zonePoint = ZONE_B; break;
-            case FOUR: zonePoint = ZONE_C; break;
-            case NONE:
-            default: zonePoint = ZONE_A; break;
+            roadrunner.turn(startingRadToTurn);
+            robot.autonWait(750);
+
+            /*
+             * NONE - Zone A (lowest)
+             * ONE - Zone B (middle)
+             * FOUR - Zone C (top)
+             */
+            RingDetectionPipeline.RingAmount amount = pipeline.getAmount();
+
+            switch (amount) {
+                case ONE:
+                    zonePoint = ZONE_B;
+                    break;
+                case FOUR:
+                    zonePoint = ZONE_C;
+                    break;
+                case NONE:
+                default:
+                    zonePoint = ZONE_A;
+                    break;
+            }
+
+            int zoneAngle = amount == NONE || amount == FOUR ? -90 : 90;
+            zoneAngle = (team == Team.RED) ? -zoneAngle : zoneAngle; //inverse if red
+
+            Trajectory wobbleTrajectory = roadrunner.trajectoryBuilder(startPose)
+                    .splineToLinearHeading(new Pose2d(zonePoint.y, (team == Team.RED ? 1 : -1) * zonePoint.x, Math.toRadians(zoneAngle)), 0)
+                    .build();
+
+            roadrunner.followTrajectory(wobbleTrajectory);
+
+            moveClaw(robot, true);
+
+            robot.autonWait(1000);
+
+            Functions.setClawServos(robot, true);
+
+            robot.autonWait(750);
+
+            moveClaw(robot, false);
+
+            robot.autonWait(600);
+
+            Motor m = robot.getMotor("CLM");
+            m.get().setPower(0);
+
+            robot.autonWait(100);
+
+            int reversing = team == Team.BLUE ? 1 : -1;
+
+            Point shootingPoint = (team == Team.RED ? SHOOTING_POSITION_RED : SHOOTING_POSITION_BLUE);
+
+            Trajectory shootingTrajectory = roadrunner.trajectoryBuilder(wobbleTrajectory.end())
+                    .splineToLinearHeading(new Pose2d(shootingPoint.y, -shootingPoint.x, Math.toRadians(reversing * SHOOTING_ANGLE_BLUE)), 0)
+                    .build();
+
+            roadrunner.followTrajectory(shootingTrajectory);
+
+            Functions.calibrateShooterServos(robot);
+
+            //roadrunner.turn(Math.toRadians(reversing * 5));
+
+            shootOnce(robot);
+
+            //roadrunner.turn(Math.toRadians(reversing * -5));
+
+            shootOnce(robot);
+
+            //roadrunner.turn(Math.toRadians(reversing * -10));
+
+            shootOnce(robot);
+
+
+            Trajectory moveToLine = roadrunner.trajectoryBuilder(shootingTrajectory.end().plus(new Pose2d(0, 0, Math.toRadians(-10))))
+                    .splineToConstantHeading(new Vector2d(LAUNCH_LINE_Y_COORDINATE, shootingTrajectory.end().getY() - 4), 0)
+                    .build();
+
+            roadrunner.followTrajectory(moveToLine);
+
+        } else {
+
+            Trajectory moveToLine = roadrunner.trajectoryBuilder(startPose)
+                    .splineToConstantHeading(new Vector2d(LAUNCH_LINE_Y_COORDINATE, startPose.getY() - 4), 0)
+                    .build();
+
+            roadrunner.followTrajectory(moveToLine);
+
         }
-
-        int zoneAngle = amount == NONE || amount == FOUR ? -90 : 90;
-        zoneAngle = (team == Team.RED) ? -zoneAngle : zoneAngle; //inverse if red
-
-        Trajectory wobbleTrajectory = roadrunner.trajectoryBuilder(startPose)
-                .splineToLinearHeading(new Pose2d(zonePoint.y, (team == Team.RED ? 1 : -1) * zonePoint.x, Math.toRadians(zoneAngle)), 0)
-                .build();
-
-        roadrunner.followTrajectory(wobbleTrajectory);
-
-        moveClaw(robot, true);
-
-        robot.autonWait(1000);
-
-        Functions.setClawServos(robot, true);
-
-        robot.autonWait(750);
-
-        moveClaw(robot, false);
-
-        robot.autonWait(600);
-
-        Motor m = robot.getMotor("CLM");
-        m.get().setPower(0);
-
-        robot.autonWait(100);
-
-        Point shootingPoint = (team == Team.RED ? SHOOTING_POSITION_RED : SHOOTING_POSITION_BLUE);
-
-        Trajectory shootingTrajectory = roadrunner.trajectoryBuilder(wobbleTrajectory.end())
-                .splineToLinearHeading(new Pose2d(shootingPoint.y, -shootingPoint.x, Math.toRadians(SHOOTING_ANGLE_BLUE)), 0)
-                .build();
-
-        roadrunner.followTrajectory(shootingTrajectory);
-
-        Functions.calibrateShooterServos(robot);
-
-        int reversing = team == Team.BLUE ? 1 : -1;
-
-        roadrunner.turn(Math.toRadians(reversing * 5));
-
-        shootOnce(robot);
-
-        roadrunner.turn(Math.toRadians(reversing * -5));
-
-        shootOnce(robot);
-
-        roadrunner.turn(Math.toRadians(reversing * -10));
-
-        shootOnce(robot);
-
-        Trajectory moveToLine = roadrunner.trajectoryBuilder(shootingTrajectory.end().plus(new Pose2d(0,0, Math.toRadians(-10))))
-            .splineToConstantHeading(new Vector2d(LAUNCH_LINE_Y_COORDINATE, shootingTrajectory.end().getY() - 4), 0)
-            .build();
-
-        roadrunner.followTrajectory(moveToLine);
 
         robot.stopAllThreads();
 
@@ -169,7 +190,7 @@ public class AutonRunner {
     }
 
     public enum Team {
-        RED, BLUE
+        RED, BLUE, DRIVE_FORWARD
     }
 }
 

@@ -26,14 +26,14 @@ public class Functions {
 
     //lowered for battery life
     public static double INTAKE_SPEED = 1, SHOOTER_SPEED = 980;
-    public static int SHOOTER_INIT_MILLIS = 2700, SHOOTER_COOLDOWN = 1000, SHOOTER_COOLDOWN_SECOND = 950;
+    public static int SHOOTER_INIT_MILLIS = 2700, SHOOTER_COOLDOWN = 800, SHOOTER_COOLDOWN_SECOND = 950;
     public static int RING_COUNT = 3;
     public static double SHOOTER_SERVO_START_POS = 0.51, SHOOTER_SERVO_END_POS = 0.66;
     public static double CLAW_SERVO_CLOSED_POS = 0, CLAW_SERVO_OPEN_POS = 0.58;
     public static double CLAW_SERVO_CLOSED_POS_2 = 0.06, CLAW_SERVO_OPEN_POS_2 = 0.58;
-    public static int CLAW_MOVE_UP_TICKS = 1100, CLAW_MOVE_DOWN_TICKS = 500;
+    public static int CLAW_MOVE_UP_TICKS = 350, CLAW_MOVE_DOWN_TICKS = 1100;
     public static double CLAW_MOTOR_PWR = 0.7;
-    public static double WEBCAM_DOWN_POS = 0.82, WEBCAM_UP_POS = 0.64;
+    public static double WEBCAM_DOWN_POS = 0.81, WEBCAM_UP_POS = 0.64;
     public static double power = 2;
     public static double CENTER_TOLERANCE_PERCENT = 0.55, TURN_POWER_AUTOCORRECT = 0.25;
     private static UUID AUTOAIM_THREAD_UUID = null;

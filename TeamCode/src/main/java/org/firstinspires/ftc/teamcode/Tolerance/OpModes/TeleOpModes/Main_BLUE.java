@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.Tolerance.AutonRunner;
 import org.firstinspires.ftc.teamcode.Tolerance.Configurator;
 import org.firstinspires.ftc.teamcode.Tolerance.Functions;
 import org.firstinspires.ftc.teamcode.Tolerance.OpenCVPipelines.HighGoalDetectionPipeline;
@@ -12,13 +13,15 @@ import org.firstinspires.ftc.teamcode.Tolerance.OpenCVPipelines.RingDetectionPip
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @TeleOp
-public class Main extends LinearOpMode {
+public class Main_BLUE extends LinearOpMode {
 
     private MecanumDriveTrain robot;
     public static OpenCvCameraRotation rotation = OpenCvCameraRotation.UPRIGHT;
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        AutonRunner.team = AutonRunner.Team.BLUE;
 
         robot = new MecanumDriveTrain(this);
         robot.addHardware(Configurator.getHardware(robot));

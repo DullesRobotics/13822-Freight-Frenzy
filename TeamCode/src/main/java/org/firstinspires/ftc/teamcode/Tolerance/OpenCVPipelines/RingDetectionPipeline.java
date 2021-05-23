@@ -26,7 +26,7 @@ public class RingDetectionPipeline extends OpenCvPipeline implements Pipeline {
     private static final Scalar BLUE = new Scalar(0, 0, 255), GREEN = new Scalar(0, 255, 0);
 
     /* The core values which define the location and size of the sample regions */
-    public static Point region1_pointA = new Point(50,135);
+    public static Point region1_pointA = new Point(50,120);
     public static Point region1_pointB = new Point(250, 230);
 
     /* Values that determine rings. Guess & check until it works */
