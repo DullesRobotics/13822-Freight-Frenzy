@@ -22,8 +22,8 @@ public class RoadRunnerDriveConstants {
     /*
      * These are motor constants that should be listed online for your motors.
      */
-    public static double TICKS_PER_REV = 537.6;
-    public static double MAX_RPM = 340;
+    public static double TICKS_PER_REV = 384.5;
+    public static double MAX_RPM = 435;
 
     /*
      * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.

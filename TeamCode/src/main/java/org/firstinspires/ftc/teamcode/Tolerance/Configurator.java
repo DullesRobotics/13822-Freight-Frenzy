@@ -25,25 +25,11 @@ public class Configurator {
 
         HardwareComponent[] driveTrainMotors = getDriveTrainMotors(robot);
 
-        Motor m = new Motor(robot, "CLM", CLAW, true);
-        m.get().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-       Motor shooter = new Motor(robot, "SHM", SHOOTER, true);
-       shooter.setFlipped(true);
-
         return(new HardwareComponent[]{
                 driveTrainMotors[0],
                 driveTrainMotors[1],
                 driveTrainMotors[2],
                 driveTrainMotors[3],
-                new Motor(robot, "INM", INTAKE, false).setFlipped(true),
-                new Motor(robot, "INM2", INTAKE, false),
-                shooter,
-                m,
-                new Servo(robot, "CLS", CLAW),
-                new Servo(robot, "CLS2", CLAW),
-                new Servo(robot, "SHS", SHOOTER),
-                new Servo(robot, "CS", CAMERA),
                 new IMU(robot, "IMU"),
                 new USBWebcam(robot, "Webcam"),
         });
@@ -52,7 +38,7 @@ public class Configurator {
     public static HardwareComponent[] getDriveTrainMotors(Robot robot){
 
         MotorConfiguration MC = new MotorConfiguration(
-                MotorType.NEVEREST_ORBITAL,
+                MotorType.GO_BUILD_A_YELLOW_JACKET,
                 true,
                 2.9528,
                 1);

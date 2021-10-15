@@ -7,7 +7,8 @@ package org.firstinspires.ftc.teamcode.Hardware.Motor;
 public enum MotorType {
     CORE_HEX_MOTOR(288, 100, 1),
     HD_HEX_MOTOR(28, 100, 1),
-    NEVEREST_ORBITAL(537.6, 340, 19.2);
+    NEVEREST_ORBITAL(537.6, 340, 19.2),
+    GO_BUILD_A_YELLOW_JACKET(384.5, 435, 13.7);
 
     private final double countsPerRevolution;
     private final double maxRPM;
