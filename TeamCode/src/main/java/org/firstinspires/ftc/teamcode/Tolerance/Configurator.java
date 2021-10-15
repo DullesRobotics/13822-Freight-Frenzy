@@ -24,6 +24,7 @@ public class Configurator {
     public static HardwareComponent[] getHardware(Robot robot){
 
         HardwareComponent[] driveTrainMotors = getDriveTrainMotors(robot);
+        Motor carouselMotor = new Motor(robot, "Duck",CAROUSEL ,false );
 
         return(new HardwareComponent[]{
                 driveTrainMotors[0],
@@ -32,6 +33,7 @@ public class Configurator {
                 driveTrainMotors[3],
                 new IMU(robot, "IMU"),
                 new USBWebcam(robot, "Webcam"),
+                carouselMotor
         });
     }
 

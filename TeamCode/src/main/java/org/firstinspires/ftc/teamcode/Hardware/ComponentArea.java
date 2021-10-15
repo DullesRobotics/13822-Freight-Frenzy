@@ -9,6 +9,7 @@ public enum ComponentArea {
     CLAW,
     IMU,
     CAMERA,
-    MISCELLANEOUS
+    MISCELLANEOUS,
+    CAROUSEL,
 
 }

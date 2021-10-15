@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.Tolerance.OpModes.TeleOpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Tolerance.Configurator;
+import org.firstinspires.ftc.teamcode.Tolerance.ControlCenterTeleOp;
 
-@TeleOp
-public class MasterTeleOp extends LinearOpMode {
+public class MasterRedTeleOp extends LinearOpMode {
     private MecanumDriveTrain baseRobot;
     @Override
     public void runOpMode() throws InterruptedException {
@@ -17,6 +16,8 @@ public class MasterTeleOp extends LinearOpMode {
         waitForStart();
 
         baseRobot.driveWithController(baseRobot.ctrl1());
+        ControlCenterTeleOp.carouselSpin(baseRobot, baseRobot.ctrl1(), false);
+
 
         while (opModeIsActive())
             baseRobot.getLogger().updateLog();
