@@ -13,7 +13,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class GreenScanningPipeline extends OpenCvPipeline implements Pipeline {
 
     /* color constants */
-    private static final Scalar BLUE = new Scalar(0, 0, 255), GREEN = new Scalar(0, 255, 0);
+    private static final Scalar BLUE = new Scalar(0, 0, 255), GREEN = new Scalar(0, 255, 0), RED = new Scalar(255, 0, 0);
 
     public static short Y_MAX = 30, Y_MIN = 200;
     public static short LEFT_2_MID_X = 107, MID_2_RIGHT_X = 214;
@@ -77,6 +77,15 @@ public class GreenScanningPipeline extends OpenCvPipeline implements Pipeline {
                 new Point(0, Y_MAX), // First point which defines the rectangle
                 new Point(320, Y_MIN), // Second point which defines the rectangle
                 GREEN, // The color the rectangle is drawn in
+                2); // Thickness of the rectangle lines
+
+        selectedZone = Region.LEFT;
+
+        Imgproc.rectangle(
+                input, // Buffer to draw on
+                new Point(0, Y_MAX), // First point which defines the rectangle
+                new Point(320, Y_MIN), // Second point which defines the rectangle
+                RED, // The color the rectangle is drawn in
                 2); // Thickness of the rectangle lines
 
         return input;
