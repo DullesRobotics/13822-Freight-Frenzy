@@ -4,127 +4,103 @@ import org.firstinspires.ftc.teamcode.Libraries.AddOns.Pipeline;
 import org.firstinspires.ftc.teamcode.Libraries.Logger;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GreenScanningPipeline extends OpenCvPipeline implements Pipeline {
 
-    /* color constants */
-    private static final Scalar BLUE = new Scalar(0, 0, 255), GREEN = new Scalar(0, 255, 0), RED = new Scalar(255, 0, 0);
 
-    public static short Y_MAX = 30, Y_MIN = 200;
-    public static short LEFT_2_MID_X = 107, MID_2_RIGHT_X = 214;
+    public int minThreshold = 155;
+    public int maxThreshold = 255;
+  //  private Mat yCrCB;
+    private Mat channel;
+    private Mat threshold;
+    private List<MatOfPoint> contours;
 
-    private volatile Region selectedZone = Region.RIGHT;
-    private volatile double leftWeight = 0, rightWeight = 0, middleWeight = 0;
+    private Rect rect;
+    private Point currentPoint;
 
-    /*
-     * Working variables
-     */
-    private Mat region1_Cb, region2_Cb, region3_Cb, HSV = new Mat(), Cb = new Mat();
-    private int avg1;
+    public GreenScanningPipeline() {
+        //yCrCB = new Mat();
+        channel = new Mat();
+        threshold = new Mat();
+        contours = new ArrayList<>();
+        rect = new Rect();
+    }
 
-    public enum Region {
-        LEFT, MIDDLE, RIGHT
+    @Override
+    public Mat processFrame(Mat input) {
+        currentPoint = getCenterOfRect(detectHighGoal(input));
+        return input;
+    }
+
+    private Rect detectHighGoal(Mat input) {
+        contours.clear();
+//        Imgproc.cvtColor(input, yCrCB, Imgproc.COLOR_RGB2YCrCb);
+        Scalar annotationColor;
+
+        //coi 1 for red, 2 for blue
+        Core.extractChannel(/*yCrCB*/ input, channel, 1);
+        // red green blue
+        annotationColor = new Scalar(0, 255, 0);
+
+
+        Imgproc.threshold(channel, threshold, minThreshold, maxThreshold, Imgproc.THRESH_BINARY);
+        Imgproc.findContours(threshold, contours, new Mat(), Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+
+        for (int i = contours.size() - 1; i >= 0; i--) {
+            Rect sampleRect = Imgproc.boundingRect(contours.get(i));
+            double ratio = (double) sampleRect.height / sampleRect.width;
+            double ratioInverse = (double) sampleRect.width / sampleRect.height;
+            if (ratio > 2 && ratioInverse < 1) {
+                contours.remove(i);
+            }
+        }
+
+        int maxVal = 0;
+        int index = 0;
+        for (int i = 0; i < contours.size(); i++) {
+            rect = Imgproc.boundingRect(contours.get(i));
+            Imgproc.rectangle(input, rect, new Scalar(255, 255, 255), 1);
+            if (maxVal < rect.height) {
+                maxVal = rect.height;
+                index = i;
+            }
+        }
+        if (contours.size() == 0) rect = null;
+        else {
+            rect = Imgproc.boundingRect(contours.get(index));
+            Imgproc.rectangle(input, rect, annotationColor, 3);
+        }
+
+        return rect;
+    }
+
+    public Point getCenterOfRect(Rect rect) {
+        if (rect == null) {
+            return new Point(-1000, -1000);
+        }
+        return new Point(rect.x + rect.width / 2.0, rect.y + rect.height / 2.0);
+    }
+
+    public boolean isObjectVisible() {
+        return rect != null;
+    }
+
+    public Point getCamPoint() {
+        return currentPoint;
     }
 
     @Override
     public void updateLog(Logger l) {
-        l.putData("Selected Zone", selectedZone);
-        l.putData("Weights (L, M, R)", leftWeight + ", " + middleWeight + ", " + rightWeight);
-    }
-
-    void inputToCb(Mat input){
-
-
-        //Imgproc.cvtColor(input, HSV, Imgproc.COLOR_RGB2HSV);
-       // Core.inRange(HSV, new Scalar(40,40,40), new Scalar(70,255,255), Cg);
-
-        //Core.extractChannel(YCrCb, Cb, 1);
-    }
-
-    @Override
-    public void init(Mat firstFrame)
-    {
-        //inputToCb(firstFrame);
-
-        region1_Cb = firstFrame.submat(new Rect(new Point(0, Y_MAX), new Point(320, Y_MIN)));
-    }
-
-    @Override
-    public Mat processFrame(Mat img) {
-        //inputToCb(input);
-//        avg1 = (int) Core.mean(region1_Cb).val[0];
-//
-//        Imgproc.rectangle(
-//                input, // Buffer to draw on
-//                new Point(0, Y_MAX), // First point which defines the rectangle
-//                new Point(320, Y_MIN), // Second point which defines the rectangle
-//                BLUE, // The color the rectangle is drawn in
-//                2); // Thickness of the rectangle lines
-//
-//        selectedZone = Region.MIDDLE;
-////        if(avg1 > FOUR_RING_THRESHOLD){
-////            amount = RingAmount.FOUR;
-////        }else if (avg1 > ONE_RING_THRESHOLD){
-////            amount = RingAmount.ONE;
-////        }else{
-////            amount = RingAmount.NONE;
-////        }
-//
-        Imgproc.rectangle(
-                img, // Buffer to draw on
-                new Point(0, Y_MAX), // First point which defines the rectangle
-                new Point(106, Y_MIN), // Second point which defines the rectangle
-                RED, // The color the rectangle is drawn in
-                2); // Thickness of the rectangle lines
-
-        selectedZone = Region.LEFT;
-
-        Imgproc.rectangle(
-                img, // Buffer to draw on
-                new Point(106, Y_MAX), // First point which defines the rectangle
-                new Point(212, Y_MIN), // Second point which defines the rectangle
-                RED, // The color the rectangle is drawn in
-                2); // Thickness of the rectangle lines
-
-        Imgproc.rectangle(
-                img, // Buffer to draw on
-                new Point(212, Y_MAX), // First point which defines the rectangle
-                new Point(320, Y_MIN), // Second point which defines the rectangle
-                RED, // The color the rectangle is drawn in
-                2); // Thickness of the rectangle lines
-
-        int rows = img.rows(); //Calculates number of rows
-        int cols = img.cols(); //Calculates number of columns
-       // int ch = img.channels(); //Calculates number of channels (Grayscale: 1, RGB: 3, etc.)
-
-        Point mostGreenPoint = new Point(0,0);
-        double mostGreen = 0;
-
-        for (int i=0; i<rows; i++)
-        {
-            for (int j=0; j<cols; j++)
-            {
-                double greenness = img.get(i,j)[1];
-                if(greenness > mostGreen){
-                    mostGreen = greenness;
-                    mostGreenPoint = new Point(i, j);
-                }
-            }
-        }
-        Imgproc.rectangle(
-                img, // Buffer to draw on
-                new Point(mostGreenPoint.x+25, mostGreenPoint.y+25), // First point which defines the rectangle
-                new Point(mostGreenPoint.x-25, mostGreenPoint.y-25), // Second point which defines the rectangle
-                BLUE, // The color the rectangle is drawn in
-                3); // Thickness of the rectangle lines
-
-        return img;
+        l.putData("Object Visible", isObjectVisible());
+        l.putData("Point: ", currentPoint);
     }
 }
