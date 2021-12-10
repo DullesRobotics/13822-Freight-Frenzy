@@ -78,6 +78,7 @@ public class GreenScanningPipeline extends OpenCvPipeline implements Pipeline {
         else {
             rect = Imgproc.boundingRect(contours.get(index));
             Imgproc.rectangle(input, rect, annotationColor, 3);
+            Imgproc.rectangle(input, new Rect(1,2,3,4), annotationColor, 3);
         }
 
         return rect;
@@ -88,6 +89,14 @@ public class GreenScanningPipeline extends OpenCvPipeline implements Pipeline {
             return new Point(-1000, -1000);
         }
         return new Point(rect.x + rect.width / 2.0, rect.y + rect.height / 2.0);
+    }
+
+    public Zone getZone() {
+        if(getCenterOfRect(rect).x < Zone.LEFT.maxX)
+            return Zone.LEFT;
+        else if(getCenterOfRect(rect).x < Zone.MIDDLE.maxX)
+            return Zone.MIDDLE;
+        else return Zone.RIGHT;
     }
 
     public boolean isObjectVisible() {
@@ -102,5 +111,19 @@ public class GreenScanningPipeline extends OpenCvPipeline implements Pipeline {
     public void updateLog(Logger l) {
         l.putData("Object Visible", isObjectVisible());
         l.putData("Point: ", currentPoint);
+        l.putData("Zone: ", getZone().name());
+    }
+
+    enum Zone {
+        LEFT(0, 106),
+        MIDDLE(107, 212),
+        RIGHT(213,320);
+
+        private int minX, maxX;
+
+        Zone (int minX, int maxX){
+            this.maxX = maxX;
+            this.minX = minX;
+        }
     }
 }

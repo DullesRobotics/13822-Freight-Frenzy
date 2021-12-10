@@ -131,6 +131,7 @@ public class Logger {
     /** Updates log file */
     private void updateFileLog(@NotNull Level level, String s){
         String date = DateFormat.format("HH:mm:ss", Calendar.getInstance().getTime()).toString();
+        if(writer != null)
         writer.println(date + " [" + level.getName() + "] " + s);
     }
 
