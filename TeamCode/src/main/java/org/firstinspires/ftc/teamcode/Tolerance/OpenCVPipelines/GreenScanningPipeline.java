@@ -113,7 +113,19 @@ public class GreenScanningPipeline extends OpenCvPipeline implements Pipeline {
         l.putData("Point: ", currentPoint);
         l.putData("Zone: ", getZone().name());
     }
+    public Rect drawZone(Mat input) {
+        int maxX1 = 0;
+        int index1 = 0;
 
+        for (int i = 0; i < contours.size(); i++) {
+            rect = Imgproc.boundingRect(contours.get(i));
+            Imgproc.rectangle(input, rect, new Scalar(255, 255, 255), 1/2);
+            if (maxX1 < rect.height) {
+                maxX1 = rect.height;
+                index1 = i;
+            }
+        }
+    }
     enum Zone {
         LEFT(0, 106),
         MIDDLE(107, 212),
