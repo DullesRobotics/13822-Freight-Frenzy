@@ -42,10 +42,20 @@ public class TankDrive extends StandardDriveTrain {
             double flmPower, frmPower, blmPower, brmPower, mainPower, currentSpeed;
             while(op().opModeIsActive()){
 
+
                 currentSpeed = ctrl.rightTrigger() > 0 || ctrl.leftTrigger() > 0 ? precisionSpeed : speed;
+                getLogger().putData("Joystick Speed", currentSpeed);
                 getLogger().putData("Motor Speed", currentSpeed);
                 setSidedDrivePower(-1 * currentSpeed * ctrl.leftY(), -1 * currentSpeed * ctrl.rightY());
                 getMotors(ComponentArea.CENTER_OMNI).get(0).get().setPower(3);
+
+                flmPower = currentSpeed * (-ctrl.leftY() + ctrl.rightTrigger() - ctrl.leftTrigger());
+                frmPower = flmPower;
+                blmPower = currentSpeed * (-ctrl.leftY() - ctrl.rightTrigger() + ctrl.leftTrigger());
+                brmPower = blmPower;
+
+                getLogger().putData("Velocity (FL, FR, BL, BR)", getMotor("FLM").getEncoded().getVelocity() + ", " + getMotor("FRM").getEncoded().getVelocity() + ", " + getMotor("BLM").getEncoded().getVelocity() + ", " + getMotor("BRM").getEncoded().getVelocity());
+
             }
         }), true, () -> getLogger().clearData());
     }
