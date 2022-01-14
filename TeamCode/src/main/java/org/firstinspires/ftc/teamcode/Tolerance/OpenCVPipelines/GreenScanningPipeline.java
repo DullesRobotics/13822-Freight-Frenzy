@@ -125,6 +125,8 @@ public class GreenScanningPipeline extends OpenCvPipeline implements Pipeline {
                 index1 = i;
             }
         }
+
+        return rect;
     }
     enum Zone {
         LEFT(0, 106),
