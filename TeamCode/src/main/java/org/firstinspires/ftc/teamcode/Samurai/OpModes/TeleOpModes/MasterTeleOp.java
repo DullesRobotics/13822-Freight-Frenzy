@@ -1,23 +1,25 @@
-package org.firstinspires.ftc.teamcode.Tolerance.OpModes.TeleOpModes;
+package org.firstinspires.ftc.teamcode.Samurai.OpModes.TeleOpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.Tolerance.Configurator;
-import org.firstinspires.ftc.teamcode.Tolerance.ControlCenterTeleOp;
+import org.firstinspires.ftc.teamcode.Samurai.Configurator;
+import org.firstinspires.ftc.teamcode.Samurai.Functions;
 
-public class MasterRedTeleOp extends LinearOpMode {
+@TeleOp
+public class MasterTeleOp extends LinearOpMode {
     private MecanumDriveTrain baseRobot;
     @Override
     public void runOpMode() throws InterruptedException {
         baseRobot = new MecanumDriveTrain(this);
-        baseRobot.addHardware(Configurator.getDriveTrainMotors(baseRobot));
+        baseRobot.addHardware(Configurator.getHardware(baseRobot));
 
         waitForStart();
 
         baseRobot.driveWithController(baseRobot.ctrl1());
-        ControlCenterTeleOp.carouselSpin(baseRobot, baseRobot.ctrl1(), false);
-
+        Functions.carouselSpin(baseRobot, baseRobot.ctrl2());
+        Functions.intakeInOut(baseRobot, baseRobot.ctrl2());
 
         while (opModeIsActive())
             baseRobot.getLogger().updateLog();

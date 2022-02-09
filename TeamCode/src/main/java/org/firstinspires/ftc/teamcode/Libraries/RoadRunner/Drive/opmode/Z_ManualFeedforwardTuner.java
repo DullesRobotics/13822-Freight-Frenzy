@@ -17,12 +17,12 @@ import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDr
 
 import java.util.Objects;
 
-import static org.firstinspires.ftc.teamcode.Tolerance.RoadRunnerDriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.Tolerance.RoadRunnerDriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.Tolerance.RoadRunnerDriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.Tolerance.RoadRunnerDriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.Tolerance.RoadRunnerDriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.Tolerance.RoadRunnerDriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.Samurai.RoadRunnerDriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.Samurai.RoadRunnerDriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.Samurai.RoadRunnerDriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.Samurai.RoadRunnerDriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.Samurai.RoadRunnerDriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.Samurai.RoadRunnerDriveConstants.kV;
 
 /*
  * This routine is designed to tune the open-loop feedforward coefficients. Although it may seem unnecessary,

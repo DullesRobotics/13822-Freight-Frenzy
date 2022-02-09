@@ -40,21 +40,23 @@ public class  MecanumDriveTrain extends StandardDriveTrain {
     public void driveWithController(Controller ctrl) {
         getLogger().log(Level.INFO, "Beginning drive with controller, mechanum");
         addThread(new Thread(() -> {
-            double flmPower, frmPower, blmPower, brmPower, currentSpeed;
+            double flmPower, frmPower, blmPower, brmPower, currentSpeed = 0, maxSpeed;
             while(op().opModeIsActive()){
-                currentSpeed = ctrl.rightBumper() || ctrl.leftBumper() ? precisionSpeed : speed;
+                maxSpeed = ctrl.rightBumper() || ctrl.leftBumper() ? precisionSpeed : speed;
+                if(currentSpeed < maxSpeed)
+                    currentSpeed += maxSpeed / 500;
+                if(maxSpeed < currentSpeed)
+                    currentSpeed = maxSpeed;
                 getLogger().putData("Joystick Speed", currentSpeed);
 
-                flmPower = currentSpeed * (-ctrl.leftY() + ctrl.rightTrigger() - ctrl.leftTrigger());
-                frmPower = currentSpeed * (-ctrl.rightY() - ctrl.rightTrigger() + ctrl.leftTrigger());
-                blmPower = currentSpeed * (-ctrl.leftY() - ctrl.rightTrigger() + ctrl.leftTrigger());
-                brmPower = currentSpeed * (-ctrl.rightY() + ctrl.rightTrigger() - ctrl.leftTrigger());
+                  flmPower = ctrl.leftY() + ctrl.leftTrigger() - ctrl.rightTrigger();
+                  blmPower = ctrl.leftY() - ctrl.leftTrigger() + ctrl.rightTrigger();
+                  frmPower = ctrl.rightY() - ctrl.leftTrigger() + ctrl.rightTrigger();
+                  brmPower = ctrl.rightY() + ctrl.leftTrigger() - ctrl.rightTrigger();
 
-              //  getLogger().putData("Set Power (FL, FR, BL, BR)", flmPower + ", " + frmPower + ", " + blmPower + ", " + brmPower);
-                getLogger().putData("Power (FL, FR, BL, BR)", getMotor("FLM").get().getPower() + ", " + getMotor("FRM").get().getPower() + ", " + getMotor("BLM").get().getPower() + ", " + getMotor("BRM").get().getPower());
-                getLogger().putData("Velocity (FL, FR, BL, BR)", getMotor("FLM").getEncoded().getVelocity() + ", " + getMotor("FRM").getEncoded().getVelocity() + ", " + getMotor("BLM").getEncoded().getVelocity() + ", " + getMotor("BRM").getEncoded().getVelocity());
-
-                setIndividualDrivePower(flmPower, frmPower, blmPower, brmPower);
+//                getLogger().putData("Power (FL, FR, BL, BR)", getMotor("FLM").get().getPower() + ", " + getMotor("FRM").get().getPower() + ", " + getMotor("BLM").get().getPower() + ", " + getMotor("BRM").get().getPower());
+//                getLogger().putData("Velocity (FL, FR, BL, BR)", getMotor("FLM").getEncoded().getVelocity() + ", " + getMotor("FRM").getEncoded().getVelocity() + ", " + getMotor("BLM").getEncoded().getVelocity() + ", " + getMotor("BRM").getEncoded().getVelocity());
+                setIndividualDrivePower(currentSpeed * flmPower, currentSpeed * frmPower, currentSpeed * blmPower, currentSpeed * brmPower);
             }
         }), true, () -> getLogger().clearData());
     }

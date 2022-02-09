@@ -40,13 +40,13 @@ public class Logger {
         this.op = op;
         File path = Environment.getExternalStoragePublicDirectory("FIRST/logs");
         String date = DateFormat.format("MM/dd:HH:mm:ss", Calendar.getInstance().getTime()).toString();
-        File logFile = new File(path, formatTextFileName("ftclog_" + date));
-        try { writer = new PrintWriter(new FileWriter(logFile, true)); }
-        catch (Exception e) {
-            e.printStackTrace();
+      //  File logFile = new File(path, formatTextFileName("ftclog_" + date));
+//        try { writer = new PrintWriter(new FileWriter(logFile, true)); }
+  //      catch (Exception e) {
+            // e.printStackTrace();
             //op.telemetry.addData("ERROR", e);
             //op.telemetry.update();
-        }
+    //    }
     }
 
     /**
@@ -131,8 +131,8 @@ public class Logger {
     /** Updates log file */
     private void updateFileLog(@NotNull Level level, String s){
         String date = DateFormat.format("HH:mm:ss", Calendar.getInstance().getTime()).toString();
-        if(writer != null)
-        writer.println(date + " [" + level.getName() + "] " + s);
+//        if(writer != null)
+//        writer.println(date + " [" + level.getName() + "] " + s);
     }
 
     /** formats a file name */

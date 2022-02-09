@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.Tolerance.OpModes.AutonomousOpModes;
+package org.firstinspires.ftc.teamcode.Samurai.OpModes.AutonomousOpModes;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Tolerance.AutonFunctions;
+import org.firstinspires.ftc.teamcode.Samurai.AutonFunctions;
 
 @Autonomous
 @Config
