@@ -24,7 +24,14 @@ public class AutonFunctions {
     }
 
     // intake in/out/off
-    
+    public void intakeItems (boolean dir, boolean isOn){
+        Motor container = mainFrame.getMotors(ComponentArea.INTAKE).get(0);
+        if(container != null && container.get() != null)
+            if(isOn == true)
+                container.get().setPower(dir ? -1 : 1);
+            else
+                container.get().setPower(0);
+    }
 
     // lift level 0/1/2/3
 
