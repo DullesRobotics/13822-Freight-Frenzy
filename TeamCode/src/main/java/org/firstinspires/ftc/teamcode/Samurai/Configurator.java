@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Samurai;
 
 import static org.firstinspires.ftc.teamcode.Hardware.ComponentArea.CAROUSEL;
+import static org.firstinspires.ftc.teamcode.Hardware.ComponentArea.LIFT;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -31,6 +32,7 @@ public class Configurator {
                 driveTrainMotors[2],
                 driveTrainMotors[3],
                 //new Motor(robot, "COW", CENTER_OMNI, true),
+                new Motor(robot, "LIFT", LIFT, false),
                 new IMU(robot, "IMU"),
                 new Motor(robot, "INT", ComponentArea.INTAKE, false),
                 //new USBWebcam(robot, "Webcam"),

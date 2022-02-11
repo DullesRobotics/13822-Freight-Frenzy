@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Samurai.AutonFunctions;
 public class AutonBlueLeft extends LinearOpMode {
     @Override
     public void runOpMode()throws InterruptedException{
-        AutonFunctions.start(this, AutonFunctions.TeamColor.blue, AutonFunctions.Direction.left);
+        AutonFunctions.start(this, AutonFunctions.TeamColor.BLUE, AutonFunctions.Direction.LEFT);
 
     }
 }

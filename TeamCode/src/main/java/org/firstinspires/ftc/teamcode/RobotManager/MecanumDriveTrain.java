@@ -42,7 +42,15 @@ public class  MecanumDriveTrain extends StandardDriveTrain {
         addThread(new Thread(() -> {
             double flmPower, frmPower, blmPower, brmPower, currentSpeed = 0, maxSpeed;
             while(op().opModeIsActive()){
-                maxSpeed = ctrl.rightBumper() || ctrl.leftBumper() ? precisionSpeed : speed;
+
+                int numBumpersActive = (ctrl.rightBumper() ? 1 : 0) + (ctrl.leftBumper() ? 1 : 0);
+                switch(numBumpersActive){
+                    case 1: maxSpeed = precisionSpeed; break;
+                    case 2: maxSpeed = ultraPSpeed; break;
+                    default:
+                    case 0: maxSpeed = speed; break;
+                }
+
                 if(currentSpeed < maxSpeed)
                     currentSpeed += maxSpeed / 500;
                 if(maxSpeed < currentSpeed)

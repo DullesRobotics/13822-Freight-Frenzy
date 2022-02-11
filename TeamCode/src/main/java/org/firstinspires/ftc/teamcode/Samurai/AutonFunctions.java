@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Samurai;
 
 import android.graphics.Point;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -12,56 +13,39 @@ import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDr
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
+@Config
 public class AutonFunctions {
     private static volatile MecanumDriveTrain mainFrame;
     private static volatile SampleMecanumDrive roadRunner;
-    private static volatile TeamColor team;
-    private volatile Point start = startRedRight;
+    private static long ticksGround = 0, ticksLevel1 = 333, ticksLevel2 = 666, ticksLevel3 = 1000;
 
     public static void start(LinearOpMode op, TeamColor t, Direction position){
 
-        AutonFunctions.team = team;
-        roadRunner = new SampleMecanumDrive(op);
-        mainFrame = roadRunner.getDriveTrain();
-        mainFrame.addThread(new Thread(() -> {
-            while(op.opModeIsActive() && !op.isStopRequested()){
-                mainFrame.getLogger().updateLog();
-            }
-        }), true);
-
-        double angleStart = (team == TeamColor.blue)? 180:-180;
-        team = t;
-        Point start = (team == TeamColor.blue) && (position==Direction.left) ? (team == TeamColor.red) && (position==Direction.left) ?startBlueLeft:startBlueRight:startRedLeft;
-        Pose2d startPose = new Pose2d(start.x,start.y,angleStart);
-        roadRunner.setPoseEstimate(startPose);
-
-        op.waitForStart();
-        if(op.isStopRequested()) return;
-
-        //Move Forward to Carousel
-        Trajectory carousel = roadRunner.trajectoryBuilder(startPose)
-                .forward(-36)
-                .build();
-        roadRunner.followTrajectory(carousel);
-        //Rotate Carousel
-        turnCarousel(mainFrame);
     }
 
-    private static void turnCarousel(Robot r) {
-        for(Motor m : r.getMotors(ComponentArea.CAROUSEL)) {
-            m.get().setPower(.6);
-        }
+    // intake in/out/off
+    
+
+    // lift level 0/1/2/3
+
+
+    /**
+     * Sets if the carousel should spin or not
+     * @param isOn True - Carousel Spins; False - Carousel Stops
+     */
+    public void spinCarousel (boolean isOn) {
+        Motor carousel = mainFrame.getMotors(ComponentArea.CAROUSEL).get(0);
+        if(carousel != null && carousel.get() != null)
+            carousel.get().setPower(isOn ? 1 : 0);
     }
-    public enum TeamColor{
-        red,blue;
+
+    public enum TeamColor {
+        RED, BLUE
     }
-    public enum Direction{
-        left,right;
+
+    public enum Direction {
+        LEFT, RIGHT
     }
-    public static Point
-        startRedLeft = new Point(-36,60),
-        startRedRight = new Point(12, -60),
-        startBlueLeft = new Point(-36, 60),
-        startBlueRight = new Point(12, 60);
+
 }
 

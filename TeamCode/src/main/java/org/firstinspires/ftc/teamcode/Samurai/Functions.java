@@ -11,6 +11,21 @@ public class Functions {
 
     static final double motorCarouselSpeed = 1;
 
+    public static void intakeUpDown(Robot r, Controller ctrl){
+        UUID uuid = r.addThread(new Thread(() -> {
+            Motor liftMotor = r.getMotor("LIFT");
+            while(r.op().opModeIsActive()){
+                if(ctrl.leftTrigger() > 0){ //DOWN
+                    liftMotor.get().setPower((ctrl.leftTrigger() * 2 ) / 3);
+                } else if(ctrl.rightTrigger() > 0) { //UP
+                    liftMotor.get().setPower(-ctrl.rightTrigger());
+                } else {
+                    liftMotor.get().setPower(0);
+                }
+            }
+        }), true);
+    }
+
     public static void carouselSpin(Robot r, Controller ctrl){
         UUID uuid = r.addThread(new Thread(() -> {
             Motor carouselMotor = r.getMotor("CAR");
