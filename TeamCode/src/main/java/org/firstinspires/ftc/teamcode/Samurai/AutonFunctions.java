@@ -17,17 +17,39 @@ import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 public class AutonFunctions {
     private static volatile MecanumDriveTrain mainFrame;
     private static volatile SampleMecanumDrive roadRunner;
-    private static long ticksGround = 0, ticksLevel1 = 333, ticksLevel2 = 666, ticksLevel3 = 1000;
+    private static int ticksGround = 0, ticksLevel1 = 333, ticksLevel2 = 666, ticksLevel3 = 1000;
 
     public static void start(LinearOpMode op, TeamColor t, Direction position){
 
     }
 
     // intake in/out/off
-    
 
-    // lift level 0/1/2/3
 
+    /**
+     * 0 - ground
+     * 1 - level 1
+     * 2 - level 2
+     * 3 - level 3
+     * 4 - level 4
+     * @param level The level to move the lift to
+     */
+    public void changeLiftLevel(int level){
+        Motor liftMotor = mainFrame.getMotors(ComponentArea.LIFT).get(0);
+        if(liftMotor != null && liftMotor.isEncoded() && liftMotor.getEncoded() != null){
+            int levelTicks = 0;
+            switch(level){
+                case 1: levelTicks = ticksLevel1; break;
+                case 2: levelTicks = ticksLevel2; break;
+                case 3: levelTicks = ticksLevel3; break;
+                default:
+                case 0: levelTicks = ticksGround; break;
+            }
+            liftMotor.getEncoded().setTargetPosition(levelTicks);
+        }
+    }
+
+    public void resetLift
 
     /**
      * Sets if the carousel should spin or not

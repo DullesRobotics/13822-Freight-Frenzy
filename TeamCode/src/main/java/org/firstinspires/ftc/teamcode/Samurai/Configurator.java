@@ -32,7 +32,7 @@ public class Configurator {
                 driveTrainMotors[2],
                 driveTrainMotors[3],
                 //new Motor(robot, "COW", CENTER_OMNI, true),
-                new Motor(robot, "LIFT", LIFT, false),
+                new Motor(robot, "LIFT", LIFT, true),
                 new IMU(robot, "IMU"),
                 new Motor(robot, "INT", ComponentArea.INTAKE, false),
                 //new USBWebcam(robot, "Webcam"),
