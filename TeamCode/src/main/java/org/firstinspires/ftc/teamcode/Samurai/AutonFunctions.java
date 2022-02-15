@@ -105,8 +105,13 @@ public class AutonFunctions {
         }
     }
 
-    // intake in/out/off
-    public static void intakeItems (boolean forward, boolean isOn){
+    /**
+     * -1 -> Motor moving up
+     * 1 -> Motor moving down
+     * @param isOn - turns the motor based on direction
+     * @param dir - tells the direction of the motor that controls intake
+     **/
+    public void intakeItems (boolean dir, boolean isOn){
         Motor container = mainFrame.getMotors(ComponentArea.INTAKE).get(0);
         if(container != null && container.get() != null)
             if(isOn == true)
