@@ -7,8 +7,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
+import org.firstinspires.ftc.teamcode.Hardware.USBWebcam;
+import org.firstinspires.ftc.teamcode.Libraries.AddOns.AddOnType;
+import org.firstinspires.ftc.teamcode.Libraries.AddOns.EasyOpenCV;
 import org.firstinspires.ftc.teamcode.Libraries.RoadRunner.Drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotManager.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.Samurai.OpenCVPipelines.GreenScanningPipeline;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Config
 public class AutonFunctions {
@@ -34,6 +39,10 @@ public class AutonFunctions {
     public static void startNew(LinearOpMode op, TeamColor t, FieldPosition position){
         roadRunner = new SampleMecanumDrive(op);
         mainFrame = roadRunner.getDriveTrain();
+        mainFrame.addHardware(new USBWebcam(mainFrame, "Webcam"));
+        GreenScanningPipeline pipe = new GreenScanningPipeline();
+        EasyOpenCV ez = new EasyOpenCV(pipe, mainFrame.getUSBWebcam("Webcam"), OpenCvCameraRotation.UPRIGHT);
+        mainFrame.addOnManager().initAddOn(ez);
 
         ///////////
 
@@ -59,12 +68,15 @@ public class AutonFunctions {
 
         // scan barcode
 
+
         // determine level
-        int level = 1;
+
 
         op.waitForStart();
 
         if(op.isStopRequested()) return;
+
+        int level = pipe.getBestZone();
 
         // move lift to correct level
         changeLiftLevel(level);
@@ -109,9 +121,9 @@ public class AutonFunctions {
      * -1 -> Motor moving up
      * 1 -> Motor moving down
      * @param isOn - turns the motor based on direction
-     * @param dir - tells the direction of the motor that controls intake
+     * @param forward - tells the direction of the motor that controls intake
      **/
-    public void intakeItems (boolean dir, boolean isOn){
+    public static void intakeItems(boolean forward, boolean isOn){
         Motor container = mainFrame.getMotors(ComponentArea.INTAKE).get(0);
         if(container != null && container.get() != null)
             if(isOn == true)

@@ -83,5 +83,4 @@ public abstract class AddOn {
 
     /** Stops the actual add-on */
     protected abstract void stopAO();
-
 }
