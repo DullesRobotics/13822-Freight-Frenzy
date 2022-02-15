@@ -8,9 +8,10 @@ import org.firstinspires.ftc.teamcode.Samurai.AutonFunctions;
 
 @Autonomous
 @Config
-public class AutonRedLeft extends LinearOpMode {
+public class AutBlueWarehouse extends LinearOpMode {
     @Override
     public void runOpMode()throws InterruptedException{
-        AutonFunctions.start(this, AutonFunctions.TeamColor.RED, AutonFunctions.Direction.LEFT);
+        AutonFunctions.start(this, AutonFunctions.TeamColor.BLUE, AutonFunctions.FieldPosition.NEAR_WAREHOUSE);
+
     }
 }

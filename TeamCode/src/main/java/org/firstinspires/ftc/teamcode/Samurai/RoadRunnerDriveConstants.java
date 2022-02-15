@@ -46,9 +46,9 @@ public class RoadRunnerDriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
-    public static double WHEEL_RADIUS = 2.9528 / 2; // in
+    public static double WHEEL_RADIUS = 1.89; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 6.98; //12.16; // in //6.98
+    public static double TRACK_WIDTH = 9; //12.16; // in //6.98
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -57,9 +57,9 @@ public class RoadRunnerDriveConstants {
      * empirically tuned.
      */
     //0.011311706322128667
-    public static double kV = 0.020314815; //1.0 / rpmToVelocity(MAX_RPM);
-    public static double kA = 0.004;
-    public static double kStatic = 0.01;
+    public static double kV = 0.018;
+    public static double kA = 0.002;
+    public static double kStatic = 0;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -68,10 +68,10 @@ public class RoadRunnerDriveConstants {
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
      */
-    public static double MAX_VEL = 46.2;
-    public static double MAX_ACCEL = 50; //was 30
-    public static double MAX_ANG_VEL = Math.toRadians(192.1955126776892);  //226.82763169440202 replace old value with this
-    public static double MAX_ANG_ACCEL = Math.toRadians(60);
+    public static double MAX_VEL = 30;
+    public static double MAX_ACCEL = 30; //was 30
+    public static double MAX_ANG_VEL = Math.toRadians(180);
+    public static double MAX_ANG_ACCEL = Math.toRadians(180);
 
     public static Axis IMU_AXIS = Axis.Z;
 

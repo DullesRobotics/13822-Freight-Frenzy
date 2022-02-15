@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.Samurai.AutonFunctions;
 
 @Autonomous
 @Config
-public class AutonBlueRight extends LinearOpMode {
+public class AutBlueCarousel extends LinearOpMode {
     @Override
     public void runOpMode()throws InterruptedException{
-        AutonFunctions.start(this, AutonFunctions.TeamColor.BLUE, AutonFunctions.Direction.RIGHT);
+        AutonFunctions.start(this, AutonFunctions.TeamColor.BLUE, AutonFunctions.FieldPosition.NEAR_CAROUSEL);
     }
 }

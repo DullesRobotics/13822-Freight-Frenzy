@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Motor.DrivetrainMotor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorConfiguration;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.MotorType;
+import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.Libraries.IMU;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
@@ -35,6 +36,7 @@ public class Configurator {
                 new Motor(robot, "LIFT", LIFT, true),
                 new IMU(robot, "IMU"),
                 new Motor(robot, "INT", ComponentArea.INTAKE, false),
+                new Servo(robot, "PUSH", ComponentArea.INTAKE),
                 //new USBWebcam(robot, "Webcam"),
                 carouselMotor
         });

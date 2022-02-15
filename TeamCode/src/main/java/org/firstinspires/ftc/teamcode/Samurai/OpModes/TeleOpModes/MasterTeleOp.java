@@ -21,6 +21,7 @@ public class MasterTeleOp extends LinearOpMode {
         Functions.carouselSpin(baseRobot, baseRobot.ctrl2());
         Functions.intakeInOut(baseRobot, baseRobot.ctrl2());
         Functions.intakeUpDown(baseRobot, baseRobot.ctrl2());
+        Functions.setIntakeServoPosition(baseRobot, baseRobot.ctrl2());
 
         while (opModeIsActive())
             baseRobot.getLogger().updateLog();

@@ -1,15 +1,21 @@
 package org.firstinspires.ftc.teamcode.Samurai;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Hardware.ComponentArea;
 import org.firstinspires.ftc.teamcode.Hardware.Controller;
 import org.firstinspires.ftc.teamcode.Hardware.Motor.Motor;
+import org.firstinspires.ftc.teamcode.Hardware.Servo;
 import org.firstinspires.ftc.teamcode.RobotManager.Robot;
 
 import java.util.UUID;
 
+@Config
 public class Functions {
 
     static final double motorCarouselSpeed = 1;
+    public static double outServoPosUp = 0.55, outServoPosDown = 0.32;
 
     public static void intakeUpDown(Robot r, Controller ctrl){
         UUID uuid = r.addThread(new Thread(() -> {
@@ -21,6 +27,22 @@ public class Functions {
                     liftMotor.get().setPower(-ctrl.rightTrigger());
                 } else {
                     liftMotor.get().setPower(0);
+                }
+            }
+        }), true);
+    }
+
+    public static void setIntakeServoPosition(Robot r, Controller ctrl){
+        UUID uuid = r.addThread(new Thread(() -> {
+            Servo outtakeServo = r.getServos(ComponentArea.INTAKE).get(0);
+            if(outtakeServo != null && outtakeServo.get() != null) {
+                outtakeServo.get().setPosition(outServoPosDown);
+                while (r.op().opModeIsActive()) {
+                    if (ctrl.leftBumper()) {
+                        outtakeServo.get().setPosition(outServoPosDown);
+                    } else if (ctrl.rightBumper()) {
+                        outtakeServo.get().setPosition(outServoPosUp);
+                    }
                 }
             }
         }), true);
@@ -47,7 +69,7 @@ public class Functions {
                 //r.getLogger().log(Level.INFO, "on: " + on + ", forward: " + goingForward + ", pressed: " + currentlyPressed);
 
                 if(ctrl.buttonUp() && !currentlyPressed){
-                    if(goingForward){
+                    if(goingForward && on){
                         on = false;
                     } else {
                         on = true;
@@ -55,7 +77,7 @@ public class Functions {
                     }
                     currentlyPressed = true;
                 } else if(ctrl.buttonDown() && !currentlyPressed){
-                    if(!goingForward){
+                    if(!goingForward && on){
                         on = false;
                     } else {
                         on = true;
