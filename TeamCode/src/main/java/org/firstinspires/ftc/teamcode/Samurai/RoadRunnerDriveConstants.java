@@ -46,7 +46,7 @@ public class RoadRunnerDriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
-    public static double WHEEL_RADIUS = 1.89; // in
+    public static double WHEEL_RADIUS = 3.78; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
     public static double TRACK_WIDTH = 9; //12.16; // in //6.98
 
@@ -57,7 +57,7 @@ public class RoadRunnerDriveConstants {
      * empirically tuned.
      */
     //0.011311706322128667
-    public static double kV = 0.018;
+    public static double kV = 0.01;
     public static double kA = 0.002;
     public static double kStatic = 0;
 
