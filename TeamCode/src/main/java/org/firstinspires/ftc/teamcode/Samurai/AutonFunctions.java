@@ -20,7 +20,8 @@ public class AutonFunctions {
     private static volatile MecanumDriveTrain mainFrame;
     private static volatile SampleMecanumDrive roadRunner;
     private static int ticksGround = 0, ticksLevel1 = 333, ticksLevel2 = 666, ticksLevel3 = 1000;
-    private final static long timeToDriveFar = 1000, timeToDriveNear = 900;
+    public static int timeToDriveFar = 1000, timeToDriveNear = 600;
+    public static int timeToCarousel = 1500, timeToSpin = 4000, timeToStrafe = 500;
 
     public static void start(LinearOpMode op, TeamColor t, FieldPosition position){
         mainFrame = new MecanumDriveTrain(op);
@@ -31,7 +32,7 @@ public class AutonFunctions {
         long timeToDrive = position == FieldPosition.NEAR_CAROUSEL ? timeToDriveFar : timeToDriveNear;
         timeToDrive += System.currentTimeMillis();
         while(System.currentTimeMillis() < timeToDrive && op.opModeIsActive())
-            mainFrame.setSidedDrivePower(1, 1);
+            mainFrame.setSidedDrivePower(-1, -1);
         mainFrame.setSidedDrivePower(0,0);
         op.requestOpModeStop();
     }
@@ -39,81 +40,80 @@ public class AutonFunctions {
     public static void startNew(LinearOpMode op, TeamColor t, FieldPosition position){
         roadRunner = new SampleMecanumDrive(op);
         mainFrame = roadRunner.getDriveTrain();
-        mainFrame.addHardware(new USBWebcam(mainFrame, "Webcam"));
-        GreenScanningPipeline pipe = new GreenScanningPipeline();
-        EasyOpenCV ez = new EasyOpenCV(pipe, mainFrame.getUSBWebcam("Webcam"), OpenCvCameraRotation.UPRIGHT);
-        mainFrame.addOnManager().initAddOn(ez);
+        //mainFrame.addHardware(new USBWebcam(mainFrame, "Webcam"));
+        //GreenScanningPipeline pipe = new GreenScanningPipeline();
+        //EasyOpenCV ez = new EasyOpenCV(pipe, mainFrame.getUSBWebcam("Webcam"), OpenCvCameraRotation.UPRIGHT);
+        //mainFrame.addOnManager().initAddOn(ez);
 
         ///////////
 
-        Trajectory moveToWobble = roadRunner.trajectoryBuilder(new Pose2d())
-                .forward(12)
-                .build();
+        //Trajectory moveToWobble = roadRunner.trajectoryBuilder(new Pose2d())
+        //        .forward(-12)
+        //        .build();
 
-        Trajectory moveToCarousel = roadRunner.trajectoryBuilder(new Pose2d())
-                .strafeRight(12)
-                .build();
-
-        Trajectory parkInStorage = roadRunner.trajectoryBuilder(new Pose2d())
-                .forward(16)
-                .build();
-
-        Trajectory parkInWarehouse = roadRunner.trajectoryBuilder(new Pose2d())
-                .forward(16)
-                .build();
+//        Trajectory moveToCarousel = roadRunner.trajectoryBuilder(new Pose2d())
+//                .back(40)
+//                .build();
+//
+//        Trajectory parkInStorage = roadRunner.trajectoryBuilder(new Pose2d())
+//                .strafeLeft(20)
+//                .build();
+//
+//        Trajectory parkInWarehouse = roadRunner.trajectoryBuilder(new Pose2d())
+//                .back(60)
+//                .build();
 
         ///////////
 
-        resetLiftEncoder();
-
-        // scan barcode
-
-
-        // determine level
-
+        //resetLiftEncoder();
 
         op.waitForStart();
 
         if(op.isStopRequested()) return;
 
-        int level = pipe.getBestZone();
+        //int level = pipe.getBestZone();
 
         // move lift to correct level
-        changeLiftLevel(level);
+        //changeLiftLevel(level);
 
         // move to middle wobble
-        roadRunner.followTrajectory(moveToWobble);
+        //roadRunner.followTrajectory(moveToWobble);
 
         // wait for lift to extend
-        mainFrame.autonWait(1000);
+        //mainFrame.autonWait(1000);
 
         // place block
-        intakeItems(false, true);
+        ///intakeItems(false, true);
 
         // wait a few seconds to drop
-        mainFrame.autonWait(500);
+        //mainFrame.autonWait(500);
 
         // turn off intake
-        intakeItems(false, false);
+        //intakeItems(false, false);
 
         // lower intake
-        changeLiftLevel(0);
+        //changeLiftLevel(0);
 
         // IF NEAR CAROUSEL
         if(position == FieldPosition.NEAR_CAROUSEL) {
             // move to carousel
-            roadRunner.followTrajectory(moveToCarousel);
+
+           // roadRunner.followTrajectory(moveToCarousel);
             // spin 5 seconds
-            spinCarousel(true);
-            mainFrame.autonWait(5000);
-            spinCarousel(false);
+            mainFrame.setSidedDrivePower(-0.33, -0.33);
+            mainFrame.autonWait(timeToCarousel);
+            mainFrame.setSidedDrivePower(0,0);
+            spinCarousel(true, t == TeamColor.RED ? false : true);
+            mainFrame.autonWait(timeToSpin);
+            spinCarousel(false, false);
+            //mainFrame.autoStrafeTimed(timeToStrafe, t==TeamColor.RED ? true : false);
             // park Dropoff
-            roadRunner.followTrajectory(parkInStorage);
+           // roadRunner.followTrajectory(parkInStorage);
         } else {
             // ELSE NEAR WAREHOUSE
             // park warehouse
-            roadRunner.turn(Math.toRadians(90));
-            roadRunner.followTrajectory(parkInWarehouse);
+            //roadRunner.turn(Math.toRadians(90));
+            //roadRunner.followTrajectory(parkInWarehouse);
         }
     }
 
@@ -166,10 +166,10 @@ public class AutonFunctions {
      * Sets if the carousel should spin or not
      * @param isOn True - Carousel Spins; False - Carousel Stops
      */
-    public static void spinCarousel (boolean isOn) {
+    public static void spinCarousel (boolean isOn, boolean clockwise) {
         Motor carousel = mainFrame.getMotors(ComponentArea.CAROUSEL).get(0);
         if(carousel != null && carousel.get() != null)
-            carousel.get().setPower(isOn ? 1 : 0);
+            carousel.get().setPower(isOn ? clockwise ? 1 : -1 : 0);
     }
 
     public enum TeamColor {
